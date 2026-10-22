@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anton Frantsuzov | Онлайн-запись</title>
   <style>
-    :root { --bg: #0f0f0f; --card: #1a1a1a; --border: #2e2e2e; --red: #dc2626; --red-hover: #b91c1c; --text: #f5f5f5; --muted: #a3a3a3; }
+    :root { --bg: #0f0f0f; --card: #1a1a1a; --border: #2e2e2e; --red: #dc2626; --red-hover: #b91c1c; --tg: #229ED9; --tg-hover: #1d8abf; --text: #f5f5f5; --muted: #a3a3a3; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; padding-bottom: 50px; line-height: 1.4; }
-    header { border-bottom: 1px solid var(--border); padding: 16px; background: rgba(0,0,0,0.85); position: sticky; top: 0; backdrop-filter: blur(8px); z-index: 10; margin-bottom: 24px; }
-    .header-inner { max-width: 600px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    header { border-bottom: 1px solid var(--border); padding: 14px 16px; background: rgba(0,0,0,0.85); position: sticky; top: 0; backdrop-filter: blur(8px); z-index: 10; margin-bottom: 24px; }
+    .header-inner { max-width: 600px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
     .logo-wrap { display: flex; align-items: center; gap: 12px; }
-    .logo-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .logo-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
     .container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
     h2 { font-size: 18px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
@@ -22,18 +22,22 @@
     input, select { width: 100%; background: #121212; border: 1px solid #3a3a3a; border-radius: 10px; padding: 12px; color: #fff; font-size: 15px; margin-top: 4px; margin-bottom: 12px; }
     input:focus, select:focus { outline: none; border-color: var(--red); }
     label { font-size: 12px; color: var(--muted); display: block; }
-    .btn { background: var(--red); color: #fff; border: none; border-radius: 10px; padding: 13px 18px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.15s; }
+    .btn { background: var(--red); color: #fff; border: none; border-radius: 10px; padding: 13px 18px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.15s; text-decoration: none; display: inline-block; text-align: center; }
     .btn:hover { background: var(--red-hover); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-tg { background: var(--tg); color: #fff; border: none; border-radius: 10px; padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.15s; }
+    .btn-tg:hover { background: var(--tg-hover); }
     .btn-outline { background: #262626; color: #e5e5e5; border: 1px solid #3a3a3a; padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-block; }
     .btn-outline:hover { border-color: #666; }
+    .secret-btn { background: transparent; border: none; color: #555; font-size: 16px; cursor: pointer; padding: 6px; transition: 0.2s; line-height: 1; user-select: none; }
+    .secret-btn:hover { color: #999; }
     .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
     .slot-btn { padding: 10px; border-radius: 8px; border: 1px solid #3a3a3a; background: #141414; color: #fff; cursor: pointer; font-weight: 500; }
     .slot-btn.selected { background: var(--red); border-color: var(--red); }
     .hidden { display: none !important; }
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
     .modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 22px; width: 100%; max-width: 400px; }
-    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     .day-chip { padding: 8px 12px; border-radius: 8px; border: 1px solid #3a3a3a; background: #141414; color: #aaa; cursor: pointer; font-size: 13px; user-select: none; }
     .day-chip.active { background: var(--red); color: #fff; border-color: var(--red); }
     .tag { display: inline-flex; align-items: center; gap: 6px; background: #262626; padding: 4px 10px; border-radius: 6px; font-size: 12px; margin: 3px; }
@@ -51,7 +55,10 @@
           <div style="font-size:12px; color:var(--muted);">Barber & Male Bio-Curling</div>
         </div>
       </div>
-      <button onclick="toggleAdminModal()" class="btn-outline">Кабинет мастера</button>
+      <div class="row">
+        <a id="header-tg-link" href="#" target="_blank" class="btn-outline" style="border-color: var(--tg); color: #38bdf8;">✈️ Telegram</a>
+        <button onclick="toggleAdminModal()" class="secret-btn" aria-label="Настройки">✂️</button>
+      </div>
     </div>
   </header>
 
@@ -81,7 +88,7 @@
         <input type="tel" id="client-phone" value="+7 " oninput="formatPhoneInput(this)" onfocus="if(!this.value.startsWith('+7')) this.value='+7 '" placeholder="+7 (999) 000-00-00">
         
         <button onclick="submitBooking()" id="submit-btn" class="btn">Записаться</button>
-        <p id="booking-msg" class="hidden" style="margin-top:12px; text-align:center; font-size:14px;"></p>
+        <div id="booking-msg" class="hidden" style="margin-top:14px; text-align:center; font-size:14px;"></div>
       </div>
     </div>
 
@@ -178,7 +185,10 @@
   </div>
 
   <script>
+    // --- НАСТРОЙКИ ССЫЛОК И TELEGRAM ---
     const API_URL = 'https://script.google.com/macros/s/AKfycbygzBCtiQOGgt6uKHVzjYMvXELFuHVWgvofBAlYk_ZrroyEKnCc5-MkxscbI1M6ZXyY/exec';
+    const BOT_USERNAME = 'anton_barber_bot';       // <--- ТВОЙ ЮЗЕРНЕЙМ БОТА (без @)
+    const MASTER_TG_USERNAME = 'anton_frantsuzov'; // <--- ТВОЙ ЛИЧНЫЙ АККАУНТ В ТГ ДЛЯ СВЯЗИ (без @)
 
     const services = [
       { id: 1, name: 'Стрижка', price: 1700, duration: 60 },
@@ -265,6 +275,8 @@
     }
 
     async function init() {
+      document.getElementById('header-tg-link').href = `https://t.me/${MASTER_TG_USERNAME}`;
+
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('booking-date').min = today;
       document.getElementById('booking-date').value = today;
@@ -436,9 +448,29 @@
           end_time: endTime
         });
 
+        const cleanDigits = cleanPhone.replace('+', '');
+        const tgBotLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
+        const masterLink = `https://t.me/${MASTER_TG_USERNAME}`;
+
         msg.className = '';
-        msg.style.color = '#4ade80';
-        msg.innerText = `Отлично, ${name}! Вы записаны на ${dateVal} с ${bookedTime} до ${endTime}.`;
+        msg.style.backgroundColor = '#141414';
+        msg.style.border = '1px solid #2e2e2e';
+        msg.style.padding = '16px';
+        msg.style.borderRadius = '12px';
+        msg.innerHTML = `
+          <div style="color: #4ade80; font-weight: 600; font-size: 16px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
+          <div style="font-size: 13px; color: var(--text); margin-bottom: 14px;">
+            Услуга: <b>${bookedService.name}</b><br>
+            Дата и время: <b>${dateVal} с ${bookedTime} до ${endTime}</b>
+          </div>
+          <a href="${tgBotLink}" target="_blank" class="btn-tg" style="width: 100%; margin-bottom: 10px;">
+            🔔 Получить подтверждение и напоминание в Telegram
+          </a>
+          <div style="font-size: 12px; color: var(--muted); margin-top: 6px;">
+            Вопросы по записи? <a href="${masterLink}" target="_blank" style="color: #38bdf8; text-decoration: none;">Написать мастеру (@${MASTER_TG_USERNAME})</a>
+          </div>
+        `;
+
         document.getElementById('client-name').value = '';
         document.getElementById('client-phone').value = '+7 ';
         await renderTimeSlots(true);
@@ -449,7 +481,7 @@
       }
 
       btn.disabled = false;
-      btn.innerText = 'Записаться';
+      if (btn.innerText === 'Сохранение...') btn.innerText = 'Записаться';
     }
 
     // --- КАБИНЕТ МАСТЕРА ---
@@ -556,7 +588,10 @@
 
       list.innerHTML = '';
       data.forEach(app => {
-        const smsText = encodeURIComponent(`Привет, ${app.client_name}! Напоминаю о записи на услугу «${app.service_name}» (${app.appointment_date} в ${app.appointment_time}). Барбер Антон.`);
+        const cleanDigits = String(app.client_phone).replace(/\D/g, '');
+        const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
+        const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Подтверждение и напоминания в боте: ${clientTgLink} | Связь со мной: https://t.me/${MASTER_TG_USERNAME}`);
+
         const card = document.createElement('div');
         card.className = 'app-card';
         card.innerHTML = `
@@ -566,7 +601,7 @@
             <div style="font-size:13px; color:#d4d4d4;">${app.service_name}</div>
           </div>
           <div class="row">
-            <a href="sms:${app.client_phone}?body=${smsText}" class="btn-outline" style="background:#15803d; border-color:#166534;">SMS</a>
+            <a href="sms:${app.client_phone}?body=${inviteText}" class="btn-outline" style="background:#0284c7; border-color:#0369a1;" title="Отправить СМС с приглашением в бота">СМС с ботом</a>
             <button onclick='openEditModal(${JSON.stringify(app)})' class="btn-outline">Изменить</button>
             <button onclick="deleteAppointment('${app.id}')" class="btn-outline" style="background:#7f1d1d;">Удалить</button>
           </div>
