@@ -37,7 +37,6 @@
       background-attachment: fixed;
     }
 
-    /* Матовая шапка со стекломорфизмом */
     header {
       position: sticky;
       top: 0;
@@ -56,7 +55,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: nowrap; /* Жестко запрещаем перенос на мобилках */
+      flex-wrap: nowrap;
       gap: 8px;
     }
 
@@ -106,7 +105,6 @@
 
     .container { max-width: 560px; margin: 0 auto; padding: 0 16px; }
 
-    /* Эффект жидкого стекла для карточек */
     .card {
       background: var(--card);
       backdrop-filter: blur(20px);
@@ -142,7 +140,7 @@
       justify-content: center;
     }
 
-    /* Услуги */
+    /* Услуги с чекбоксами для мультивыбора */
     .service-item {
       padding: 14px 16px;
       border-radius: var(--radius-md);
@@ -154,6 +152,7 @@
       align-items: center;
       margin-bottom: 10px;
       transition: all 0.2s ease;
+      user-select: none;
     }
 
     .service-item:last-child { margin-bottom: 0; }
@@ -165,7 +164,44 @@
       box-shadow: 0 0 20px rgba(255, 59, 48, 0.15);
     }
 
-    /* Поля ввода */
+    .service-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .check-circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 1.5px solid var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: transparent;
+      transition: 0.15s;
+      flex-shrink: 0;
+    }
+
+    .service-item.selected .check-circle {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .summary-bar {
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 59, 48, 0.1);
+      border: 1px solid rgba(255, 59, 48, 0.25);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
     label {
       font-size: 12px;
       font-weight: 500;
@@ -195,7 +231,6 @@
       box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2);
     }
 
-    /* Кнопки */
     .btn {
       background: var(--accent);
       color: #fff;
@@ -283,7 +318,6 @@
     }
     .secret-btn:hover { opacity: 1; color: var(--text); }
 
-    /* Сетка времени */
     .slots-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -315,7 +349,6 @@
 
     .hidden { display: none !important; }
 
-    /* Модальные окна с размытием */
     .modal {
       position: fixed;
       inset: 0;
@@ -327,6 +360,7 @@
       justify-content: center;
       padding: 16px;
       z-index: 50;
+      overflow-y: auto;
     }
 
     .modal-box {
@@ -335,8 +369,10 @@
       border-radius: var(--radius-lg);
       padding: 22px;
       width: 100%;
-      max-width: 380px;
+      max-width: 400px;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -386,6 +422,23 @@
       gap: 10px;
     }
 
+    .admin-srv-check {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      background: var(--input-bg);
+    }
+    .admin-srv-check.active {
+      border-color: var(--accent);
+      background: rgba(255, 59, 48, 0.12);
+    }
+
     @media (max-width: 400px) {
       .slots-grid { grid-template-columns: repeat(3, 1fr); }
       .card { padding: 18px; }
@@ -414,8 +467,10 @@
     <!-- КЛИЕНТСКИЙ ЭКРАН -->
     <div id="client-view">
       <div class="card">
-        <h2><span class="step-badge">1</span> Услуга</h2>
+        <h2><span class="step-badge">1</span> Выберите услуги</h2>
+        <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Можно выбрать сразу несколько услуг</p>
         <div id="services-list"></div>
+        <div id="services-summary" class="summary-bar hidden"></div>
       </div>
 
       <div class="card">
@@ -425,7 +480,7 @@
         <div id="date-status" style="font-size: 12px; margin-bottom: 12px; font-weight: 500;"></div>
         
         <div id="time-slots-container">
-          <p style="font-size:13px; color:var(--muted);">Выберите услугу и дату</p>
+          <p style="font-size:13px; color:var(--muted);">Выберите хотя бы одну услугу и дату</p>
         </div>
       </div>
 
@@ -449,7 +504,6 @@
         <button onclick="exitAdmin()" class="btn-outline" style="color:var(--accent);">Выйти</button>
       </div>
 
-      <!-- УПРАВЛЕНИЕ ГРАФИКОМ -->
       <div class="card">
         <h2>График работы</h2>
         <label style="margin-bottom:6px;">Рабочие дни недели:</label>
@@ -467,7 +521,6 @@
         <button onclick="saveSchedule()" id="save-sched-btn" class="btn" style="margin-top:12px; padding:11px;">Сохранить график</button>
       </div>
 
-      <!-- ФИЛЬТР И ДОБАВЛЕНИЕ ЗАПИСИ ВРУЧНУЮ -->
       <div class="card">
         <div class="row" style="justify-content:space-between;">
           <div style="flex:1; min-width:170px;">
@@ -510,8 +563,8 @@
       <label>Телефон</label>
       <input type="tel" id="edit-phone" oninput="formatPhoneInput(this)">
       
-      <label>Услуга</label>
-      <select id="edit-service" onchange="autoCalcEndTime()"></select>
+      <label>Услуги (можно выбрать несколько)</label>
+      <div id="edit-services-wrap" style="margin-bottom: 12px;"></div>
       
       <label>Дата</label>
       <input type="date" id="edit-date">
@@ -535,17 +588,18 @@
   </div>
 
   <script>
-    // --- ТОЧНЫЕ НАСТРОЙКИ ---
     const API_URL = 'https://script.google.com/macros/s/AKfycbygzBCtiQOGgt6uKHVzjYMvXELFuHVWgvofBAlYk_ZrroyEKnCc5-MkxscbI1M6ZXyY/exec';
     const BOT_USERNAME = 'frantsuzov_barberbooking_bot'; 
     const MASTER_TG_USERNAME = 'afrant5';
 
+    // Обновленный прайс и тайминг
     const services = [
-      { id: 1, name: 'Стрижка', price: 1700, duration: 60 },
+      { id: 1, name: 'Стрижка', price: 1700, duration: 55 },
       { id: 2, name: 'Борода', price: 1300, duration: 30 },
-      { id: 3, name: 'Комплекс стрижка + борода', price: 2500, duration: 90 },
+      { id: 3, name: 'Комплекс стрижка + борода', price: 2500, duration: 85 },
       { id: 4, name: 'Биозавивка топ зоны', price: 5000, duration: 120 },
-      { id: 5, name: 'Биозавивка всей головы', price: 6500, duration: 180 }
+      { id: 5, name: 'Биозавивка всей головы', price: 6500, duration: 180 },
+      { id: 6, name: 'Депиляция воском', price: 200, duration: 5 }
     ];
 
     const DAY_NAMES = [
@@ -553,13 +607,37 @@
       { id: 4, label: 'Чт' }, { id: 5, label: 'Пт' }, { id: 6, label: 'Сб' }, { id: 0, label: 'Вс' }
     ];
 
-    let selectedService = null;
+    let selectedServices = [];
+    let adminSelectedServices = [];
     let selectedTime = null;
     let allAppointments = [];
     let scheduleConfig = { workDays: [1, 2, 5, 6], extraWorkDates: [], closedDates: [] };
 
     const START_HOUR = 10;
     const END_HOUR = 21;
+
+    function getTotalDuration(srvList) {
+      return srvList.reduce((sum, s) => sum + s.duration, 0);
+    }
+
+    function getTotalPrice(srvList) {
+      return srvList.reduce((sum, s) => sum + s.price, 0);
+    }
+
+    function getCombinedNames(srvList) {
+      return srvList.map(s => s.name).join(' + ');
+    }
+
+    function calcDurationByNames(serviceNameStr) {
+      if (!serviceNameStr) return 60;
+      const parts = String(serviceNameStr).split(' + ').map(x => x.trim());
+      let total = 0;
+      parts.forEach(p => {
+        const found = services.find(s => s.name === p);
+        if (found) total += found.duration;
+      });
+      return total > 0 ? total : 60;
+    }
 
     function formatPhoneInput(input) {
       let digits = input.value.replace(/\D/g, '');
@@ -652,14 +730,6 @@
       document.getElementById('booking-date').min = today;
       document.getElementById('booking-date').value = today;
 
-      const sel = document.getElementById('edit-service');
-      services.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.name;
-        opt.innerText = `${s.name} (${s.duration} мин)`;
-        sel.appendChild(opt);
-      });
-
       renderServices();
       await fetchAllData();
       updateDateStatus();
@@ -676,8 +746,7 @@
           const startT = normalizeTime(item.appointment_time);
           let endT = normalizeTime(item.end_time);
           if (!endT && startT) {
-            const srv = services.find(s => s.name === item.service_name);
-            const dur = srv ? srv.duration : 60;
+            const dur = calcDurationByNames(item.service_name);
             endT = minutesToTime(timeToMinutes(startT) + dur);
           }
           return {
@@ -695,26 +764,47 @@
 
     function renderServices() {
       const container = document.getElementById('services-list');
+      const summaryEl = document.getElementById('services-summary');
       container.innerHTML = '';
+
       services.forEach(s => {
-        const isSelected = selectedService && selectedService.id === s.id;
+        const isSelected = selectedServices.some(item => item.id === s.id);
         const div = document.createElement('div');
         div.className = `service-item ${isSelected ? 'selected' : ''}`;
         div.onclick = () => {
-          selectedService = s;
+          if (isSelected) {
+            selectedServices = selectedServices.filter(item => item.id !== s.id);
+          } else {
+            selectedServices.push(s);
+          }
           selectedTime = null;
           renderServices();
-          renderTimeSlots();
+          renderTimeSlots(true);
         };
         div.innerHTML = `
-          <div>
-            <div style="font-weight:600; font-size:14px;">${s.name}</div>
-            <div style="font-size:12px; color:var(--muted); margin-top:2px;">${s.duration} мин</div>
+          <div class="service-left">
+            <div class="check-circle">✓</div>
+            <div>
+              <div style="font-weight:600; font-size:14px;">${s.name}</div>
+              <div style="font-size:12px; color:var(--muted); margin-top:2px;">${s.duration} мин</div>
+            </div>
           </div>
           <div style="font-weight:600; font-size:15px;">${s.price} ₽</div>
         `;
         container.appendChild(div);
       });
+
+      if (selectedServices.length > 0) {
+        const totalDur = getTotalDuration(selectedServices);
+        const totalPrice = getTotalPrice(selectedServices);
+        summaryEl.classList.remove('hidden');
+        summaryEl.innerHTML = `
+          <span>Выбрано: <b>${selectedServices.length}</b> (${totalDur} мин)</span>
+          <span style="font-weight:700; font-size:15px; color:#fff;">Итого: ${totalPrice} ₽</span>
+        `;
+      } else {
+        summaryEl.classList.add('hidden');
+      }
     }
 
     async function renderTimeSlots(skipFetch = false) {
@@ -722,8 +812,8 @@
       const dateVal = document.getElementById('booking-date').value;
       selectedTime = null;
 
-      if (!selectedService || !dateVal) {
-        container.innerHTML = '<p style="font-size:13px; color:var(--muted);">Выберите услугу и дату</p>';
+      if (selectedServices.length === 0 || !dateVal) {
+        container.innerHTML = '<p style="font-size:13px; color:var(--muted);">Выберите хотя бы одну услугу и дату</p>';
         return;
       }
 
@@ -737,10 +827,11 @@
         return;
       }
 
+      const totalDuration = getTotalDuration(selectedServices);
       const booked = allAppointments.filter(a => a.appointment_date === dateVal);
       const busyIntervals = booked.map(b => {
         const start = timeToMinutes(b.appointment_time);
-        const end = b.end_time ? timeToMinutes(b.end_time) : (start + 60);
+        const end = b.end_time ? timeToMinutes(b.end_time) : (start + calcDurationByNames(b.service_name));
         return { start, end };
       });
 
@@ -748,14 +839,14 @@
       const startMin = START_HOUR * 60;
       const endMin = END_HOUR * 60;
 
-      for (let t = startMin; t + selectedService.duration <= endMin; t += 30) {
-        const slotEnd = t + selectedService.duration;
+      for (let t = startMin; t + totalDuration <= endMin; t += 30) {
+        const slotEnd = t + totalDuration;
         const isConflict = busyIntervals.some(b => t < b.end && slotEnd > b.start);
         if (!isConflict) slots.push(minutesToTime(t));
       }
 
       if (slots.length === 0) {
-        container.innerHTML = '<p style="font-size:13px; color:var(--accent);">На выбранную дату нет свободных окон.</p>';
+        container.innerHTML = '<p style="font-size:13px; color:var(--accent);">На выбранную дату нет свободных окон для такой длительности.</p>';
         return;
       }
 
@@ -781,16 +872,18 @@
       const dateVal = document.getElementById('booking-date').value;
       const msg = document.getElementById('booking-msg');
 
-      if (!selectedService || !dateVal || !selectedTime || !name || cleanPhone.length < 12) {
+      if (selectedServices.length === 0 || !dateVal || !selectedTime || !name || cleanPhone.length < 12) {
         msg.className = '';
         msg.style.color = 'var(--accent)';
-        msg.innerText = 'Заполните имя, телефон и выберите время.';
+        msg.innerText = 'Выберите услугу, время, а также укажите имя и телефон.';
         return;
       }
 
       const bookedTime = selectedTime;
-      const bookedService = selectedService;
-      const endTime = minutesToTime(timeToMinutes(bookedTime) + bookedService.duration);
+      const combinedServiceName = getCombinedNames(selectedServices);
+      const totalDuration = getTotalDuration(selectedServices);
+      const totalPrice = getTotalPrice(selectedServices);
+      const endTime = minutesToTime(timeToMinutes(bookedTime) + totalDuration);
 
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
@@ -804,7 +897,7 @@
             action: 'create',
             client_name: name,
             client_phone: cleanPhone,
-            service_name: bookedService.name,
+            service_name: combinedServiceName,
             appointment_date: dateVal,
             appointment_time: bookedTime,
             end_time: endTime
@@ -815,7 +908,7 @@
           id: Date.now().toString(),
           client_name: name,
           client_phone: cleanPhone,
-          service_name: bookedService.name,
+          service_name: combinedServiceName,
           appointment_date: dateVal,
           appointment_time: bookedTime,
           end_time: endTime
@@ -833,7 +926,8 @@
         msg.innerHTML = `
           <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
           <div style="font-size: 13px; color: var(--text); margin-bottom: 14px;">
-            ${bookedService.name} · <b>${dateVal} (${bookedTime} – ${endTime})</b>
+            ${combinedServiceName} (${totalPrice} ₽)<br>
+            <b>${dateVal} (${bookedTime} – ${endTime})</b>
           </div>
           <a href="${tgBotLink}" target="_blank" class="btn-tg" style="width: 100%; margin-bottom: 10px;">
             🔔 Получить подтверждение в Telegram
@@ -845,6 +939,8 @@
 
         document.getElementById('client-name').value = '';
         document.getElementById('client-phone').value = '+7 ';
+        selectedServices = [];
+        renderServices();
         await renderTimeSlots(true);
       } catch (err) {
         msg.className = '';
@@ -992,12 +1088,34 @@
       await loadAppointments(true);
     }
 
+    function renderAdminServicesCheckboxes() {
+      const wrap = document.getElementById('edit-services-wrap');
+      wrap.innerHTML = '';
+      services.forEach(s => {
+        const active = adminSelectedServices.some(x => x.id === s.id);
+        const div = document.createElement('div');
+        div.className = `admin-srv-check ${active ? 'active' : ''}`;
+        div.onclick = () => {
+          if (active) {
+            adminSelectedServices = adminSelectedServices.filter(x => x.id !== s.id);
+          } else {
+            adminSelectedServices.push(s);
+          }
+          renderAdminServicesCheckboxes();
+          autoCalcEndTime();
+        };
+        div.innerHTML = `
+          <span>${active ? '✓ ' : ''}${s.name}</span>
+          <span style="color:var(--muted); font-size:12px;">${s.duration} мин · ${s.price} ₽</span>
+        `;
+        wrap.appendChild(div);
+      });
+    }
+
     function autoCalcEndTime() {
-      const srvName = document.getElementById('edit-service').value;
       const startVal = document.getElementById('edit-time').value;
       if (!startVal) return;
-      const srv = services.find(s => s.name === srvName);
-      const dur = srv ? srv.duration : 60;
+      const dur = adminSelectedServices.length > 0 ? getTotalDuration(adminSelectedServices) : 55;
       document.getElementById('edit-end-time').value = minutesToTime(timeToMinutes(startVal) + dur);
     }
 
@@ -1007,10 +1125,23 @@
       document.getElementById('edit-id').value = isNew ? '' : app.id;
       document.getElementById('edit-name').value = isNew ? '' : app.client_name;
       document.getElementById('edit-phone').value = isNew ? '+7 ' : app.client_phone;
-      document.getElementById('edit-service').value = isNew ? services[0].name : app.service_name;
+      
+      if (isNew) {
+        adminSelectedServices = [services[0]];
+      } else {
+        const names = String(app.service_name || '').split(' + ').map(x => x.trim());
+        adminSelectedServices = services.filter(s => names.includes(s.name));
+        if (adminSelectedServices.length === 0) adminSelectedServices = [services[0]];
+      }
+      renderAdminServicesCheckboxes();
+
       document.getElementById('edit-date').value = isNew ? new Date().toISOString().split('T')[0] : app.appointment_date;
       document.getElementById('edit-time').value = isNew ? '12:00' : app.appointment_time;
-      document.getElementById('edit-end-time').value = isNew ? '13:00' : (app.end_time || '13:00');
+      if (isNew) {
+        autoCalcEndTime();
+      } else {
+        document.getElementById('edit-end-time').value = app.end_time || '12:55';
+      }
       document.getElementById('edit-modal').classList.remove('hidden');
     }
 
@@ -1019,12 +1150,16 @@
     }
 
     async function saveEdit() {
+      if (adminSelectedServices.length === 0) {
+        alert('Выберите хотя бы одну услугу!');
+        return;
+      }
       const btn = document.getElementById('save-edit-btn');
       btn.innerText = 'Сохранение...';
       const id = document.getElementById('edit-id').value;
       const client_name = document.getElementById('edit-name').value.trim();
       const client_phone = getCleanPhone(document.getElementById('edit-phone').value);
-      const service_name = document.getElementById('edit-service').value;
+      const service_name = getCombinedNames(adminSelectedServices);
       const appointment_date = document.getElementById('edit-date').value;
       const appointment_time = document.getElementById('edit-time').value;
       const end_time = document.getElementById('edit-end-time').value;
