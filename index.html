@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Anton Frantsuzov | Онлайн-запись</title>
-  <!-- Официальный скрипт Telegram Mini Apps для автоматического определения ID клиента -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
@@ -61,12 +60,7 @@
       gap: 8px;
     }
 
-    .logo-wrap { 
-      display: flex; 
-      align-items: center; 
-      gap: 10px; 
-      min-width: 0; 
-    }
+    .logo-wrap { display: flex; align-items: center; gap: 10px; min-width: 0; }
     
     .logo-circle {
       width: 38px;
@@ -83,28 +77,9 @@
       box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
     }
 
-    .brand-title { 
-      font-weight: 600; 
-      font-size: 14px; 
-      color: var(--text); 
-      white-space: nowrap; 
-      overflow: hidden; 
-      text-overflow: ellipsis; 
-    }
-    
-    .brand-sub { 
-      font-size: 11px; 
-      color: var(--muted); 
-      white-space: nowrap; 
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
+    .brand-title { font-weight: 600; font-size: 14px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-sub { font-size: 11px; color: var(--muted); white-space: nowrap; }
+    .header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .container { max-width: 560px; margin: 0 auto; padding: 0 16px; }
 
     .card {
@@ -158,18 +133,13 @@
 
     .service-item:last-child { margin-bottom: 0; }
     .service-item:hover { border-color: var(--border-hover); background: rgba(255, 255, 255, 0.06); }
-    
     .service-item.selected {
       border-color: var(--accent);
       background: rgba(255, 59, 48, 0.08);
       box-shadow: 0 0 20px rgba(255, 59, 48, 0.15);
     }
 
-    .service-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .service-left { display: flex; align-items: center; gap: 12px; }
 
     .check-circle {
       width: 20px;
@@ -203,13 +173,139 @@
       font-size: 13px;
     }
 
-    label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      display: block;
-      margin-bottom: 6px;
+    /* --- КАСТОМНЫЙ КАЛЕНДАРЬ --- */
+    .cal-wrap {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
     }
+
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .cal-title {
+      font-weight: 600;
+      font-size: 15px;
+      text-transform: capitalize;
+    }
+
+    .cal-nav-btn {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      transition: 0.15s;
+    }
+    .cal-nav-btn:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.08); }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      border-radius: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      user-select: none;
+      position: relative;
+      transition: all 0.15s ease;
+    }
+
+    .cal-day.empty {
+      background: transparent;
+      pointer-events: none;
+    }
+
+    /* Выходной или прошедший день — тусклый серый */
+    .cal-day.off {
+      background: rgba(255, 255, 255, 0.02);
+      color: rgba(255, 255, 255, 0.2);
+      border: 1px solid transparent;
+      cursor: not-allowed;
+      font-weight: 400;
+    }
+
+    /* Рабочий день — контрастный черный/графитовый с ярким текстом и зеленым индикатором */
+    .cal-day.work {
+      background: #1c1c21;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    }
+
+    .cal-day.work::after {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #34c759;
+      position: absolute;
+      bottom: 5px;
+    }
+
+    .cal-day.work:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-1px);
+    }
+
+    /* Выбранный рабочий день */
+    .cal-day.selected {
+      background: var(--accent) !important;
+      color: #fff !important;
+      border-color: var(--accent) !important;
+      box-shadow: 0 4px 14px rgba(255, 59, 48, 0.45) !important;
+    }
+
+    .cal-day.selected::after {
+      background: #ffffff;
+    }
+
+    .cal-legend {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    label { font-size: 12px; font-weight: 500; color: var(--muted); display: block; margin-bottom: 6px; }
 
     input, select {
       width: 100%;
@@ -271,8 +367,6 @@
       box-shadow: 0 4px 16px rgba(10, 132, 255, 0.3);
     }
 
-    .btn-tg:hover { background: var(--tg-hover); }
-
     .btn-pill {
       background: rgba(10, 132, 255, 0.12);
       color: var(--tg);
@@ -285,8 +379,6 @@
       transition: 0.2s;
       white-space: nowrap;
     }
-
-    .btn-pill:hover { background: rgba(10, 132, 255, 0.22); }
 
     .btn-outline {
       background: var(--input-bg);
@@ -303,8 +395,6 @@
       white-space: nowrap;
     }
 
-    .btn-outline:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); }
-
     .secret-btn {
       background: transparent;
       border: none;
@@ -317,7 +407,6 @@
       user-select: none;
       opacity: 0.5;
     }
-    .secret-btn:hover { opacity: 1; color: var(--text); }
 
     .slots-grid {
       display: grid;
@@ -391,11 +480,7 @@
       transition: 0.15s;
     }
 
-    .day-chip.active {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
+    .day-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
     .tag {
       display: inline-flex;
@@ -435,14 +520,12 @@
       font-size: 13px;
       background: var(--input-bg);
     }
-    .admin-srv-check.active {
-      border-color: var(--accent);
-      background: rgba(255, 59, 48, 0.12);
-    }
+    .admin-srv-check.active { border-color: var(--accent); background: rgba(255, 59, 48, 0.12); }
 
     @media (max-width: 400px) {
       .slots-grid { grid-template-columns: repeat(3, 1fr); }
       .card { padding: 18px; }
+      .cal-day { font-size: 13px; }
     }
   </style>
 </head>
@@ -476,12 +559,30 @@
 
       <div class="card">
         <h2><span class="step-badge">2</span> Дата и время</h2>
-        <p style="font-size:12px; color:var(--muted); margin-bottom:10px;">Часы работы: 10:00 – 21:00</p>
-        <input type="date" id="booking-date" onchange="onDateChange()" style="margin-bottom: 6px;">
-        <div id="date-status" style="font-size: 12px; margin-bottom: 12px; font-weight: 500;"></div>
+        <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Часы работы: 10:00 – 21:00</p>
+        
+        <!-- Скрытый инпут хранит выбранную дату -->
+        <input type="hidden" id="booking-date">
+
+        <!-- НАГЛЯДНЫЙ КАЛЕНДАРЬ С ПОДСВЕТКОЙ РАБОЧИХ ДНЕЙ -->
+        <div class="cal-wrap">
+          <div class="cal-header">
+            <button type="button" class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+            <div class="cal-title" id="cal-month-title">Месяц</div>
+            <button type="button" class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+          </div>
+          <div class="cal-weekdays">
+            <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+          </div>
+          <div class="cal-grid" id="cal-days-grid"></div>
+          <div class="cal-legend">
+            <div class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Рабочий день</div>
+            <div class="legend-item"><span class="legend-dot" style="background:rgba(255,255,255,0.2);"></span> Выходной</div>
+          </div>
+        </div>
         
         <div id="time-slots-container">
-          <p style="font-size:13px; color:var(--muted);">Выберите хотя бы одну услугу и дату</p>
+          <p style="font-size:13px; color:var(--muted); text-align:center;">Выберите услугу выше, чтобы увидеть свободное время</p>
         </div>
       </div>
 
@@ -561,719 +662,4 @@
       <label>Имя клиента</label>
       <input type="text" id="edit-name">
       
-      <label>Телефон</label>
-      <input type="tel" id="edit-phone" oninput="formatPhoneInput(this)">
-      
-      <label>Услуги (можно выбрать несколько)</label>
-      <div id="edit-services-wrap" style="margin-bottom: 12px;"></div>
-      
-      <label>Дата</label>
-      <input type="date" id="edit-date">
-      
-      <div class="row">
-        <div style="flex:1;">
-          <label>Начало</label>
-          <input type="time" id="edit-time" onchange="autoCalcEndTime()">
-        </div>
-        <div style="flex:1;">
-          <label>Конец</label>
-          <input type="time" id="edit-end-time">
-        </div>
-      </div>
-
-      <div class="row" style="margin-top:8px;">
-        <button onclick="saveEdit()" id="save-edit-btn" class="btn" style="flex:1;">Сохранить</button>
-        <button onclick="closeEditModal()" class="btn-outline" style="flex:1; padding:13px; text-align:center;">Отмена</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbygzBCtiQOGgt6uKHVzjYMvXELFuHVWgvofBAlYk_ZrroyEKnCc5-MkxscbI1M6ZXyY/exec';
-    const BOT_USERNAME = 'frantsuzov_barberbooking_bot'; 
-    const MASTER_TG_USERNAME = 'afrant5';
-
-    const tgApp = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-    let currentTgChatId = null;
-    if (tgApp) {
-      tgApp.ready();
-      tgApp.expand();
-      if (tgApp.initDataUnsafe && tgApp.initDataUnsafe.user && tgApp.initDataUnsafe.user.id) {
-        currentTgChatId = String(tgApp.initDataUnsafe.user.id);
-      }
-    }
-
-    const services = [
-      { id: 1, name: 'Стрижка', price: 1700, duration: 55 },
-      { id: 2, name: 'Борода', price: 1300, duration: 30 },
-      { id: 3, name: 'Комплекс стрижка + борода', price: 2500, duration: 85 },
-      { id: 4, name: 'Биозавивка топ зоны', price: 5000, duration: 120 },
-      { id: 5, name: 'Биозавивка всей головы', price: 6500, duration: 180 },
-      { id: 6, name: 'Депиляция воском', price: 200, duration: 5 }
-    ];
-
-    const DAY_NAMES = [
-      { id: 1, label: 'Пн' }, { id: 2, label: 'Вт' }, { id: 3, label: 'Ср' },
-      { id: 4, label: 'Чт' }, { id: 5, label: 'Пт' }, { id: 6, label: 'Сб' }, { id: 0, label: 'Вс' }
-    ];
-
-    let selectedServices = [];
-    let adminSelectedServices = [];
-    let selectedTime = null;
-    let allAppointments = [];
-    let scheduleConfig = { workDays: [1, 2, 5, 6], extraWorkDates: [], closedDates: [] };
-    
-    // Контроль загрузки данных из таблицы, чтобы не показывать ложные свободные окна при старте
-    let isDataLoaded = false;
-    let fetchPromise = null;
-
-    const START_HOUR = 10;
-    const END_HOUR = 21;
-
-    function getLocalTodayStr() {
-      const now = new Date();
-      return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-    }
-
-    function getTotalDuration(srvList) {
-      return srvList.reduce((sum, s) => sum + s.duration, 0);
-    }
-
-    function getTotalPrice(srvList) {
-      return srvList.reduce((sum, s) => sum + s.price, 0);
-    }
-
-    function getCombinedNames(srvList) {
-      return srvList.map(s => s.name).join(' + ');
-    }
-
-    function calcDurationByNames(serviceNameStr) {
-      if (!serviceNameStr) return 60;
-      const parts = String(serviceNameStr).split(' + ').map(x => x.trim());
-      let total = 0;
-      parts.forEach(p => {
-        const found = services.find(s => s.name === p);
-        if (found) total += found.duration;
-      });
-      return total > 0 ? total : 60;
-    }
-
-    function formatPhoneInput(input) {
-      let digits = input.value.replace(/\D/g, '');
-      if (digits.startsWith('7') || digits.startsWith('8')) {
-        digits = digits.substring(1);
-      }
-      digits = digits.substring(0, 10);
-      let formatted = '+7';
-      if (digits.length > 0) formatted += ' (' + digits.substring(0, 3);
-      if (digits.length >= 4) formatted += ') ' + digits.substring(3, 6);
-      if (digits.length >= 7) formatted += '-' + digits.substring(6, 8);
-      if (digits.length >= 9) formatted += '-' + digits.substring(8, 10);
-      input.value = formatted;
-    }
-
-    function getCleanPhone(val) {
-      let digits = String(val).replace(/\D/g, '');
-      if (digits.startsWith('8')) digits = '7' + digits.substring(1);
-      if (!digits.startsWith('7')) digits = '7' + digits;
-      return '+' + digits;
-    }
-
-    function normalizeDate(val) {
-      if (!val) return '';
-      const s = String(val).trim();
-      if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
-      if (/^\d{2}\.\d{2}\.\d{4}/.test(s)) {
-        const [d, m, y] = s.slice(0, 10).split('.');
-        return `${y}-${m}-${d}`;
-      }
-      const d = new Date(s);
-      if (!isNaN(d.getTime())) {
-        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-      }
-      return s;
-    }
-
-    function normalizeTime(val) {
-      if (!val) return '';
-      const s = String(val).trim();
-      const match = s.match(/(\d{1,2}):(\d{2})/);
-      if (match && !s.includes('T')) return match[1].padStart(2, '0') + ':' + match[2];
-      const d = new Date(s);
-      if (!isNaN(d.getTime())) return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
-      return s;
-    }
-
-    function timeToMinutes(t) {
-      const clean = normalizeTime(t);
-      if (!clean) return 0;
-      const parts = clean.split(':').map(Number);
-      return (parts[0] || 0) * 60 + (parts[1] || 0);
-    }
-
-    function minutesToTime(m) {
-      const h = Math.floor(m / 60).toString().padStart(2, '0');
-      const min = (m % 60).toString().padStart(2, '0');
-      return `${h}:${min}`;
-    }
-
-    function isWorkingDate(dateStr) {
-      if (scheduleConfig.closedDates && scheduleConfig.closedDates.includes(dateStr)) return false;
-      if (scheduleConfig.extraWorkDates && scheduleConfig.extraWorkDates.includes(dateStr)) return true;
-      const [y, m, d] = dateStr.split('-').map(Number);
-      const dayOfWeek = new Date(y, m - 1, d).getDay();
-      return scheduleConfig.workDays.includes(dayOfWeek);
-    }
-
-    function updateDateStatus() {
-      const dateVal = document.getElementById('booking-date').value;
-      const statusEl = document.getElementById('date-status');
-      if (!dateVal) {
-        statusEl.innerHTML = '';
-        return;
-      }
-      if (!isDataLoaded) {
-        statusEl.style.color = 'var(--muted)';
-        statusEl.innerHTML = '⏳ Синхронизация расписания...';
-        return;
-      }
-      if (isWorkingDate(dateVal)) {
-        statusEl.style.color = '#34c759';
-        statusEl.innerHTML = '● Рабочий день';
-      } else {
-        statusEl.style.color = '#ff3b30';
-        statusEl.innerHTML = '● Выходной день (мастер не принимает)';
-      }
-    }
-
-    function onDateChange() {
-      updateDateStatus();
-      renderTimeSlots(false); // При смене даты всегда сверяемся с актуальной базой
-    }
-
-    async function init() {
-      document.getElementById('header-tg-link').href = `https://t.me/${MASTER_TG_USERNAME}`;
-
-      if (tgApp && tgApp.initDataUnsafe && tgApp.initDataUnsafe.user && tgApp.initDataUnsafe.user.first_name) {
-        document.getElementById('client-name').value = tgApp.initDataUnsafe.user.first_name;
-      }
-
-      const today = getLocalTodayStr();
-      document.getElementById('booking-date').min = today;
-      document.getElementById('booking-date').value = today;
-
-      renderServices();
-      updateDateStatus();
-      await fetchAllData();
-      // Если клиент уже успел выбрать услугу, пока грузилась таблица — сразу обновляем слоты!
-      if (selectedServices.length > 0) {
-        renderTimeSlots(true);
-      }
-    }
-
-    async function fetchAllData() {
-      if (fetchPromise) return fetchPromise;
-      fetchPromise = (async () => {
-        try {
-          const res = await fetch(API_URL + '?t=' + Date.now(), { cache: 'no-store' });
-          const data = await res.json();
-          const rawApps = Array.isArray(data) ? data : (data.appointments || []);
-          if (data.schedule) scheduleConfig = data.schedule;
-
-          allAppointments = rawApps.map(item => {
-            const startT = normalizeTime(item.appointment_time);
-            let endT = normalizeTime(item.end_time);
-            if (!endT && startT) {
-              const dur = calcDurationByNames(item.service_name);
-              endT = minutesToTime(timeToMinutes(startT) + dur);
-            }
-            return {
-              ...item,
-              appointment_date: normalizeDate(item.appointment_date),
-              appointment_time: startT,
-              end_time: endT
-            };
-          });
-          isDataLoaded = true;
-          updateDateStatus();
-        } catch (e) {
-          console.error('Ошибка загрузки:', e);
-        } finally {
-          fetchPromise = null;
-        }
-      })();
-      return fetchPromise;
-    }
-
-    function renderServices() {
-      const container = document.getElementById('services-list');
-      const summaryEl = document.getElementById('services-summary');
-      container.innerHTML = '';
-
-      services.forEach(s => {
-        const isSelected = selectedServices.some(item => item.id === s.id);
-        const div = document.createElement('div');
-        div.className = `service-item ${isSelected ? 'selected' : ''}`;
-        div.onclick = () => {
-          if (isSelected) {
-            selectedServices = selectedServices.filter(item => item.id !== s.id);
-          } else {
-            selectedServices.push(s);
-          }
-          selectedTime = null;
-          renderServices();
-          // Если база еще не загрузилась, принудительно ждем её перед показом слотов
-          renderTimeSlots(isDataLoaded);
-        };
-        div.innerHTML = `
-          <div class="service-left">
-            <div class="check-circle">✓</div>
-            <div>
-              <div style="font-weight:600; font-size:14px;">${s.name}</div>
-              <div style="font-size:12px; color:var(--muted); margin-top:2px;">${s.duration} мин</div>
-            </div>
-          </div>
-          <div style="font-weight:600; font-size:15px;">${s.price} ₽</div>
-        `;
-        container.appendChild(div);
-      });
-
-      if (selectedServices.length > 0) {
-        const totalDur = getTotalDuration(selectedServices);
-        const totalPrice = getTotalPrice(selectedServices);
-        summaryEl.classList.remove('hidden');
-        summaryEl.innerHTML = `
-          <span>Выбрано: <b>${selectedServices.length}</b> (${totalDur} мин)</span>
-          <span style="font-weight:700; font-size:15px; color:#fff;">Итого: ${totalPrice} ₽</span>
-        `;
-      } else {
-        summaryEl.classList.add('hidden');
-      }
-    }
-
-    async function renderTimeSlots(skipFetch = false) {
-      const container = document.getElementById('time-slots-container');
-      const dateVal = document.getElementById('booking-date').value;
-      selectedTime = null;
-
-      if (selectedServices.length === 0 || !dateVal) {
-        container.innerHTML = '<p style="font-size:13px; color:var(--muted);">Выберите хотя бы одну услугу и дату</p>';
-        return;
-      }
-
-      if (!skipFetch || !isDataLoaded) {
-        container.innerHTML = '<p style="font-size:13px; color:var(--muted);">⏳ Загрузка актуального расписания...</p>';
-        await fetchAllData();
-      }
-
-      if (!isWorkingDate(dateVal)) {
-        container.innerHTML = '<div style="padding:12px; border-radius:10px; background:var(--input-bg); color:var(--muted); font-size:13px;">В этот день мастер не принимает. Выберите другую дату.</div>';
-        return;
-      }
-
-      const totalDuration = getTotalDuration(selectedServices);
-      const booked = allAppointments.filter(a => a.appointment_date === dateVal);
-      const busyIntervals = booked.map(b => {
-        const start = timeToMinutes(b.appointment_time);
-        const end = b.end_time ? timeToMinutes(b.end_time) : (start + calcDurationByNames(b.service_name));
-        return { start, end };
-      });
-
-      const slots = [];
-      const startMin = START_HOUR * 60;
-      const endMin = END_HOUR * 60;
-
-      // Если выбрана сегодняшняя дата — отсекаем уже прошедшие часы
-      const isToday = (dateVal === getLocalTodayStr());
-      const now = new Date();
-      const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
-      for (let t = startMin; t + totalDuration <= endMin; t += 30) {
-        if (isToday && t <= currentMinutes) continue;
-        const slotEnd = t + totalDuration;
-        const isConflict = busyIntervals.some(b => t < b.end && slotEnd > b.start);
-        if (!isConflict) slots.push(minutesToTime(t));
-      }
-
-      if (slots.length === 0) {
-        container.innerHTML = '<p style="font-size:13px; color:var(--accent);">На выбранную дату нет свободных окон для такой длительности.</p>';
-        return;
-      }
-
-      container.innerHTML = '<div class="slots-grid" id="slots-grid"></div>';
-      const grid = document.getElementById('slots-grid');
-      slots.forEach(time => {
-        const btn = document.createElement('button');
-        btn.className = 'slot-btn';
-        btn.innerText = time;
-        btn.onclick = () => {
-          selectedTime = time;
-          document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-        };
-        grid.appendChild(btn);
-      });
-    }
-
-    async function submitBooking() {
-      const name = document.getElementById('client-name').value.trim();
-      const rawPhone = document.getElementById('client-phone').value;
-      const cleanPhone = getCleanPhone(rawPhone);
-      const dateVal = document.getElementById('booking-date').value;
-      const msg = document.getElementById('booking-msg');
-
-      if (selectedServices.length === 0 || !dateVal || !selectedTime || !name || cleanPhone.length < 12) {
-        msg.className = '';
-        msg.style.color = 'var(--accent)';
-        msg.innerText = 'Выберите услугу, время, а также укажите имя и телефон.';
-        return;
-      }
-
-      const bookedTime = selectedTime;
-      const combinedServiceName = getCombinedNames(selectedServices);
-      const totalDuration = getTotalDuration(selectedServices);
-      const totalPrice = getTotalPrice(selectedServices);
-      const startMin = timeToMinutes(bookedTime);
-      const endMin = startMin + totalDuration;
-      const endTime = minutesToTime(endMin);
-
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.innerText = 'Проверка и сохранение...';
-
-      try {
-        // Перед записью делаем контрольную сверку с базой, чтобы никто не занял это же окно
-        await fetchAllData();
-        const bookedOnDay = allAppointments.filter(a => a.appointment_date === dateVal);
-        const hasConflict = bookedOnDay.some(b => {
-          const bStart = timeToMinutes(b.appointment_time);
-          const bEnd = b.end_time ? timeToMinutes(b.end_time) : (bStart + calcDurationByNames(b.service_name));
-          return startMin < bEnd && endMin > bStart;
-        });
-
-        if (hasConflict) {
-          msg.className = '';
-          msg.style.color = 'var(--accent)';
-          msg.innerText = 'К сожалению, это время уже занято. Пожалуйста, выберите другое окно.';
-          btn.disabled = false;
-          btn.innerText = 'Записаться';
-          await renderTimeSlots(true);
-          return;
-        }
-
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action: 'create',
-            client_name: name,
-            client_phone: cleanPhone,
-            service_name: combinedServiceName,
-            appointment_date: dateVal,
-            appointment_time: bookedTime,
-            end_time: endTime,
-            tg_chat_id: currentTgChatId
-          })
-        });
-
-        const resData = await res.json();
-
-        allAppointments.push({
-          id: Date.now().toString(),
-          client_name: name,
-          client_phone: cleanPhone,
-          service_name: combinedServiceName,
-          appointment_date: dateVal,
-          appointment_time: bookedTime,
-          end_time: endTime
-        });
-
-        const cleanDigits = cleanPhone.replace('+', '');
-        const tgBotLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
-        const masterLink = `https://t.me/${MASTER_TG_USERNAME}`;
-
-        msg.className = '';
-        msg.style.backgroundColor = 'var(--input-bg)';
-        msg.style.border = '1px solid var(--border)';
-        msg.style.padding = '18px';
-        msg.style.borderRadius = '14px';
-
-        if (currentTgChatId || (resData && resData.tg_notified)) {
-          msg.innerHTML = `
-            <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
-            <div style="font-size: 13px; color: var(--text); margin-bottom: 12px;">
-              ${combinedServiceName} (${totalPrice} ₽)<br>
-              <b>${dateVal} (${bookedTime} – ${endTime})</b>
-            </div>
-            <div style="padding: 10px; border-radius: 10px; background: rgba(52, 199, 89, 0.12); color: #34c759; font-size: 13px; margin-bottom: 12px;">
-              📩 Подтверждение и напоминания уже отправлены вам в чат бота!
-            </div>
-            ${currentTgChatId ? `<button onclick="window.Telegram.WebApp.close()" class="btn-tg" style="width: 100%; margin-bottom: 8px;">Вернуться в чат</button>` : ''}
-            <div style="font-size: 12px; color: var(--muted); margin-top: 6px;">
-              Вопросы? <a href="${masterLink}" target="_blank" style="color: var(--tg); text-decoration: none;">Написать мастеру (@${MASTER_TG_USERNAME})</a>
-            </div>
-          `;
-        } else {
-          msg.innerHTML = `
-            <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
-            <div style="font-size: 13px; color: var(--text); margin-bottom: 14px;">
-              ${combinedServiceName} (${totalPrice} ₽)<br>
-              <b>${dateVal} (${bookedTime} – ${endTime})</b>
-            </div>
-            <a href="${tgBotLink}" target="_blank" class="btn-tg" style="width: 100%; margin-bottom: 8px;">
-              🔔 Получить подтверждение в Telegram
-            </a>
-            <div style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">
-              После перехода в бота нажмите <b>«Старт»</b> (или кнопку «Привязать номер» внизу чата).
-            </div>
-            <div style="font-size: 12px; color: var(--muted);">
-              Вопросы? <a href="${masterLink}" target="_blank" style="color: var(--tg); text-decoration: none;">Написать мастеру (@${MASTER_TG_USERNAME})</a>
-            </div>
-          `;
-        }
-
-        document.getElementById('client-phone').value = '+7 ';
-        selectedServices = [];
-        renderServices();
-        await renderTimeSlots(true);
-      } catch (err) {
-        msg.className = '';
-        msg.style.color = 'var(--accent)';
-        msg.innerText = 'Ошибка при сохранении. Попробуйте еще раз.';
-      }
-
-      btn.disabled = false;
-      if (btn.innerText === 'Проверка и сохранение...') btn.innerText = 'Записаться';
-    }
-
-    // --- КАБИНЕТ МАСТЕРА ---
-    function toggleAdminModal() {
-      document.getElementById('password-modal').classList.toggle('hidden');
-      document.getElementById('admin-pass-input').value = '';
-    }
-
-    function checkAdminPass() {
-      if (document.getElementById('admin-pass-input').value === 'Smart31415') {
-        toggleAdminModal();
-        document.getElementById('client-view').classList.add('hidden');
-        document.getElementById('admin-view').classList.remove('hidden');
-        loadAppointments(true);
-      } else {
-        alert('Неверный пароль!');
-      }
-    }
-
-    function exitAdmin() {
-      document.getElementById('admin-view').classList.add('hidden');
-      document.getElementById('client-view').classList.remove('hidden');
-      renderTimeSlots(true);
-    }
-
-    function renderScheduleAdmin() {
-      const chipsWrap = document.getElementById('workdays-chips');
-      chipsWrap.innerHTML = '';
-      DAY_NAMES.forEach(d => {
-        const active = scheduleConfig.workDays.includes(d.id);
-        const span = document.createElement('span');
-        span.className = `day-chip ${active ? 'active' : ''}`;
-        span.innerText = d.label;
-        span.onclick = () => {
-          if (scheduleConfig.workDays.includes(d.id)) {
-            scheduleConfig.workDays = scheduleConfig.workDays.filter(x => x !== d.id);
-          } else {
-            scheduleConfig.workDays.push(d.id);
-          }
-          renderScheduleAdmin();
-        };
-        chipsWrap.appendChild(span);
-      });
-
-      const ovList = document.getElementById('overrides-list');
-      ovList.innerHTML = '';
-      (scheduleConfig.extraWorkDates || []).forEach(dt => {
-        ovList.innerHTML += `<span class="tag" style="color:#34c759; background:rgba(52,199,89,0.1);">Рабочий: ${dt} <b style="cursor:pointer;" onclick="removeOverride('${dt}')">×</b></span>`;
-      });
-      (scheduleConfig.closedDates || []).forEach(dt => {
-        ovList.innerHTML += `<span class="tag" style="color:#ff3b30; background:rgba(255,59,48,0.1);">Выходной: ${dt} <b style="cursor:pointer;" onclick="removeOverride('${dt}')">×</b></span>`;
-      });
-    }
-
-    function addDateOverride(type) {
-      const dt = document.getElementById('override-date').value;
-      if (!dt) return;
-      scheduleConfig.extraWorkDates = (scheduleConfig.extraWorkDates || []).filter(x => x !== dt);
-      scheduleConfig.closedDates = (scheduleConfig.closedDates || []).filter(x => x !== dt);
-      if (type === 'open') scheduleConfig.extraWorkDates.push(dt);
-      if (type === 'closed') scheduleConfig.closedDates.push(dt);
-      renderScheduleAdmin();
-    }
-
-    function removeOverride(dt) {
-      scheduleConfig.extraWorkDates = (scheduleConfig.extraWorkDates || []).filter(x => x !== dt);
-      scheduleConfig.closedDates = (scheduleConfig.closedDates || []).filter(x => x !== dt);
-      renderScheduleAdmin();
-    }
-
-    async function saveSchedule() {
-      const btn = document.getElementById('save-sched-btn');
-      btn.innerText = 'Сохранение...';
-      await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'save_schedule', schedule: scheduleConfig })
-      });
-      btn.innerText = 'Сохранено!';
-      setTimeout(() => btn.innerText = 'Сохранить график', 1500);
-    }
-
-    async function loadAppointments(forceFetch = false) {
-      const list = document.getElementById('admin-appointments-list');
-      list.innerHTML = '<p style="font-size:13px; color:var(--muted);">Загрузка...</p>';
-      if (forceFetch) await fetchAllData();
-      renderScheduleAdmin();
-      renderAdminList();
-    }
-
-    function renderAdminList() {
-      const list = document.getElementById('admin-appointments-list');
-      const filterDate = document.getElementById('admin-filter-date').value;
-
-      let data = [...allAppointments].filter(a => a.id);
-      if (filterDate) data = data.filter(a => a.appointment_date === filterDate);
-
-      data.sort((a, b) => (a.appointment_date + ' ' + a.appointment_time).localeCompare(b.appointment_date + ' ' + b.appointment_time));
-
-      if (data.length === 0) {
-        list.innerHTML = '<div class="card" style="text-align:center; color:var(--muted);">Записей нет</div>';
-        return;
-      }
-
-      list.innerHTML = '';
-      data.forEach(app => {
-        const cleanDigits = String(app.client_phone).replace(/\D/g, '');
-        const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
-        const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Подтверждение и напоминания в боте: ${clientTgLink} | Связь со мной: https://t.me/${MASTER_TG_USERNAME}`);
-
-        const card = document.createElement('div');
-        card.className = 'app-card';
-        card.innerHTML = `
-          <div>
-            <div style="font-size:12px; color:var(--tg); font-weight:600;">${app.appointment_date} · ${app.appointment_time} – ${app.end_time || ''}</div>
-            <div style="font-weight:600; font-size:15px; margin:2px 0;">${app.client_name} <span style="font-weight:400; font-size:12px; color:var(--muted);">(${app.client_phone})</span></div>
-            <div style="font-size:13px; color:var(--muted);">${app.service_name}</div>
-          </div>
-          <div class="row">
-            <a href="sms:${app.client_phone}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.1); color:var(--tg); border:none;">СМС с ботом</a>
-            <button onclick='openEditModal(${JSON.stringify(app)})' class="btn-outline">Изменить</button>
-            <button onclick="deleteAppointment('${app.id}')" class="btn-outline" style="color:var(--accent);">Удалить</button>
-          </div>
-        `;
-        list.appendChild(card);
-      });
-    }
-
-    async function deleteAppointment(id) {
-      if (!confirm('Удалить эту запись?')) return;
-      await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'delete', id })
-      });
-      await loadAppointments(true);
-    }
-
-    function renderAdminServicesCheckboxes() {
-      const wrap = document.getElementById('edit-services-wrap');
-      wrap.innerHTML = '';
-      services.forEach(s => {
-        const active = adminSelectedServices.some(x => x.id === s.id);
-        const div = document.createElement('div');
-        div.className = `admin-srv-check ${active ? 'active' : ''}`;
-        div.onclick = () => {
-          if (active) {
-            adminSelectedServices = adminSelectedServices.filter(x => x.id !== s.id);
-          } else {
-            adminSelectedServices.push(s);
-          }
-          renderAdminServicesCheckboxes();
-          autoCalcEndTime();
-        };
-        div.innerHTML = `
-          <span>${active ? '✓ ' : ''}${s.name}</span>
-          <span style="color:var(--muted); font-size:12px;">${s.duration} мин · ${s.price} ₽</span>
-        `;
-        wrap.appendChild(div);
-      });
-    }
-
-    function autoCalcEndTime() {
-      const startVal = document.getElementById('edit-time').value;
-      if (!startVal) return;
-      const dur = adminSelectedServices.length > 0 ? getTotalDuration(adminSelectedServices) : 55;
-      document.getElementById('edit-end-time').value = minutesToTime(timeToMinutes(startVal) + dur);
-    }
-
-    function openEditModal(app) {
-      const isNew = !app;
-      document.getElementById('edit-modal-title').innerText = isNew ? 'Новая запись' : 'Редактировать запись';
-      document.getElementById('edit-id').value = isNew ? '' : app.id;
-      document.getElementById('edit-name').value = isNew ? '' : app.client_name;
-      document.getElementById('edit-phone').value = isNew ? '+7 ' : app.client_phone;
-      
-      if (isNew) {
-        adminSelectedServices = [services[0]];
-      } else {
-        const names = String(app.service_name || '').split(' + ').map(x => x.trim());
-        adminSelectedServices = services.filter(s => names.includes(s.name));
-        if (adminSelectedServices.length === 0) adminSelectedServices = [services[0]];
-      }
-      renderAdminServicesCheckboxes();
-
-      document.getElementById('edit-date').value = isNew ? getLocalTodayStr() : app.appointment_date;
-      document.getElementById('edit-time').value = isNew ? '12:00' : app.appointment_time;
-      if (isNew) {
-        autoCalcEndTime();
-      } else {
-        document.getElementById('edit-end-time').value = app.end_time || '12:55';
-      }
-      document.getElementById('edit-modal').classList.remove('hidden');
-    }
-
-    function closeEditModal() {
-      document.getElementById('edit-modal').classList.add('hidden');
-    }
-
-    async function saveEdit() {
-      if (adminSelectedServices.length === 0) {
-        alert('Выберите хотя бы одну услугу!');
-        return;
-      }
-      const btn = document.getElementById('save-edit-btn');
-      btn.innerText = 'Сохранение...';
-      const id = document.getElementById('edit-id').value;
-      const client_name = document.getElementById('edit-name').value.trim();
-      const client_phone = getCleanPhone(document.getElementById('edit-phone').value);
-      const service_name = getCombinedNames(adminSelectedServices);
-      const appointment_date = document.getElementById('edit-date').value;
-      const appointment_time = document.getElementById('edit-time').value;
-      const end_time = document.getElementById('edit-end-time').value;
-
-      await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: id ? 'update' : 'create',
-          from_admin: true,
-          id, client_name, client_phone, service_name, appointment_date, appointment_time, end_time
-        })
-      });
-
-      btn.innerText = 'Сохранить';
-      closeEditModal();
-      loadAppointments(true);
-    }
-
-    init();
-  </script>
-</body>
-</html>
+      <label>Телефон</labe
