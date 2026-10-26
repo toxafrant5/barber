@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Anton Frantsuzov | Онлайн-запись</title>
+  <!-- Официальный скрипт Telegram Mini Apps для автоматического определения ID клиента -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg: #0b0b0d;
@@ -140,7 +142,6 @@
       justify-content: center;
     }
 
-    /* Услуги с чекбоксами для мультивыбора */
     .service-item {
       padding: 14px 16px;
       border-radius: var(--radius-md);
@@ -592,7 +593,17 @@
     const BOT_USERNAME = 'frantsuzov_barberbooking_bot'; 
     const MASTER_TG_USERNAME = 'afrant5';
 
-    // Обновленный прайс и тайминг
+    // Автоматически определяем Telegram ID клиента, если он открыл сайт внутри Telegram
+    const tgApp = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    let currentTgChatId = null;
+    if (tgApp) {
+      tgApp.ready();
+      tgApp.expand();
+      if (tgApp.initDataUnsafe && tgApp.initDataUnsafe.user && tgApp.initDataUnsafe.user.id) {
+        currentTgChatId = String(tgApp.initDataUnsafe.user.id);
+      }
+    }
+
     const services = [
       { id: 1, name: 'Стрижка', price: 1700, duration: 55 },
       { id: 2, name: 'Борода', price: 1300, duration: 30 },
@@ -725,6 +736,11 @@
 
     async function init() {
       document.getElementById('header-tg-link').href = `https://t.me/${MASTER_TG_USERNAME}`;
+
+      // Если клиент открыл через Telegram, бережно подставляем его имя из профиля
+      if (tgApp && tgApp.initDataUnsafe && tgApp.initDataUnsafe.user && tgApp.initDataUnsafe.user.first_name) {
+        document.getElementById('client-name').value = tgApp.initDataUnsafe.user.first_name;
+      }
 
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('booking-date').min = today;
@@ -890,7 +906,7 @@
       btn.innerText = 'Сохранение...';
 
       try {
-        await fetch(API_URL, {
+        const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
@@ -900,9 +916,12 @@
             service_name: combinedServiceName,
             appointment_date: dateVal,
             appointment_time: bookedTime,
-            end_time: endTime
+            end_time: endTime,
+            tg_chat_id: currentTgChatId // Передаем ID клиента автоматически, если открыто в Telegram
           })
         });
+
+        const resData = await res.json();
 
         allAppointments.push({
           id: Date.now().toString(),
@@ -923,21 +942,43 @@
         msg.style.border = '1px solid var(--border)';
         msg.style.padding = '18px';
         msg.style.borderRadius = '14px';
-        msg.innerHTML = `
-          <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
-          <div style="font-size: 13px; color: var(--text); margin-bottom: 14px;">
-            ${combinedServiceName} (${totalPrice} ₽)<br>
-            <b>${dateVal} (${bookedTime} – ${endTime})</b>
-          </div>
-          <a href="${tgBotLink}" target="_blank" class="btn-tg" style="width: 100%; margin-bottom: 10px;">
-            🔔 Получить подтверждение в Telegram
-          </a>
-          <div style="font-size: 12px; color: var(--muted); margin-top: 6px;">
-            Вопросы? <a href="${masterLink}" target="_blank" style="color: var(--tg); text-decoration: none;">Написать мастеру (@${MASTER_TG_USERNAME})</a>
-          </div>
-        `;
 
-        document.getElementById('client-name').value = '';
+        // Если клиент открыл через Telegram ИЛИ уже был в базе — подтверждение уже прилетело ему в чат!
+        if (currentTgChatId || (resData && resData.tg_notified)) {
+          msg.innerHTML = `
+            <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
+            <div style="font-size: 13px; color: var(--text); margin-bottom: 12px;">
+              ${combinedServiceName} (${totalPrice} ₽)<br>
+              <b>${dateVal} (${bookedTime} – ${endTime})</b>
+            </div>
+            <div style="padding: 10px; border-radius: 10px; background: rgba(52, 199, 89, 0.12); color: #34c759; font-size: 13px; margin-bottom: 12px;">
+              📩 Подтверждение и напоминания уже отправлены вам в чат бота!
+            </div>
+            ${currentTgChatId ? `<button onclick="window.Telegram.WebApp.close()" class="btn-tg" style="width: 100%; margin-bottom: 8px;">Вернуться в чат</button>` : ''}
+            <div style="font-size: 12px; color: var(--muted); margin-top: 6px;">
+              Вопросы? <a href="${masterLink}" target="_blank" style="color: var(--tg); text-decoration: none;">Написать мастеру (@${MASTER_TG_USERNAME})</a>
+            </div>
+          `;
+        } else {
+          // Если записывался из внешнего браузера (Safari / Chrome)
+          msg.innerHTML = `
+            <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
+            <div style="font-size: 13px; color: var(--text); margin-bottom: 14px;">
+              ${combinedServiceName} (${totalPrice} ₽)<br>
+              <b>${dateVal} (${bookedTime} – ${endTime})</b>
+            </div>
+            <a href="${tgBotLink}" target="_blank" class="btn-tg" style="width: 100%; margin-bottom: 8px;">
+              🔔 Получить подтверждение в Telegram
+            </a>
+            <div style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">
+              После перехода в бота нажмите <b>«Старт»</b> (или кнопку «Привязать номер» внизу чата).
+            </div>
+            <div style="font-size: 12px; color: var(--muted);">
+              Вопросы? <a href="${masterLink}" target="_blank" style="color: var(--tg); text-decoration: none;">Написать мастеру (@${MASTER_TG_USERNAME})</a>
+            </div>
+          `;
+        }
+
         document.getElementById('client-phone').value = '+7 ';
         selectedServices = [];
         renderServices();
