@@ -593,7 +593,6 @@
     const BOT_USERNAME = 'frantsuzov_barberbooking_bot'; 
     const MASTER_TG_USERNAME = 'afrant5';
 
-    // Автоматически определяем Telegram ID клиента, если он открыл сайт внутри Telegram
     const tgApp = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     let currentTgChatId = null;
     if (tgApp) {
@@ -623,9 +622,18 @@
     let selectedTime = null;
     let allAppointments = [];
     let scheduleConfig = { workDays: [1, 2, 5, 6], extraWorkDates: [], closedDates: [] };
+    
+    // Контроль загрузки данных из таблицы, чтобы не показывать ложные свободные окна при старте
+    let isDataLoaded = false;
+    let fetchPromise = null;
 
     const START_HOUR = 10;
     const END_HOUR = 21;
+
+    function getLocalTodayStr() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    }
 
     function getTotalDuration(srvList) {
       return srvList.reduce((sum, s) => sum + s.duration, 0);
@@ -675,6 +683,10 @@
       if (!val) return '';
       const s = String(val).trim();
       if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+      if (/^\d{2}\.\d{2}\.\d{4}/.test(s)) {
+        const [d, m, y] = s.slice(0, 10).split('.');
+        return `${y}-${m}-${d}`;
+      }
       const d = new Date(s);
       if (!isNaN(d.getTime())) {
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -720,6 +732,11 @@
         statusEl.innerHTML = '';
         return;
       }
+      if (!isDataLoaded) {
+        statusEl.style.color = 'var(--muted)';
+        statusEl.innerHTML = '⏳ Синхронизация расписания...';
+        return;
+      }
       if (isWorkingDate(dateVal)) {
         statusEl.style.color = '#34c759';
         statusEl.innerHTML = '● Рабочий день';
@@ -731,51 +748,61 @@
 
     function onDateChange() {
       updateDateStatus();
-      renderTimeSlots();
+      renderTimeSlots(false); // При смене даты всегда сверяемся с актуальной базой
     }
 
     async function init() {
       document.getElementById('header-tg-link').href = `https://t.me/${MASTER_TG_USERNAME}`;
 
-      // Если клиент открыл через Telegram, бережно подставляем его имя из профиля
       if (tgApp && tgApp.initDataUnsafe && tgApp.initDataUnsafe.user && tgApp.initDataUnsafe.user.first_name) {
         document.getElementById('client-name').value = tgApp.initDataUnsafe.user.first_name;
       }
 
-      const today = new Date().toISOString().split('T')[0];
+      const today = getLocalTodayStr();
       document.getElementById('booking-date').min = today;
       document.getElementById('booking-date').value = today;
 
       renderServices();
-      await fetchAllData();
       updateDateStatus();
+      await fetchAllData();
+      // Если клиент уже успел выбрать услугу, пока грузилась таблица — сразу обновляем слоты!
+      if (selectedServices.length > 0) {
+        renderTimeSlots(true);
+      }
     }
 
     async function fetchAllData() {
-      try {
-        const res = await fetch(API_URL + '?t=' + Date.now());
-        const data = await res.json();
-        const rawApps = Array.isArray(data) ? data : (data.appointments || []);
-        if (data.schedule) scheduleConfig = data.schedule;
+      if (fetchPromise) return fetchPromise;
+      fetchPromise = (async () => {
+        try {
+          const res = await fetch(API_URL + '?t=' + Date.now(), { cache: 'no-store' });
+          const data = await res.json();
+          const rawApps = Array.isArray(data) ? data : (data.appointments || []);
+          if (data.schedule) scheduleConfig = data.schedule;
 
-        allAppointments = rawApps.map(item => {
-          const startT = normalizeTime(item.appointment_time);
-          let endT = normalizeTime(item.end_time);
-          if (!endT && startT) {
-            const dur = calcDurationByNames(item.service_name);
-            endT = minutesToTime(timeToMinutes(startT) + dur);
-          }
-          return {
-            ...item,
-            appointment_date: normalizeDate(item.appointment_date),
-            appointment_time: startT,
-            end_time: endT
-          };
-        });
-        updateDateStatus();
-      } catch (e) {
-        console.error('Ошибка загрузки:', e);
-      }
+          allAppointments = rawApps.map(item => {
+            const startT = normalizeTime(item.appointment_time);
+            let endT = normalizeTime(item.end_time);
+            if (!endT && startT) {
+              const dur = calcDurationByNames(item.service_name);
+              endT = minutesToTime(timeToMinutes(startT) + dur);
+            }
+            return {
+              ...item,
+              appointment_date: normalizeDate(item.appointment_date),
+              appointment_time: startT,
+              end_time: endT
+            };
+          });
+          isDataLoaded = true;
+          updateDateStatus();
+        } catch (e) {
+          console.error('Ошибка загрузки:', e);
+        } finally {
+          fetchPromise = null;
+        }
+      })();
+      return fetchPromise;
     }
 
     function renderServices() {
@@ -795,7 +822,8 @@
           }
           selectedTime = null;
           renderServices();
-          renderTimeSlots(true);
+          // Если база еще не загрузилась, принудительно ждем её перед показом слотов
+          renderTimeSlots(isDataLoaded);
         };
         div.innerHTML = `
           <div class="service-left">
@@ -833,8 +861,8 @@
         return;
       }
 
-      if (!skipFetch) {
-        container.innerHTML = '<p style="font-size:13px; color:var(--muted);">Проверка расписания...</p>';
+      if (!skipFetch || !isDataLoaded) {
+        container.innerHTML = '<p style="font-size:13px; color:var(--muted);">⏳ Загрузка актуального расписания...</p>';
         await fetchAllData();
       }
 
@@ -855,7 +883,13 @@
       const startMin = START_HOUR * 60;
       const endMin = END_HOUR * 60;
 
+      // Если выбрана сегодняшняя дата — отсекаем уже прошедшие часы
+      const isToday = (dateVal === getLocalTodayStr());
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
       for (let t = startMin; t + totalDuration <= endMin; t += 30) {
+        if (isToday && t <= currentMinutes) continue;
         const slotEnd = t + totalDuration;
         const isConflict = busyIntervals.some(b => t < b.end && slotEnd > b.start);
         if (!isConflict) slots.push(minutesToTime(t));
@@ -899,13 +933,34 @@
       const combinedServiceName = getCombinedNames(selectedServices);
       const totalDuration = getTotalDuration(selectedServices);
       const totalPrice = getTotalPrice(selectedServices);
-      const endTime = minutesToTime(timeToMinutes(bookedTime) + totalDuration);
+      const startMin = timeToMinutes(bookedTime);
+      const endMin = startMin + totalDuration;
+      const endTime = minutesToTime(endMin);
 
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
-      btn.innerText = 'Сохранение...';
+      btn.innerText = 'Проверка и сохранение...';
 
       try {
+        // Перед записью делаем контрольную сверку с базой, чтобы никто не занял это же окно
+        await fetchAllData();
+        const bookedOnDay = allAppointments.filter(a => a.appointment_date === dateVal);
+        const hasConflict = bookedOnDay.some(b => {
+          const bStart = timeToMinutes(b.appointment_time);
+          const bEnd = b.end_time ? timeToMinutes(b.end_time) : (bStart + calcDurationByNames(b.service_name));
+          return startMin < bEnd && endMin > bStart;
+        });
+
+        if (hasConflict) {
+          msg.className = '';
+          msg.style.color = 'var(--accent)';
+          msg.innerText = 'К сожалению, это время уже занято. Пожалуйста, выберите другое окно.';
+          btn.disabled = false;
+          btn.innerText = 'Записаться';
+          await renderTimeSlots(true);
+          return;
+        }
+
         const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -917,7 +972,7 @@
             appointment_date: dateVal,
             appointment_time: bookedTime,
             end_time: endTime,
-            tg_chat_id: currentTgChatId // Передаем ID клиента автоматически, если открыто в Telegram
+            tg_chat_id: currentTgChatId
           })
         });
 
@@ -943,7 +998,6 @@
         msg.style.padding = '18px';
         msg.style.borderRadius = '14px';
 
-        // Если клиент открыл через Telegram ИЛИ уже был в базе — подтверждение уже прилетело ему в чат!
         if (currentTgChatId || (resData && resData.tg_notified)) {
           msg.innerHTML = `
             <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
@@ -960,7 +1014,6 @@
             </div>
           `;
         } else {
-          // Если записывался из внешнего браузера (Safari / Chrome)
           msg.innerHTML = `
             <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
             <div style="font-size: 13px; color: var(--text); margin-bottom: 14px;">
@@ -990,7 +1043,7 @@
       }
 
       btn.disabled = false;
-      if (btn.innerText === 'Сохранение...') btn.innerText = 'Записаться';
+      if (btn.innerText === 'Проверка и сохранение...') btn.innerText = 'Записаться';
     }
 
     // --- КАБИНЕТ МАСТЕРА ---
@@ -1176,7 +1229,7 @@
       }
       renderAdminServicesCheckboxes();
 
-      document.getElementById('edit-date').value = isNew ? new Date().toISOString().split('T')[0] : app.appointment_date;
+      document.getElementById('edit-date').value = isNew ? getLocalTodayStr() : app.appointment_date;
       document.getElementById('edit-time').value = isNew ? '12:00' : app.appointment_time;
       if (isNew) {
         autoCalcEndTime();
