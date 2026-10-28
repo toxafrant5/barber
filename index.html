@@ -31,7 +31,7 @@
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-      padding-bottom: 60px;
+      padding-bottom: 50px;
       line-height: 1.45;
       -webkit-font-smoothing: antialiased;
       background-image: 
@@ -574,6 +574,46 @@
       box-shadow: 0 4px 12px rgba(255, 59, 48, 0.4);
     }
 
+    /* --- БЛОК С АДРЕСОМ ВНИЗУ СТРАНИЦЫ --- */
+    .location-footer {
+      max-width: 560px;
+      margin: 6px auto 0;
+      padding: 0 16px;
+    }
+
+    .location-card {
+      background: rgba(22, 22, 26, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .location-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .location-pin {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 59, 48, 0.12);
+      border: 1px solid rgba(255, 59, 48, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
     .hidden { display: none !important; }
 
     .modal {
@@ -756,7 +796,6 @@
         </div>
       </div>
 
-      <!-- СВОРАЧИВАЕМАЯ НАСТРОЙКА РАБОЧИХ ДНЕЙ -->
       <div id="schedule-settings-card" class="card hidden">
         <h2>Настройка рабочих дней</h2>
         <label style="margin-bottom:6px;">Постоянные рабочие дни недели:</label>
@@ -774,7 +813,6 @@
         <button onclick="saveSchedule()" id="save-sched-btn" class="btn" style="margin-top:12px; padding:11px;">Сохранить график</button>
       </div>
 
-      <!-- ИНТЕРАКТИВНЫЙ КАЛЕНДАРЬ МАСТЕРА -->
       <div class="card">
         <div class="row" style="justify-content:space-between; margin-bottom:12px;">
           <div class="row">
@@ -804,10 +842,23 @@
         </div>
       </div>
 
-      <!-- ПОЧАСОВАЯ СЕТКА ДНЯ -->
       <div class="card" id="admin-appointments-list"></div>
     </div>
   </main>
+
+  <!-- АДРЕС ВНИЗУ СТРАНИЦЫ -->
+  <footer class="location-footer">
+    <div class="location-card">
+      <div class="location-info">
+        <div class="location-pin">📍</div>
+        <div>
+          <div style="font-weight: 600; font-size: 14px; color: var(--text);">Санкт-Петербург, Инженерная, 7</div>
+          <div style="font-size: 12px; color: var(--muted);">Барбершоп «Шум»</div>
+        </div>
+      </div>
+      <a href="https://yandex.ru/maps/?text=Санкт-Петербург,+Инженерная+улица,+7" target="_blank" class="btn-outline">На карте ↗</a>
+    </div>
+  </footer>
 
   <!-- МОДАЛКА ПАРОЛЯ -->
   <div id="password-modal" class="modal hidden">
@@ -873,6 +924,7 @@
     const API_URL = 'https://script.google.com/macros/s/AKfycbygzBCtiQOGgt6uKHVzjYMvXELFuHVWgvofBAlYk_ZrroyEKnCc5-MkxscbI1M6ZXyY/exec';
     const BOT_USERNAME = 'frantsuzov_barberbooking_bot'; 
     const MASTER_TG_USERNAME = 'afrant5';
+    const LOCATION_STR = 'Санкт-Петербург, Инженерная, 7 (барбершоп «Шум»)';
 
     const tgApp = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     let currentTgChatId = null;
@@ -892,7 +944,6 @@
       }
     }
 
-    // --- СЕКРЕТНЫЙ ВХОД В КАБИНЕТ МАСТЕРА (5 КЛИКОВ ПО ЛОГОТИПУ ИЛИ #admin) ---
     let secretTapCount = 0;
     let secretTapTimer = null;
 
@@ -1132,7 +1183,6 @@
       document.getElementById('booking-date').value = today;
       adminSelectedDate = today;
 
-      // Если открыли по прямой ссылке https://toxafrant5.github.io/barber/#admin
       if (window.location.hash === '#admin') {
         toggleAdminModal();
       }
@@ -1392,7 +1442,8 @@
             <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
             <div style="font-size: 13px; color: var(--text); margin-bottom: 12px;">
               ${combinedServiceName} (${totalPrice} ₽)<br>
-              <b>${dateVal} (${bookedTime} – ${endTime})</b>
+              <b>${dateVal} (${bookedTime} – ${endTime})</b><br>
+              <span style="color: var(--muted); font-size: 12px;">📍 ${LOCATION_STR}</span>
             </div>
             <div style="padding: 10px; border-radius: 10px; background: rgba(52, 199, 89, 0.12); color: #34c759; font-size: 13px; margin-bottom: 12px;">
               📩 Подтверждение и напоминания уже отправлены вам в чат бота!
@@ -1407,7 +1458,8 @@
             <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
             <div style="font-size: 13px; color: var(--text); margin-bottom: 14px;">
               ${combinedServiceName} (${totalPrice} ₽)<br>
-              <b>${dateVal} (${bookedTime} – ${endTime})</b>
+              <b>${dateVal} (${bookedTime} – ${endTime})</b><br>
+              <span style="color: var(--muted); font-size: 12px;">📍 ${LOCATION_STR}</span>
             </div>
             <a href="${tgBotLink}" target="_blank" class="btn-tg" style="width: 100%; margin-bottom: 8px;">
               🔔 Получить подтверждение в Telegram
@@ -1685,7 +1737,7 @@
           } else {
             const cleanDigits = String(coveringApp.client_phone).replace(/\D/g, '');
             const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
-            const inviteText = encodeURIComponent(`Привет, ${coveringApp.client_name}! Записал тебя на ${coveringApp.appointment_date} в ${coveringApp.appointment_time} (${coveringApp.service_name}). Подтверждение и напоминания в боте: ${clientTgLink} | Связь со мной: https://t.me/${MASTER_TG_USERNAME}`);
+            const inviteText = encodeURIComponent(`Привет, ${coveringApp.client_name}! Записал тебя на ${coveringApp.appointment_date} в ${coveringApp.appointment_time} (${coveringApp.service_name}). Адрес: СПб, Инженерная, 7 (барбершоп Шум). Подтверждение и напоминания в боте: ${clientTgLink}`);
 
             row.innerHTML = `
               <div class="slot-time" style="flex-direction:column; gap:2px;">
@@ -1743,7 +1795,7 @@
 
       const cleanDigits = String(app.client_phone).replace(/\D/g, '');
       const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
-      const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Подтверждение и напоминания в боте: ${clientTgLink} | Связь со мной: https://t.me/${MASTER_TG_USERNAME}`);
+      const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Адрес: СПб, Инженерная, 7 (барбершоп Шум). Подтверждение и напоминания в боте: ${clientTgLink}`);
 
       div.innerHTML = `
         <div>
