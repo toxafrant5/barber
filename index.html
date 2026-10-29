@@ -852,11 +852,11 @@
       <div class="location-info">
         <div class="location-pin">📍</div>
         <div>
-          <div style="font-weight: 600; font-size: 14px; color: var(--text);">Санкт-Петербург, Инженерная, 7</div>
+          <div style="font-weight: 600; font-size: 14px; color: var(--text);">Санкт-Петербург, Итальянская, 12ж</div>
           <div style="font-size: 12px; color: var(--muted);">Барбершоп «Шум»</div>
         </div>
       </div>
-      <a href="https://yandex.ru/maps/?text=Санкт-Петербург,+Инженерная+улица,+7" target="_blank" class="btn-outline">На карте ↗</a>
+      <a href="https://yandex.ru/maps/?text=Санкт-Петербург,+Итальянская+улица,+12ж" target="_blank" class="btn-outline">На карте ↗</a>
     </div>
   </footer>
 
@@ -924,7 +924,7 @@
     const API_URL = 'https://script.google.com/macros/s/AKfycbygzBCtiQOGgt6uKHVzjYMvXELFuHVWgvofBAlYk_ZrroyEKnCc5-MkxscbI1M6ZXyY/exec';
     const BOT_USERNAME = 'frantsuzov_barberbooking_bot'; 
     const MASTER_TG_USERNAME = 'afrant5';
-    const LOCATION_STR = 'Санкт-Петербург, Инженерная, 7 (барбершоп «Шум»)';
+    const LOCATION_STR = 'Санкт-Петербург, Итальянская, 12ж (барбершоп «Шум»)';
 
     const tgApp = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     let currentTgChatId = null;
@@ -1737,7 +1737,7 @@
           } else {
             const cleanDigits = String(coveringApp.client_phone).replace(/\D/g, '');
             const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
-            const inviteText = encodeURIComponent(`Привет, ${coveringApp.client_name}! Записал тебя на ${coveringApp.appointment_date} в ${coveringApp.appointment_time} (${coveringApp.service_name}). Адрес: СПб, Инженерная, 7 (барбершоп Шум). Подтверждение и напоминания в боте: ${clientTgLink}`);
+            const inviteText = encodeURIComponent(`Привет, ${coveringApp.client_name}! Записал тебя на ${coveringApp.appointment_date} в ${coveringApp.appointment_time} (${coveringApp.service_name}). Адрес: СПб, Итальянская , 12ж (барбершоп Шум). Подтверждение и напоминания в боте: ${clientTgLink}`);
 
             row.innerHTML = `
               <div class="slot-time" style="flex-direction:column; gap:2px;">
@@ -1795,7 +1795,7 @@
 
       const cleanDigits = String(app.client_phone).replace(/\D/g, '');
       const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
-      const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Адрес: СПб, Инженерная, 7 (барбершоп Шум). Подтверждение и напоминания в боте: ${clientTgLink}`);
+      const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Адрес: СПб, Итальянская, 12ж (барбершоп Шум). Подтверждение и напоминания в боте: ${clientTgLink}`);
 
       div.innerHTML = `
         <div>
