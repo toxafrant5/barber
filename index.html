@@ -80,16 +80,8 @@
       transition: transform 0.1s ease;
     }
 
-    .logo-circle:active {
-      transform: scale(0.94);
-    }
-
-    .logo-circle svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-      pointer-events: none;
-    }
+    .logo-circle:active { transform: scale(0.94); }
+    .logo-circle svg { width: 100%; height: 100%; display: block; pointer-events: none; }
 
     .brand-title { font-weight: 700; font-size: 14px; letter-spacing: 0.4px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .brand-sub { font-size: 11px; color: var(--muted); white-space: nowrap; letter-spacing: 0.2px; }
@@ -175,8 +167,24 @@
       color: #fff;
     }
 
+    /* Умный допродажник (Upsell) */
+    .upsell-banner {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.14), rgba(255, 59, 48, 0.1));
+      border: 1px dashed rgba(245, 158, 11, 0.45);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .upsell-banner:hover { border-color: var(--amber); background: rgba(245, 158, 11, 0.2); }
+
     .summary-bar {
-      margin-top: 14px;
+      margin-top: 12px;
       padding: 12px 16px;
       border-radius: var(--radius-md);
       background: rgba(255, 59, 48, 0.1);
@@ -203,11 +211,7 @@
       margin-bottom: 14px;
     }
 
-    .cal-title {
-      font-weight: 600;
-      font-size: 15px;
-      text-transform: capitalize;
-    }
+    .cal-title { font-weight: 600; font-size: 15px; text-transform: capitalize; }
 
     .cal-nav-btn {
       background: var(--input-bg);
@@ -235,11 +239,7 @@
       margin-bottom: 8px;
     }
 
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-    }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
 
     .cal-day {
       aspect-ratio: 1;
@@ -255,10 +255,7 @@
       transition: all 0.15s ease;
     }
 
-    .cal-day.empty {
-      background: transparent;
-      pointer-events: none;
-    }
+    .cal-day.empty { background: transparent; pointer-events: none; }
 
     .cal-day.off {
       background: rgba(255, 255, 255, 0.02);
@@ -268,12 +265,8 @@
       font-weight: 400;
     }
 
-    .cal-day.admin-clickable {
-      cursor: pointer;
-    }
-    .cal-day.admin-clickable:hover {
-      border-color: rgba(255, 255, 255, 0.25);
-    }
+    .cal-day.admin-clickable { cursor: pointer; }
+    .cal-day.admin-clickable:hover { border-color: rgba(255, 255, 255, 0.25); }
 
     .cal-day.work {
       background: #1c1c21;
@@ -283,23 +276,10 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.35);
     }
 
-    .cal-day.work:hover {
-      border-color: rgba(255, 255, 255, 0.4);
-      transform: translateY(-1px);
-    }
+    .cal-day.work:hover { border-color: rgba(255, 255, 255, 0.4); transform: translateY(-1px); }
 
-    .cal-dots {
-      display: flex;
-      gap: 3px;
-      position: absolute;
-      bottom: 4px;
-    }
-
-    .cal-dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-    }
+    .cal-dots { display: flex; gap: 3px; position: absolute; bottom: 4px; }
+    .cal-dot { width: 4px; height: 4px; border-radius: 50%; }
 
     .cal-day.selected {
       background: var(--accent) !important;
@@ -308,9 +288,7 @@
       box-shadow: 0 4px 14px rgba(255, 59, 48, 0.45) !important;
     }
 
-    .cal-day.selected .cal-dot {
-      background: #ffffff !important;
-    }
+    .cal-day.selected .cal-dot { background: #ffffff !important; }
 
     .cal-legend {
       display: flex;
@@ -327,7 +305,7 @@
     .legend-item { display: flex; align-items: center; gap: 5px; }
     .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
 
-    /* --- ЧИСТАЯ ПОЧАСОВАЯ СЕТКА МАСТЕРА --- */
+    /* --- ПОЧАСОВАЯ СЕТКА МАСТЕРА --- */
     .timeline-header {
       display: flex;
       justify-content: space-between;
@@ -354,17 +332,9 @@
       transition: background 0.15s ease;
     }
 
-    .slot-row:last-child {
-      border-bottom: none;
-    }
-
-    .slot-row.free-row {
-      cursor: pointer;
-    }
-
-    .slot-row.free-row:hover {
-      background: rgba(255, 255, 255, 0.04);
-    }
+    .slot-row:last-child { border-bottom: none; }
+    .slot-row.free-row { cursor: pointer; }
+    .slot-row.free-row:hover { background: rgba(255, 255, 255, 0.04); }
 
     .slot-time {
       width: 58px;
@@ -379,11 +349,7 @@
       user-select: none;
     }
 
-    .slot-time.half-hour {
-      font-size: 11px;
-      font-weight: 400;
-      opacity: 0.55;
-    }
+    .slot-time.half-hour { font-size: 11px; font-weight: 400; opacity: 0.55; }
 
     .slot-body {
       flex: 1;
@@ -420,6 +386,84 @@
       gap: 8px;
     }
 
+    .price-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(52, 199, 89, 0.14);
+      color: #34c759;
+      border: 1px solid rgba(52, 199, 89, 0.3);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .confirmed-badge {
+      display: inline-block;
+      background: rgba(52, 199, 89, 0.18);
+      color: #34c759;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 5px;
+      margin-left: 4px;
+    }
+
+    .note-box {
+      font-size: 11px;
+      color: var(--amber);
+      background: rgba(245, 158, 11, 0.1);
+      padding: 3px 7px;
+      border-radius: 6px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    /* --- АНАЛИТИКА И КАССА --- */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .stat-val {
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    /* Выпадающий список быстрого поиска клиента */
+    .client-suggestions {
+      background: #1e1e24;
+      border: 1px solid var(--border-hover);
+      border-radius: 10px;
+      margin-top: -8px;
+      margin-bottom: 12px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .client-sug-item {
+      padding: 9px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+    }
+    .client-sug-item:last-child { border-bottom: none; }
+    .client-sug-item:hover { background: rgba(255, 255, 255, 0.08); }
+
     .mode-switch {
       display: flex;
       background: var(--input-bg);
@@ -442,24 +486,17 @@
       user-select: none;
     }
 
-    .mode-btn.active-client {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .mode-btn.active-break {
-      background: var(--amber);
-      color: #000;
-    }
+    .mode-btn.active-client { background: var(--accent); color: #fff; }
+    .mode-btn.active-break { background: var(--amber); color: #000; }
 
     label { font-size: 12px; font-weight: 500; color: var(--muted); display: block; margin-bottom: 6px; }
 
-    input, select {
+    input, select, textarea {
       width: 100%;
       background: var(--input-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 13px 15px;
+      padding: 12px 14px;
       color: var(--text);
       font-size: 15px;
       font-family: inherit;
@@ -468,7 +505,7 @@
       appearance: none;
     }
 
-    input:focus, select:focus {
+    input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--tg);
       background: rgba(255, 255, 255, 0.07);
@@ -574,7 +611,6 @@
       box-shadow: 0 4px 12px rgba(255, 59, 48, 0.4);
     }
 
-    /* --- БЛОК С АДРЕСОМ ВНИЗУ СТРАНИЦЫ --- */
     .location-footer {
       max-width: 560px;
       margin: 6px auto 0;
@@ -595,11 +631,7 @@
       flex-wrap: wrap;
     }
 
-    .location-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .location-info { display: flex; align-items: center; gap: 12px; }
 
     .location-pin {
       width: 36px;
@@ -636,9 +668,9 @@
       border-radius: var(--radius-lg);
       padding: 22px;
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
-      max-height: 90vh;
+      max-height: 92vh;
       overflow-y: auto;
     }
 
@@ -698,7 +730,6 @@
   <header>
     <div class="header-inner">
       <div class="logo-wrap">
-        <!-- Секретный вход для мастера: 5 быстрых кликов по логотипу AF -->
         <div class="logo-circle" onclick="handleSecretLogoTap()" title="Anton Frantsuzov">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -742,6 +773,16 @@
         <h2><span class="step-badge">1</span> Выберите услуги</h2>
         <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Можно выбрать сразу несколько услуг</p>
         <div id="services-list"></div>
+        
+        <!-- Умный допродажник депиляции воском -->
+        <div id="upsell-box" class="upsell-banner hidden" onclick="applyWaxUpsell()">
+          <div>
+            <div style="font-weight: 600; font-size: 13px; color: var(--amber);">💡 Добавить депиляцию воском?</div>
+            <div style="font-size: 11px; color: var(--muted);">Всего +5 минут к визиту · 200 ₽</div>
+          </div>
+          <span class="btn-outline" style="background: rgba(245, 158, 11, 0.2); border-color: var(--amber); color: #fff; font-weight: 600;">+ Добавить</span>
+        </div>
+
         <div id="services-summary" class="summary-bar hidden"></div>
       </div>
 
@@ -818,6 +859,7 @@
           <div class="row">
             <button id="tab-day-btn" onclick="setAdminMode('day')" class="btn-outline active-tab">📅 По дням</button>
             <button id="tab-all-btn" onclick="setAdminMode('all')" class="btn-outline">📋 Все будущие</button>
+            <button id="tab-stats-btn" onclick="setAdminMode('stats')" class="btn-outline">📊 Касса</button>
           </div>
           <div class="row">
             <button onclick="openEditModal(null, adminSelectedDate, '13:00', true)" class="btn-outline" style="background:rgba(245,158,11,0.15); color:var(--amber); border-color:rgba(245,158,11,0.35);">☕ Перерыв</button>
@@ -842,11 +884,11 @@
         </div>
       </div>
 
+      <!-- ОСНОВНОЙ КОНТЕЙНЕР (РАСПИСАНИЕ ИЛИ ФИНАНСОВЫЙ ОТЧЕТ) -->
       <div class="card" id="admin-appointments-list"></div>
     </div>
   </main>
 
-  <!-- АДРЕС ВНИЗУ СТРАНИЦЫ (Заполняется автоматически из переменных в скрипте) -->
   <footer class="location-footer">
     <div class="location-card">
       <div class="location-info">
@@ -884,14 +926,25 @@
       </div>
 
       <div id="client-fields-wrap">
-        <label>Имя клиента</label>
-        <input type="text" id="edit-name" placeholder="Имя клиента">
+        <label>Имя клиента (начните вводить для быстрого поиска)</label>
+        <input type="text" id="edit-name" placeholder="Имя клиента" oninput="onAdminClientSearch(this.value)" autocomplete="off">
+        <div id="client-suggestions-box" class="client-suggestions hidden"></div>
         
         <label>Телефон</label>
-        <input type="tel" id="edit-phone" oninput="formatPhoneInput(this)">
+        <input type="tel" id="edit-phone" oninput="formatPhoneInput(this); onAdminClientSearch(this.value);">
         
         <label>Услуги (можно выбрать несколько)</label>
         <div id="edit-services-wrap" style="margin-bottom: 12px;"></div>
+
+        <div class="row">
+          <div style="flex: 1;">
+            <label>Сумма чека (₽) — можно изменить вручную</label>
+            <input type="number" id="edit-price" placeholder="1700" oninput="isCustomPriceEdited = true">
+          </div>
+        </div>
+
+        <label>Заметка мастера о клиенте (видна только вам)</label>
+        <input type="text" id="edit-notes" placeholder="Напр.: фейд с 0, биозавивка на желтые коклюшки">
       </div>
 
       <div id="break-fields-wrap" class="hidden">
@@ -932,8 +985,10 @@
     const API_URL = 'https://script.google.com/macros/s/AKfycbygzBCtiQOGgt6uKHVzjYMvXELFuHVWgvofBAlYk_ZrroyEKnCc5-MkxscbI1M6ZXyY/exec';
     const BOT_USERNAME = 'frantsuzov_barberbooking_bot'; 
     const MASTER_TG_USERNAME = 'afrant5';
-    const MASTER_TG_ID = '189835141'; // Твой личный Telegram ID для входа без пароля
+    const MASTER_TG_ID = '189835141';
     const ADMIN_PASS_KEY = 'af_barber_admin_saved';
+    const CLIENT_SAVED_NAME_KEY = 'af_client_saved_name';
+    const CLIENT_SAVED_PHONE_KEY = 'af_client_saved_phone';
 
     const tgApp = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     let currentTgChatId = null;
@@ -953,14 +1008,9 @@
       }
     }
 
-    // Проверка: сохранен ли пароль на этом телефоне или зашел сам мастер через Telegram
     function isAdminAuthorizedOnDevice() {
       if (currentTgChatId === MASTER_TG_ID) return true;
-      try {
-        return localStorage.getItem(ADMIN_PASS_KEY) === 'Smart31415';
-      } catch (e) {
-        return false;
-      }
+      try { return localStorage.getItem(ADMIN_PASS_KEY) === 'Smart31415'; } catch (e) { return false; }
     }
 
     function openAdminDirectly() {
@@ -985,9 +1035,7 @@
           toggleAdminModal();
         }
       } else {
-        secretTapTimer = setTimeout(() => {
-          secretTapCount = 0;
-        }, 1500);
+        secretTapTimer = setTimeout(() => { secretTapCount = 0; }, 1500);
       }
     }
 
@@ -1013,9 +1061,12 @@
     let selectedServices = [];
     let adminSelectedServices = [];
     let isModalBreakMode = false;
+    let isCustomPriceEdited = false;
     let selectedTime = null;
     let allAppointments = [];
+    let allExpenses = [];
     let scheduleConfig = { workDays: [1, 2, 5, 6], extraWorkDates: [], closedDates: [] };
+    let lastBookingDetails = null;
     
     let isDataLoaded = false;
     let fetchPromise = null;
@@ -1027,7 +1078,7 @@
     let adminCalYear = nowInit.getFullYear();
     let adminCalMonth = nowInit.getMonth();
     let adminSelectedDate = '';
-    let adminViewMode = 'day';
+    let adminViewMode = 'day'; // 'day' | 'all' | 'stats'
 
     const START_HOUR = 10;
     const END_HOUR = 21;
@@ -1070,6 +1121,25 @@
         if (found) total += found.duration;
       });
       return total > 0 ? total : 60;
+    }
+
+    function calcPriceByNames(serviceNameStr) {
+      if (!serviceNameStr || serviceNameStr === 'Перерыв') return 0;
+      const parts = String(serviceNameStr).split(' + ').map(x => x.trim());
+      let total = 0;
+      parts.forEach(p => {
+        const found = services.find(s => s.name === p);
+        if (found) total += found.price;
+      });
+      return total;
+    }
+
+    function getAppActualPrice(app) {
+      if (isBreakEntry(app)) return 0;
+      if (app.price !== undefined && app.price !== '' && !isNaN(Number(app.price))) {
+        return Number(app.price);
+      }
+      return calcPriceByNames(app.service_name);
     }
 
     function formatPhoneInput(input) {
@@ -1206,12 +1276,23 @@
     async function init() {
       document.getElementById('header-tg-link').href = `https://t.me/${MASTER_TG_USERNAME}`;
       
-      // Автоматическое заполнение футера из единых переменных адреса
       document.getElementById('footer-address-text').innerText = LOCATION_ADDRESS;
       document.getElementById('footer-place-text').innerText = LOCATION_PLACE;
       document.getElementById('footer-map-link').href = LOCATION_MAP_URL;
 
-      if (tgApp && tgApp.initDataUnsafe && tgApp.initDataUnsafe.user && tgApp.initDataUnsafe.user.first_name) {
+      // Автозаполнение имени и телефона для постоянных клиентов
+      try {
+        const savedName = localStorage.getItem(CLIENT_SAVED_NAME_KEY);
+        const savedPhone = localStorage.getItem(CLIENT_SAVED_PHONE_KEY);
+        if (savedName) document.getElementById('client-name').value = savedName;
+        if (savedPhone) {
+          const phInput = document.getElementById('client-phone');
+          phInput.value = savedPhone;
+          formatPhoneInput(phInput);
+        }
+      } catch (e) {}
+
+      if (!document.getElementById('client-name').value && tgApp && tgApp.initDataUnsafe && tgApp.initDataUnsafe.user && tgApp.initDataUnsafe.user.first_name) {
         document.getElementById('client-name').value = tgApp.initDataUnsafe.user.first_name;
       }
 
@@ -1258,6 +1339,11 @@
           const data = await res.json();
           const rawApps = Array.isArray(data) ? data : (data.appointments || []);
           if (data.schedule) scheduleConfig = data.schedule;
+          allExpenses = (data.expenses || []).map(e => ({
+            ...e,
+            date: normalizeDate(e.date),
+            amount: Number(e.amount) || 0
+          }));
 
           allAppointments = rawApps.map(item => {
             const startT = normalizeTime(item.appointment_time);
@@ -1284,9 +1370,21 @@
       return fetchPromise;
     }
 
+    // Применение допродажи депиляции воском в 1 клик
+    function applyWaxUpsell() {
+      const waxSrv = services.find(s => s.id === 6);
+      if (waxSrv && !selectedServices.some(s => s.id === 6)) {
+        selectedServices.push(waxSrv);
+        selectedTime = null;
+        renderServices();
+        renderTimeSlots(isDataLoaded);
+      }
+    }
+
     function renderServices() {
       const container = document.getElementById('services-list');
       const summaryEl = document.getElementById('services-summary');
+      const upsellEl = document.getElementById('upsell-box');
       container.innerHTML = '';
 
       services.forEach(s => {
@@ -1315,6 +1413,14 @@
         `;
         container.appendChild(div);
       });
+
+      // Показываем умный Upsell, если выбрана хотя бы одна услуга, но депиляция воском еще не добавлена
+      const hasWax = selectedServices.some(s => s.id === 6);
+      if (selectedServices.length > 0 && !hasWax) {
+        upsellEl.classList.remove('hidden');
+      } else {
+        upsellEl.classList.add('hidden');
+      }
 
       if (selectedServices.length > 0) {
         const totalDur = getTotalDuration(selectedServices);
@@ -1395,6 +1501,36 @@
       });
     }
 
+    // Генерация файла календаря (.ics) для iPhone / Android
+    function downloadClientCalendarIcs() {
+      if (!lastBookingDetails) return;
+      const { service, date, start, end } = lastBookingDetails;
+      const dtStart = date.replace(/-/g, '') + 'T' + start.replace(':', '') + '00';
+      const dtEnd = date.replace(/-/g, '') + 'T' + end.replace(':', '') + '00';
+
+      const icsContent = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Anton Frantsuzov//Barber Booking//RU',
+        'BEGIN:VEVENT',
+        `DTSTART:${dtStart}`,
+        `DTEND:${dtEnd}`,
+        `SUMMARY:Барбер Антон Французов (${service})`,
+        `LOCATION:${LOCATION_FULL}`,
+        `DESCRIPTION:Услуга: ${service}. Связь с мастером: https://t.me/${MASTER_TG_USERNAME}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+
+      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', `barber-${date}.ics`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
     async function submitBooking() {
       const name = document.getElementById('client-name').value.trim();
       const rawPhone = document.getElementById('client-phone').value;
@@ -1409,6 +1545,12 @@
         return;
       }
 
+      // Сохраняем контакты на устройстве клиента для будущих визитов
+      try {
+        localStorage.setItem(CLIENT_SAVED_NAME_KEY, name);
+        localStorage.setItem(CLIENT_SAVED_PHONE_KEY, cleanPhone);
+      } catch (e) {}
+
       const bookedTime = selectedTime;
       const combinedServiceName = getCombinedNames(selectedServices);
       const totalDuration = getTotalDuration(selectedServices);
@@ -1416,6 +1558,13 @@
       const startMin = timeToMinutes(bookedTime);
       const endMin = startMin + totalDuration;
       const endTime = minutesToTime(endMin);
+
+      lastBookingDetails = {
+        service: combinedServiceName,
+        date: dateVal,
+        start: bookedTime,
+        end: endTime
+      };
 
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
@@ -1451,6 +1600,7 @@
             appointment_date: dateVal,
             appointment_time: bookedTime,
             end_time: endTime,
+            price: totalPrice,
             tg_chat_id: currentTgChatId
           })
         });
@@ -1464,7 +1614,8 @@
           service_name: combinedServiceName,
           appointment_date: dateVal,
           appointment_time: bookedTime,
-          end_time: endTime
+          end_time: endTime,
+          price: totalPrice
         });
 
         const cleanDigits = cleanPhone.replace('+', '');
@@ -1477,6 +1628,12 @@
         msg.style.padding = '18px';
         msg.style.borderRadius = '14px';
 
+        const calendarBtnHtml = `
+          <button type="button" onclick="downloadClientCalendarIcs()" class="btn-outline" style="width: 100%; padding: 11px; margin-bottom: 10px; font-weight: 600;">
+            📅 Добавить в календарь телефона
+          </button>
+        `;
+
         if (currentTgChatId || (resData && resData.tg_notified)) {
           msg.innerHTML = `
             <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
@@ -1485,9 +1642,10 @@
               <b>${dateVal} (${bookedTime} – ${endTime})</b><br>
               <span style="color: var(--muted); font-size: 12px;">📍 ${LOCATION_FULL}</span>
             </div>
-            <div style="padding: 10px; border-radius: 10px; background: rgba(52, 199, 89, 0.12); color: #34c759; font-size: 13px; margin-bottom: 12px;">
+            <div style="padding: 10px; border-radius: 10px; background: rgba(52, 199, 89, 0.12); color: #34c759; font-size: 13px; margin-bottom: 10px;">
               📩 Подтверждение и схема проезда отправлены вам в чат бота!
             </div>
+            ${calendarBtnHtml}
             ${currentTgChatId ? `<button onclick="window.Telegram.WebApp.close()" class="btn-tg" style="width: 100%; margin-bottom: 8px;">Вернуться в чат</button>` : ''}
             <div style="font-size: 12px; color: var(--muted); margin-top: 6px;">
               Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color: var(--tg); text-decoration: none;">Написать мастеру (@${MASTER_TG_USERNAME})</a>
@@ -1507,13 +1665,13 @@
             <div style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">
               После перехода в бота нажмите <b>«Старт»</b> (или кнопку «Привязать номер» внизу чата).
             </div>
+            ${calendarBtnHtml}
             <div style="font-size: 12px; color: var(--muted);">
               Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color: var(--tg); text-decoration: none;">Написать мастеру (@${MASTER_TG_USERNAME})</a>
             </div>
           `;
         }
 
-        document.getElementById('client-phone').value = '+7 ';
         selectedServices = [];
         renderServices();
         await renderTimeSlots(true);
@@ -1561,6 +1719,7 @@
       adminViewMode = mode;
       document.getElementById('tab-day-btn').classList.toggle('active-tab', mode === 'day');
       document.getElementById('tab-all-btn').classList.toggle('active-tab', mode === 'all');
+      document.getElementById('tab-stats-btn').classList.toggle('active-tab', mode === 'stats');
       document.getElementById('admin-cal-container').classList.toggle('hidden', mode === 'all');
       renderAdminList();
     }
@@ -1570,6 +1729,7 @@
       if (adminCalMonth > 11) { adminCalMonth = 0; adminCalYear++; }
       else if (adminCalMonth < 0) { adminCalMonth = 11; adminCalYear--; }
       renderAdminCalendar();
+      if (adminViewMode === 'stats') renderAdminList();
     }
 
     function renderAdminCalendar() {
@@ -1594,7 +1754,7 @@
         const dateStr = `${adminCalYear}-${String(adminCalMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const cell = document.createElement('div');
         const isWork = isWorkingDate(dateStr);
-        const dayAppsCount = allAppointments.filter(a => a.id && a.appointment_date === dateStr).length;
+        const dayAppsCount = allAppointments.filter(a => a.id && a.appointment_date === dateStr && !isBreakEntry(a)).length;
 
         cell.className = 'cal-day admin-clickable ' + (isWork ? 'work' : 'off') + (dateStr === adminSelectedDate ? ' selected' : '');
         
@@ -1682,9 +1842,145 @@
       renderAdminList();
     }
 
+    // Быстрое изменение чека прямо из карточки в 1 клик
+    async function quickEditPrice(appId, currentPrice) {
+      const newVal = prompt('Введите фактическую сумму чека (₽):', currentPrice);
+      if (newVal === null) return;
+      const num = Number(newVal);
+      if (isNaN(num) || num < 0) return;
+
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'update_price', id: appId, price: num })
+      });
+      await loadAppointments(true);
+    }
+
+    // Добавление расхода (Аренда, Расходники и т.д.)
+    async function addExpenseItem() {
+      const date = document.getElementById('exp-date').value || getLocalTodayStr();
+      const category = document.getElementById('exp-category').value;
+      const amount = Number(document.getElementById('exp-amount').value);
+      const comment = document.getElementById('exp-comment').value.trim();
+
+      if (!amount || amount <= 0) {
+        alert('Укажите сумму расхода!');
+        return;
+      }
+
+      const btn = document.getElementById('add-exp-btn');
+      btn.innerText = 'Сохранение...';
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'add_expense', date, category, amount, comment })
+      });
+      await loadAppointments(true);
+    }
+
+    async function deleteExpenseItem(id) {
+      if (!confirm('Удалить эту запись расхода?')) return;
+      await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'delete_expense', id })
+      });
+      await loadAppointments(true);
+    }
+
     function renderAdminList() {
       const list = document.getElementById('admin-appointments-list');
 
+      // РЕЖИМ 3: ФИНАНСОВЫЙ ОТЧЕТ И КАССА ЗА ВЫБРАННЫЙ МЕСЯЦ
+      if (adminViewMode === 'stats') {
+        const monthPrefix = `${adminCalYear}-${String(adminCalMonth + 1).padStart(2, '0')}`;
+        const todayStr = getLocalTodayStr();
+
+        const monthApps = allAppointments.filter(a => a.id && !isBreakEntry(a) && String(a.appointment_date).startsWith(monthPrefix));
+        const dayApps = allAppointments.filter(a => a.id && !isBreakEntry(a) && a.appointment_date === adminSelectedDate);
+        const monthExpenses = allExpenses.filter(e => String(e.date).startsWith(monthPrefix));
+
+        const dayRevenue = dayApps.reduce((s, a) => s + getAppActualPrice(a), 0);
+        const monthTotalRevenue = monthApps.reduce((s, a) => s + getAppActualPrice(a), 0);
+        const monthFactRevenue = monthApps.filter(a => a.appointment_date <= todayStr).reduce((s, a) => s + getAppActualPrice(a), 0);
+        const monthExpensesSum = monthExpenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+        const netProfit = monthTotalRevenue - monthExpensesSum;
+        const avgCheck = monthApps.length > 0 ? Math.round(monthTotalRevenue / monthApps.length) : 0;
+
+        let expListHtml = '';
+        if (monthExpenses.length === 0) {
+          expListHtml = `<div style="font-size:12px; color:var(--muted); text-align:center; padding:10px;">Расходов в этом месяце пока не записано</div>`;
+        } else {
+          monthExpenses.sort((a, b) => String(b.date).localeCompare(String(a.date))).forEach(e => {
+            expListHtml += `
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid var(--border); font-size:13px;">
+                <div>
+                  <b>${e.category}</b> <span style="color:var(--muted); font-size:11px;">(${e.date})</span>
+                  ${e.comment ? `<div style="font-size:11px; color:var(--muted);">${e.comment}</div>` : ''}
+                </div>
+                <div class="row">
+                  <span style="color:var(--accent); font-weight:700;">-${e.amount} ₽</span>
+                  <button onclick="deleteExpenseItem('${e.id}')" class="btn-outline" style="padding:3px 7px;">×</button>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        list.innerHTML = `
+          <h2 style="margin-bottom:12px;">📊 Отчёт: ${MONTH_NAMES[adminCalMonth]} ${adminCalYear}</h2>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div style="font-size:11px; color:var(--muted);">Касса за ${adminSelectedDate}</div>
+              <div class="stat-val" style="color:var(--tg);">${dayRevenue.toLocaleString('ru-RU')} ₽</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:2px;">Клиентов: ${dayApps.length}</div>
+            </div>
+            <div class="stat-card">
+              <div style="font-size:11px; color:var(--muted);">Выручка за месяц (План/Факт)</div>
+              <div class="stat-val" style="color:#34c759;">${monthTotalRevenue.toLocaleString('ru-RU')} ₽</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:2px;">Уже в кассе: ${monthFactRevenue.toLocaleString('ru-RU')} ₽</div>
+            </div>
+            <div class="stat-card">
+              <div style="font-size:11px; color:var(--muted);">Расходы за месяц</div>
+              <div class="stat-val" style="color:var(--accent);">-${monthExpensesSum.toLocaleString('ru-RU')} ₽</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:2px;">Записей: ${monthExpenses.length}</div>
+            </div>
+            <div class="stat-card">
+              <div style="font-size:11px; color:var(--muted);">Чистая прибыль</div>
+              <div class="stat-val" style="color:#fff;">${netProfit.toLocaleString('ru-RU')} ₽</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:2px;">Средний чек: ${avgCheck} ₽ (${monthApps.length} кл.)</div>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid var(--border); padding-top:14px; margin-top:8px;">
+            <h2 style="font-size:15px; margin-bottom:10px;">➕ Добавить расход (Аренда / Расходники)</h2>
+            <div class="row">
+              <select id="exp-category" style="flex:1; margin-bottom:8px;">
+                <option value="Аренда">🏢 Аренда</option>
+                <option value="Расходники">🧴 Расходники / Составы</option>
+                <option value="Инструмент">✂️ Инструмент</option>
+                <option value="Реклама">📢 Реклама / Сервисы</option>
+                <option value="Прочее">📦 Прочее</option>
+              </select>
+              <input type="number" id="exp-amount" placeholder="Сумма (₽)" style="flex:1; margin-bottom:8px;">
+            </div>
+            <div class="row">
+              <input type="date" id="exp-date" value="${adminSelectedDate}" style="flex:1; margin-bottom:8px;">
+              <input type="text" id="exp-comment" placeholder="Комментарий (напр. Hair Sekta)" style="flex:1.5; margin-bottom:8px;">
+            </div>
+            <button onclick="addExpenseItem()" id="add-exp-btn" class="btn" style="padding:11px; margin-bottom:14px;">Записать расход</button>
+
+            <h2 style="font-size:15px; margin-bottom:8px;">История расходов за ${MONTH_NAMES[adminCalMonth]}</h2>
+            <div style="background:rgba(0,0,0,0.2); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+              ${expListHtml}
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // РЕЖИМ 1: ВСЕ БУДУЩИЕ ЗАПИСИ
       if (adminViewMode === 'all') {
         const today = getLocalTodayStr();
         let data = [...allAppointments].filter(a => a.id && a.appointment_date >= today);
@@ -1702,21 +1998,24 @@
         return;
       }
 
+      // РЕЖИМ 2: ПОЧАСОВАЯ СЕТКА ВЫБРАННОГО ДНЯ
       const isWork = isWorkingDate(adminSelectedDate);
       const dayApps = [...allAppointments]
         .filter(a => a.id && a.appointment_date === adminSelectedDate)
         .sort((a, b) => timeToMinutes(a.appointment_time) - timeToMinutes(b.appointment_time));
+
+      const daySum = dayApps.reduce((s, a) => s + getAppActualPrice(a), 0);
 
       list.innerHTML = `
         <div class="timeline-header">
           <div>
             <div style="font-weight:700; font-size:16px;">${adminSelectedDate}</div>
             <div style="font-size:12px; color:${isWork ? '#34c759' : '#ff3b30'};">
-              ${isWork ? '● Рабочий день' : '● Выходной день'}
+              ${isWork ? '● Рабочий день' : '● Выходной день'} · Касса дня: <b style="color:#fff;">${daySum} ₽</b>
             </div>
           </div>
-          <div style="font-size:12px; color:var(--muted);">
-            Нажмите на время, чтобы добавить запись или перерыв
+          <div style="font-size:11px; color:var(--muted);">
+            Нажмите на сумму чека, чтобы изменить её
           </div>
         </div>
         <div class="schedule-grid" id="schedule-grid-wrap"></div>
@@ -1738,9 +2037,7 @@
         });
 
         if (coveringApp) {
-          if (renderedIds.has(coveringApp.id)) {
-            continue;
-          }
+          if (renderedIds.has(coveringApp.id)) continue;
           renderedIds.add(coveringApp.id);
 
           const sMin = timeToMinutes(coveringApp.appointment_time);
@@ -1772,6 +2069,8 @@
               </div>
             `;
           } else {
+            const actualPrice = getAppActualPrice(coveringApp);
+            const isConfirmed = String(coveringApp.reminded || '').includes('confirmed');
             const cleanDigits = String(coveringApp.client_phone).replace(/\D/g, '');
             const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
             const inviteText = encodeURIComponent(`Привет, ${coveringApp.client_name}! Записал тебя на ${coveringApp.appointment_date} в ${coveringApp.appointment_time} (${coveringApp.service_name}). Адрес: ${LOCATION_FULL}. Подтверждение и напоминания в боте: ${clientTgLink}`);
@@ -1784,8 +2083,16 @@
               <div class="slot-body">
                 <div class="tl-card-busy">
                   <div>
-                    <div style="font-weight:700; font-size:15px;">${coveringApp.client_name} <a href="tel:${coveringApp.client_phone}" style="font-weight:400; font-size:12px; color:var(--tg); text-decoration:none;">${coveringApp.client_phone}</a></div>
-                    <div style="font-size:13px; color:#d4d4d4; margin-top:2px;">✂️ ${coveringApp.service_name} <span style="color:var(--muted); font-size:11px;">(${startLabel} – ${endLabel})</span></div>
+                    <div style="font-weight:700; font-size:15px;">
+                      ${coveringApp.client_name}
+                      ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''}
+                      <a href="tel:${coveringApp.client_phone}" style="font-weight:400; font-size:12px; color:var(--tg); text-decoration:none;">${coveringApp.client_phone}</a>
+                    </div>
+                    <div style="font-size:13px; color:#d4d4d4; margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                      <span>✂️ ${coveringApp.service_name}</span>
+                      <span class="price-pill" onclick="quickEditPrice('${coveringApp.id}', ${actualPrice})" title="Нажмите, чтобы изменить сумму чека">💰 ${actualPrice} ₽ ✎</span>
+                    </div>
+                    ${coveringApp.notes ? `<div class="note-box">📝 ${coveringApp.notes}</div>` : ''}
                   </div>
                   <div class="row">
                     <a href="sms:${coveringApp.client_phone}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.12); color:var(--tg); border:none;">СМС</a>
@@ -1830,6 +2137,8 @@
         return div;
       }
 
+      const actualPrice = getAppActualPrice(app);
+      const isConfirmed = String(app.reminded || '').includes('confirmed');
       const cleanDigits = String(app.client_phone).replace(/\D/g, '');
       const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
       const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Адрес: ${LOCATION_FULL}. Подтверждение и напоминания в боте: ${clientTgLink}`);
@@ -1837,8 +2146,16 @@
       div.innerHTML = `
         <div>
           <div style="font-size:12px; color:var(--tg); font-weight:600;">${showDate ? app.appointment_date + ' · ' : ''}${app.appointment_time} – ${app.end_time || ''}</div>
-          <div style="font-weight:600; font-size:15px; margin:2px 0;">${app.client_name} <a href="tel:${app.client_phone}" style="font-weight:400; font-size:12px; color:var(--muted); text-decoration:none;">(${app.client_phone})</a></div>
-          <div style="font-size:13px; color:var(--muted);">${app.service_name}</div>
+          <div style="font-weight:600; font-size:15px; margin:2px 0;">
+            ${app.client_name}
+            ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''}
+            <a href="tel:${app.client_phone}" style="font-weight:400; font-size:12px; color:var(--muted); text-decoration:none;">(${app.client_phone})</a>
+          </div>
+          <div style="font-size:13px; color:var(--muted); display:flex; align-items:center; gap:6px;">
+            <span>${app.service_name}</span>
+            <span class="price-pill" onclick="quickEditPrice('${app.id}', ${actualPrice})">${actualPrice} ₽ ✎</span>
+          </div>
+          ${app.notes ? `<div class="note-box">📝 ${app.notes}</div>` : ''}
         </div>
         <div class="row">
           <a href="sms:${app.client_phone}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.1); color:var(--tg); border:none;">СМС</a>
@@ -1857,6 +2174,62 @@
         body: JSON.stringify({ action: 'delete', id })
       });
       await loadAppointments(true);
+    }
+
+    // Быстрый поиск по базе прошлых клиентов в модальном окне мастера
+    function getUniqueClientsDatabase() {
+      const map = {};
+      allAppointments.forEach(a => {
+        if (!a.client_phone || isBreakEntry(a)) return;
+        const clean = getCleanPhone(a.client_phone);
+        if (clean.length < 11) return;
+        if (!map[clean]) {
+          map[clean] = { name: a.client_name, phone: clean, notes: a.notes || '' };
+        } else {
+          if (a.client_name) map[clean].name = a.client_name;
+          if (a.notes) map[clean].notes = a.notes;
+        }
+      });
+      return Object.values(map);
+    }
+
+    function onAdminClientSearch(query) {
+      const box = document.getElementById('client-suggestions-box');
+      const q = String(query || '').trim().toLowerCase();
+      if (q.length < 2 || q === '+7') {
+        box.classList.add('hidden');
+        return;
+      }
+
+      const db = getUniqueClientsDatabase();
+      const matches = db.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q)).slice(0, 5);
+
+      if (matches.length === 0) {
+        box.classList.add('hidden');
+        return;
+      }
+
+      box.innerHTML = '';
+      matches.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'client-sug-item';
+        item.innerHTML = `
+          <span><b>${c.name}</b> ${c.notes ? `<span style="color:var(--amber); font-size:11px;">(${c.notes})</span>` : ''}</span>
+          <span style="color:var(--muted);">${c.phone}</span>
+        `;
+        item.onclick = () => {
+          document.getElementById('edit-name').value = c.name;
+          const phEl = document.getElementById('edit-phone');
+          phEl.value = c.phone;
+          formatPhoneInput(phEl);
+          if (c.notes && !document.getElementById('edit-notes').value) {
+            document.getElementById('edit-notes').value = c.notes;
+          }
+          box.classList.add('hidden');
+        };
+        box.appendChild(item);
+      });
+      box.classList.remove('hidden');
     }
 
     function setModalBreakMode(isBreak) {
@@ -1883,6 +2256,9 @@
           }
           renderAdminServicesCheckboxes();
           autoCalcEndTime();
+          if (!isCustomPriceEdited) {
+            document.getElementById('edit-price').value = getTotalPrice(adminSelectedServices);
+          }
         };
         div.innerHTML = `
           <span>${active ? '✓ ' : ''}${s.name}</span>
@@ -1906,6 +2282,8 @@
     function openEditModal(app, defaultDate = null, defaultTime = null, defaultBreak = false) {
       const isNew = !app;
       const breakMode = isNew ? defaultBreak : isBreakEntry(app);
+      isCustomPriceEdited = !isNew;
+      document.getElementById('client-suggestions-box').classList.add('hidden');
 
       document.getElementById('edit-modal-title').innerText = isNew ? 'Добавить в график' : 'Редактировать';
       document.getElementById('edit-id').value = isNew ? '' : app.id;
@@ -1915,17 +2293,22 @@
         document.getElementById('edit-break-note').value = rawNote;
         document.getElementById('edit-name').value = '';
         document.getElementById('edit-phone').value = '+7 ';
+        document.getElementById('edit-price').value = 0;
+        document.getElementById('edit-notes').value = '';
         adminSelectedServices = [services[0]];
       } else {
         document.getElementById('edit-break-note').value = '';
         document.getElementById('edit-name').value = isNew ? '' : app.client_name;
         document.getElementById('edit-phone').value = isNew ? '+7 ' : app.client_phone;
+        document.getElementById('edit-notes').value = isNew ? '' : (app.notes || '');
         if (isNew) {
           adminSelectedServices = [services[0]];
+          document.getElementById('edit-price').value = services[0].price;
         } else {
           const names = String(app.service_name || '').split(' + ').map(x => x.trim());
           adminSelectedServices = services.filter(s => names.includes(s.name));
           if (adminSelectedServices.length === 0) adminSelectedServices = [services[0]];
+          document.getElementById('edit-price').value = getAppActualPrice(app);
         }
       }
 
@@ -1955,12 +2338,15 @@
       let client_name = '';
       let client_phone = '';
       let service_name = '';
+      let price = 0;
+      let notes = '';
 
       if (isModalBreakMode) {
         const note = document.getElementById('edit-break-note').value.trim();
         client_name = note ? `☕ Перерыв: ${note}` : '☕ Перерыв';
         client_phone = '';
         service_name = 'Перерыв';
+        price = 0;
       } else {
         if (adminSelectedServices.length === 0) {
           alert('Выберите хотя бы одну услугу!');
@@ -1969,6 +2355,8 @@
         client_name = document.getElementById('edit-name').value.trim() || 'Клиент';
         client_phone = getCleanPhone(document.getElementById('edit-phone').value);
         service_name = getCombinedNames(adminSelectedServices);
+        price = Number(document.getElementById('edit-price').value) || getTotalPrice(adminSelectedServices);
+        notes = document.getElementById('edit-notes').value.trim();
       }
 
       const btn = document.getElementById('save-edit-btn');
@@ -1980,7 +2368,7 @@
         body: JSON.stringify({
           action: id ? 'update' : 'create',
           from_admin: true,
-          id, client_name, client_phone, service_name, appointment_date, appointment_time, end_time
+          id, client_name, client_phone, service_name, appointment_date, appointment_time, end_time, price, notes
         })
       });
 
