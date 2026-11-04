@@ -319,9 +319,9 @@
   <div id="password-modal" class="modal hidden">
     <div class="modal-box">
       <h2 style="margin-bottom:12px;">Вход для мастера</h2>
-      <input type="password" id="admin-pass-input" placeholder="Пароль" onkeydown="if(event.key==='Enter') checkAdminPass()">
+      <input type="password" id="admin-pass-input" placeholder="Введите ключ доступа" onkeydown="if(event.key==='Enter') checkAdminPass()">
       <div class="row">
-        <button onclick="checkAdminPass()" class="btn" style="flex:1;">Войти</button>
+        <button id="login-admin-btn" onclick="checkAdminPass()" class="btn" style="flex:1;">Войти</button>
         <button onclick="toggleAdminModal()" class="btn-outline" style="flex:1; padding:13px; text-align:center;">Отмена</button>
       </div>
     </div>
@@ -390,7 +390,7 @@
     // =========================================================================
     // ЕДИНЫЕ ПЕРЕМЕННЫЕ АДРЕСА И НАСТРОЕК (Менять адрес только здесь!)
     // =========================================================================
-    const LOCATION_ADDRESS = 'Санкт-Петербург, Итальянская, 12ж';
+    const LOCATION_ADDRESS = 'Санкт-Петербург, Итальянская, 12Ж';
     const LOCATION_PLACE = 'Барбершоп «Шум»';
     const LOCATION_FULL = `${LOCATION_ADDRESS} (${LOCATION_PLACE})`;
     const LOCATION_MAP_URL = `https://yandex.ru/maps/?text=${encodeURIComponent(LOCATION_ADDRESS)}`;
@@ -399,7 +399,7 @@
     const BOT_USERNAME = 'frantsuzov_barberbooking_bot'; 
     const MASTER_TG_USERNAME = 'afrant5';
     const MASTER_TG_ID = '189835141';
-    const ADMIN_PASS_KEY = 'af_barber_admin_saved';
+    const ADMIN_PASS_KEY = 'af_barber_admin_token';
     const CLIENT_SAVED_NAME_KEY = 'af_client_saved_name';
     const CLIENT_SAVED_PHONE_KEY = 'af_client_saved_phone';
 
@@ -421,9 +421,13 @@
       }
     }
 
-    function isAdminAuthorizedOnDevice() {
+    function getSavedAdminKey() {
+      try { return localStorage.getItem(ADMIN_PASS_KEY) || ''; } catch (e) { return ''; }
+    }
+
+    function hasSavedAdminAccess() {
       if (currentTgChatId === MASTER_TG_ID) return true;
-      try { return localStorage.getItem(ADMIN_PASS_KEY) === 'Smart31415'; } catch (e) { return false; }
+      return Boolean(getSavedAdminKey());
     }
 
     function openAdminDirectly() {
@@ -442,7 +446,7 @@
       clearTimeout(secretTapTimer);
       if (secretTapCount >= 5) {
         secretTapCount = 0;
-        if (isAdminAuthorizedOnDevice()) {
+        if (hasSavedAdminAccess()) {
           openAdminDirectly();
         } else {
           toggleAdminModal();
@@ -701,7 +705,7 @@
       adminSelectedDate = today;
 
       if (window.location.hash === '#admin') {
-        if (isAdminAuthorizedOnDevice()) openAdminDirectly();
+        if (hasSavedAdminAccess()) openAdminDirectly();
         else toggleAdminModal();
       }
 
@@ -725,19 +729,27 @@
       if (selectedServices.length > 0) renderTimeSlots(true);
     }
 
-    async function fetchAllData() {
-      if (fetchPromise) return fetchPromise;
+    async function fetchAllData(asAdmin = false) {
+      if (fetchPromise && !asAdmin) return fetchPromise;
       fetchPromise = (async () => {
         try {
-          const res = await fetch(API_URL + '?t=' + Date.now(), { cache: 'no-store' });
+          let queryUrl = `${API_URL}?t=${Date.now()}`;
+          if (asAdmin || hasSavedAdminAccess()) {
+            const key = encodeURIComponent(getSavedAdminKey());
+            const tgId = encodeURIComponent(currentTgChatId || '');
+            queryUrl += `&admin_key=${key}&admin_tg_id=${tgId}`;
+          }
+          const res = await fetch(queryUrl, { cache: 'no-store' });
           const data = await res.json();
           const rawApps = Array.isArray(data) ? data : (data.appointments || []);
           if (data.schedule) scheduleConfig = data.schedule;
-          allExpenses = (data.expenses || []).map(e => ({
-            ...e,
-            date: normalizeDate(e.date),
-            amount: Number(e.amount) || 0
-          }));
+          if (data.expenses) {
+            allExpenses = data.expenses.map(e => ({
+              ...e,
+              date: normalizeDate(e.date),
+              amount: Number(e.amount) || 0
+            }));
+          }
 
           allAppointments = rawApps.map(item => {
             const startT = normalizeTime(item.appointment_time);
@@ -1059,7 +1071,7 @@
       if (btn.innerText === 'Проверка и сохранение...') btn.innerText = 'Записаться';
     }
 
-    // --- КАБИНЕТ МАСТЕРА ---
+    // --- КАБИНЕТ МАСТЕРА (БЕЗОПАСНАЯ ПРОВЕРКА ЧЕРЕЗ СЕРВЕР) ---
     function toggleAdminModal() {
       const modal = document.getElementById('password-modal');
       modal.classList.toggle('hidden');
@@ -1068,13 +1080,32 @@
       if (!modal.classList.contains('hidden')) setTimeout(() => input.focus(), 100);
     }
 
-    function checkAdminPass() {
-      if (document.getElementById('admin-pass-input').value === 'Smart31415') {
-        try { localStorage.setItem(ADMIN_PASS_KEY, 'Smart31415'); } catch (e) {}
-        openAdminDirectly();
-      } else {
-        alert('Неверный пароль!');
+    async function checkAdminPass() {
+      const val = document.getElementById('admin-pass-input').value.trim();
+      if (!val) return;
+      const btn = document.getElementById('login-admin-btn');
+      btn.disabled = true;
+      btn.innerText = 'Проверка...';
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'verify_admin', admin_key: val, admin_tg_id: currentTgChatId })
+        });
+        const data = await res.json();
+        if (data.status === 'ok') {
+          try { localStorage.setItem(ADMIN_PASS_KEY, val); } catch (e) {}
+          openAdminDirectly();
+        } else {
+          alert('Неверный ключ доступа!');
+        }
+      } catch (e) {
+        alert('Ошибка соединения с сервером.');
       }
+
+      btn.disabled = false;
+      btn.innerText = 'Войти';
     }
 
     function exitAdmin() {
@@ -1191,7 +1222,12 @@
       await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'save_schedule', schedule: scheduleConfig })
+        body: JSON.stringify({
+          action: 'save_schedule',
+          schedule: scheduleConfig,
+          admin_key: getSavedAdminKey(),
+          admin_tg_id: currentTgChatId
+        })
       });
       btn.innerText = 'Сохранено!';
       renderCalendar();
@@ -1203,7 +1239,7 @@
     async function loadAppointments(forceFetch = false) {
       const list = document.getElementById('admin-appointments-list');
       list.innerHTML = '<p style="font-size:13px; color:var(--muted); text-align:center;">Загрузка расписания...</p>';
-      if (forceFetch) await fetchAllData();
+      if (forceFetch) await fetchAllData(true);
       renderScheduleAdmin();
       renderAdminCalendar();
       renderAdminList();
@@ -1218,7 +1254,13 @@
       await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'update_price', id: appId, price: num })
+        body: JSON.stringify({
+          action: 'update_price',
+          id: appId,
+          price: num,
+          admin_key: getSavedAdminKey(),
+          admin_tg_id: currentTgChatId
+        })
       });
       await loadAppointments(true);
     }
@@ -1239,7 +1281,12 @@
       await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'add_expense', date, category, amount, comment })
+        body: JSON.stringify({
+          action: 'add_expense',
+          date, category, amount, comment,
+          admin_key: getSavedAdminKey(),
+          admin_tg_id: currentTgChatId
+        })
       });
       await loadAppointments(true);
     }
@@ -1249,7 +1296,12 @@
       await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'delete_expense', id })
+        body: JSON.stringify({
+          action: 'delete_expense',
+          id,
+          admin_key: getSavedAdminKey(),
+          admin_tg_id: currentTgChatId
+        })
       });
       await loadAppointments(true);
     }
@@ -1433,7 +1485,7 @@
           } else {
             const actualPrice = getAppActualPrice(coveringApp);
             const isConfirmed = String(coveringApp.reminded || '').includes('confirmed');
-            const cleanDigits = String(coveringApp.client_phone).replace(/\D/g, '');
+            const cleanDigits = String(coveringApp.client_phone || '').replace(/\D/g, '');
             const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
             const inviteText = encodeURIComponent(`Привет, ${coveringApp.client_name}! Записал тебя на ${coveringApp.appointment_date} в ${coveringApp.appointment_time} (${coveringApp.service_name}). Адрес: ${LOCATION_FULL}. Подтверждение и напоминания в боте: ${clientTgLink}`);
 
@@ -1448,7 +1500,7 @@
                     <div style="font-weight:700; font-size:15px;">
                       ${coveringApp.client_name}
                       ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''}
-                      <a href="tel:${coveringApp.client_phone}" style="font-weight:400; font-size:12px; color:var(--tg); text-decoration:none;">${coveringApp.client_phone}</a>
+                      <a href="tel:${coveringApp.client_phone || ''}" style="font-weight:400; font-size:12px; color:var(--tg); text-decoration:none;">${coveringApp.client_phone || ''}</a>
                     </div>
                     <div style="font-size:13px; color:#d4d4d4; margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                       <span>✂️ ${coveringApp.service_name}</span>
@@ -1457,7 +1509,7 @@
                     ${coveringApp.notes ? `<div class="note-box">📝 ${coveringApp.notes}</div>` : ''}
                   </div>
                   <div class="row">
-                    <a href="sms:${coveringApp.client_phone}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.12); color:var(--tg); border:none;">СМС</a>
+                    <a href="sms:${coveringApp.client_phone || ''}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.12); color:var(--tg); border:none;">СМС</a>
                     <button onclick='openEditModal(${JSON.stringify(coveringApp)})' class="btn-outline">Изм.</button>
                     <button onclick="deleteAppointment('${coveringApp.id}')" class="btn-outline" style="color:var(--accent);">×</button>
                   </div>
@@ -1501,7 +1553,7 @@
 
       const actualPrice = getAppActualPrice(app);
       const isConfirmed = String(app.reminded || '').includes('confirmed');
-      const cleanDigits = String(app.client_phone).replace(/\D/g, '');
+      const cleanDigits = String(app.client_phone || '').replace(/\D/g, '');
       const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
       const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Адрес: ${LOCATION_FULL}. Подтверждение и напоминания в боте: ${clientTgLink}`);
 
@@ -1511,7 +1563,7 @@
           <div style="font-weight:600; font-size:15px; margin:2px 0;">
             ${app.client_name}
             ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''}
-            <a href="tel:${app.client_phone}" style="font-weight:400; font-size:12px; color:var(--muted); text-decoration:none;">(${app.client_phone})</a>
+            <a href="tel:${app.client_phone || ''}" style="font-weight:400; font-size:12px; color:var(--muted); text-decoration:none;">(${app.client_phone || ''})</a>
           </div>
           <div style="font-size:13px; color:var(--muted); display:flex; align-items:center; gap:6px;">
             <span>${app.service_name}</span>
@@ -1520,7 +1572,7 @@
           ${app.notes ? `<div class="note-box">📝 ${app.notes}</div>` : ''}
         </div>
         <div class="row">
-          <a href="sms:${app.client_phone}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.1); color:var(--tg); border:none;">СМС</a>
+          <a href="sms:${app.client_phone || ''}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.1); color:var(--tg); border:none;">СМС</a>
           <button onclick='openEditModal(${JSON.stringify(app)})' class="btn-outline">Изменить</button>
           <button onclick="deleteAppointment('${app.id}')" class="btn-outline" style="color:var(--accent);">Удалить</button>
         </div>
@@ -1533,7 +1585,12 @@
       await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'delete', id })
+        body: JSON.stringify({
+          action: 'delete',
+          id,
+          admin_key: getSavedAdminKey(),
+          admin_tg_id: currentTgChatId
+        })
       });
       await loadAppointments(true);
     }
@@ -1657,7 +1714,7 @@
       } else {
         document.getElementById('edit-break-note').value = '';
         document.getElementById('edit-name').value = isNew ? '' : app.client_name;
-        document.getElementById('edit-phone').value = isNew ? '+7 ' : app.client_phone;
+        document.getElementById('edit-phone').value = isNew ? '+7 ' : (app.client_phone || '+7 ');
         document.getElementById('edit-notes').value = isNew ? '' : (app.notes || '');
         if (isNew) {
           adminSelectedServices = [services[0]];
@@ -1723,6 +1780,8 @@
         body: JSON.stringify({
           action: id ? 'update' : 'create',
           from_admin: true,
+          admin_key: getSavedAdminKey(),
+          admin_tg_id: currentTgChatId,
           id, client_name, client_phone, service_name, appointment_date, appointment_time, end_time, price, notes
         })
       });
@@ -1737,3 +1796,4 @@
   </script>
 </body>
 </html>
+
