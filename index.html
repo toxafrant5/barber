@@ -7,138 +7,111 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #0b0b0d; --card: rgba(22, 22, 26, 0.75); --card-solid: #16161a;
-      --border: rgba(255, 255, 255, 0.08); --border-hover: rgba(255, 255, 255, 0.2);
-      --text: #f5f5f7; --muted: #8e8e93; --accent: #ff3b30; --accent-hover: #ff453a;
-      --tg: #0a84ff; --tg-hover: #409cff; --green: #34c759; --amber: #f59e0b;
-      --input-bg: rgba(255, 255, 255, 0.04); --radius-lg: 20px; --radius-md: 12px;
+      --bg:#0b0b0d; --card:rgba(22,22,26,0.75); --card-solid:#16161a;
+      --border:rgba(255,255,255,0.08); --border-hover:rgba(255,255,255,0.2);
+      --text:#f5f5f7; --muted:#8e8e93; --accent:#ff3b30; --accent-hover:#ff453a;
+      --tg:#0a84ff; --green:#34c759; --amber:#f59e0b;
+      --input-bg:rgba(255,255,255,0.04); --radius-lg:20px; --radius-md:12px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
     body {
-      background: var(--bg); color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-      padding-bottom: 50px; line-height: 1.45; -webkit-font-smoothing: antialiased;
-      background-image: radial-gradient(circle at 10% 20%, rgba(255, 59, 48, 0.06) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(10, 132, 255, 0.06) 0%, transparent 40%);
-      background-attachment: fixed;
+      background:var(--bg); color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
+      padding-bottom:50px; line-height:1.45; -webkit-font-smoothing:antialiased;
+      background-image:radial-gradient(circle at 10% 20%,rgba(255,59,48,0.06) 0%,transparent 40%),radial-gradient(circle at 90% 80%,rgba(10,132,255,0.06) 0%,transparent 40%);
+      background-attachment:fixed;
     }
-    header {
-      position: sticky; top: 0; z-index: 20; background: rgba(11, 11, 13, 0.82);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border); padding: 12px 16px; margin-bottom: 24px;
-    }
-    .header-inner { max-width: 560px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .logo-wrap { display: flex; align-items: center; gap: 11px; min-width: 0; }
-    .logo-circle {
-      width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      box-shadow: 0 4px 14px rgba(185, 28, 28, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-      overflow: hidden; background: #140507; cursor: pointer; user-select: none; transition: transform 0.1s ease;
-    }
-    .logo-circle:active { transform: scale(0.94); }
-    .logo-circle svg { width: 100%; height: 100%; display: block; pointer-events: none; }
-    .brand-title { font-weight: 700; font-size: 14px; letter-spacing: 0.4px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .brand-sub { font-size: 11px; color: var(--muted); white-space: nowrap; letter-spacing: 0.2px; }
-    .header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .container { max-width: 560px; margin: 0 auto; padding: 0 16px; }
-    .card {
-      background: var(--card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 18px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-    }
-    h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; color: var(--text); }
-    .step-badge { width: 24px; height: 24px; border-radius: 50%; background: rgba(255, 255, 255, 0.08); color: var(--text); font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
-    .service-item {
-      padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--input-bg);
-      cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; transition: all 0.2s ease; user-select: none;
-    }
-    .service-item:last-child { margin-bottom: 0; }
-    .service-item:hover { border-color: var(--border-hover); background: rgba(255, 255, 255, 0.06); }
-    .service-item.selected { border-color: var(--accent); background: rgba(255, 59, 48, 0.08); box-shadow: 0 0 20px rgba(255, 59, 48, 0.15); }
-    .service-left { display: flex; align-items: center; gap: 12px; }
-    .check-circle { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--muted); display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; transition: 0.15s; flex-shrink: 0; }
-    .service-item.selected .check-circle { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .upsell-banner {
-      margin-top: 12px; padding: 12px 14px; border-radius: 12px;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.14), rgba(255, 59, 48, 0.1));
-      border: 1px dashed rgba(245, 158, 11, 0.45); display: flex; justify-content: space-between; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s;
-    }
-    .upsell-banner:hover { border-color: var(--amber); background: rgba(245, 158, 11, 0.2); }
-    .summary-bar { margin-top: 12px; padding: 12px 16px; border-radius: var(--radius-md); background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.25); display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-    .cal-wrap { background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
-    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .cal-title { font-weight: 600; font-size: 15px; text-transform: capitalize; }
-    .cal-nav-btn { background: var(--input-bg); border: 1px solid var(--border); color: var(--text); width: 32px; height: 32px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: 0.15s; }
-    .cal-nav-btn:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.08); }
-    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; color: var(--muted); font-weight: 500; margin-bottom: 8px; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-    .cal-day { aspect-ratio: 1; border-radius: 11px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; user-select: none; position: relative; transition: all 0.15s ease; }
-    .cal-day.empty { background: transparent; pointer-events: none; }
-    .cal-day.off { background: rgba(255, 255, 255, 0.02); color: rgba(255, 255, 255, 0.2); border: 1px solid transparent; cursor: not-allowed; font-weight: 400; }
-    .cal-day.admin-clickable { cursor: pointer; }
-    .cal-day.admin-clickable:hover { border-color: rgba(255, 255, 255, 0.25); }
-    .cal-day.work { background: #1c1c21; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.16); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.35); }
-    .cal-day.work:hover { border-color: rgba(255, 255, 255, 0.4); transform: translateY(-1px); }
-    .cal-dots { display: flex; gap: 3px; position: absolute; bottom: 4px; }
-    .cal-dot { width: 4px; height: 4px; border-radius: 50%; }
-    .cal-day.selected { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; box-shadow: 0 4px 14px rgba(255, 59, 48, 0.45) !important; }
-    .cal-day.selected .cal-dot { background: #ffffff !important; }
-    .cal-legend { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: 11px; color: var(--muted); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
-    .legend-item { display: flex; align-items: center; gap: 5px; }
-    .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
-    .timeline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
-    .schedule-grid { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: rgba(0, 0, 0, 0.2); }
-    .slot-row { display: flex; align-items: stretch; border-bottom: 1px solid rgba(255, 255, 255, 0.05); min-height: 38px; transition: background 0.15s ease; }
-    .slot-row:last-child { border-bottom: none; }
-    .slot-row.free-row { cursor: pointer; }
-    .slot-row.free-row:hover { background: rgba(255, 255, 255, 0.04); }
-    .slot-time { width: 58px; flex-shrink: 0; font-size: 12px; font-weight: 600; color: var(--muted); display: flex; align-items: center; justify-content: center; border-right: 1px solid rgba(255, 255, 255, 0.05); user-select: none; }
-    .slot-time.half-hour { font-size: 11px; font-weight: 400; opacity: 0.55; }
-    .slot-body { flex: 1; padding: 4px 8px; display: flex; align-items: center; }
-    .tl-card-busy { width: 100%; background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.3); border-left: 4px solid var(--accent); border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-    .tl-card-break { width: 100%; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-left: 4px solid var(--amber); border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-    .price-pill { display: inline-flex; align-items: center; gap: 4px; background: rgba(52, 199, 89, 0.14); color: #34c759; border: 1px solid rgba(52, 199, 89, 0.3); padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; }
-    .confirmed-badge { display: inline-block; background: rgba(52, 199, 89, 0.18); color: #34c759; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 5px; margin-left: 4px; }
-    .note-box { font-size: 11px; color: var(--amber); background: rgba(245, 158, 11, 0.1); padding: 3px 7px; border-radius: 6px; margin-top: 4px; display: inline-block; }
-    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
-    .stat-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
-    .stat-val { font-size: 20px; font-weight: 700; margin-top: 4px; }
-    .client-suggestions { background: #1e1e24; border: 1px solid var(--border-hover); border-radius: 10px; margin-top: -8px; margin-bottom: 12px; max-height: 150px; overflow-y: auto; }
-    .client-sug-item { padding: 9px 12px; font-size: 13px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; justify-content: space-between; }
-    .client-sug-item:last-child { border-bottom: none; }
-    .client-sug-item:hover { background: rgba(255, 255, 255, 0.08); }
-    .mode-switch { display: flex; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; padding: 3px; margin-bottom: 14px; }
-    .mode-btn { flex: 1; padding: 8px; text-align: center; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; color: var(--muted); transition: 0.15s; user-select: none; }
-    .mode-btn.active-client { background: var(--accent); color: #fff; }
-    .mode-btn.active-break { background: var(--amber); color: #000; }
-    label { font-size: 12px; font-weight: 500; color: var(--muted); display: block; margin-bottom: 6px; }
-    input, select, textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; color: var(--text); font-size: 15px; font-family: inherit; margin-bottom: 12px; transition: all 0.2s ease; appearance: none; }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--tg); background: rgba(255, 255, 255, 0.07); box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2); }
-    .btn { background: var(--accent); color: #fff; border: none; border-radius: var(--radius-md); padding: 14px 18px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s ease; text-decoration: none; display: inline-block; text-align: center; box-shadow: 0 4px 16px rgba(255, 59, 48, 0.3); }
-    .btn:hover { background: var(--accent-hover); }
-    .btn:active { transform: scale(0.98); }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
-    .btn-tg { background: var(--tg); color: #fff; border: none; border-radius: var(--radius-md); padding: 13px 16px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease; box-shadow: 0 4px 16px rgba(10, 132, 255, 0.3); }
-    .btn-pill { background: rgba(10, 132, 255, 0.12); color: var(--tg); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid rgba(10, 132, 255, 0.2); transition: 0.2s; white-space: nowrap; cursor: pointer; }
-    .btn-outline { background: var(--input-bg); color: var(--text); border: 1px solid var(--border); padding: 7px 12px; border-radius: 9px; font-size: 12px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; transition: 0.15s; white-space: nowrap; }
-    .btn-outline:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); }
-    .btn-outline.active-tab { background: var(--tg); border-color: var(--tg); color: #fff; }
-    .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
-    .slot-btn { padding: 11px 6px; border-radius: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); cursor: pointer; font-weight: 500; font-size: 13px; font-family: inherit; transition: all 0.15s ease; }
-    .slot-btn:hover { border-color: var(--border-hover); background: rgba(255, 255, 255, 0.08); }
-    .slot-btn.selected { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; box-shadow: 0 4px 12px rgba(255, 59, 48, 0.4); }
-    .location-footer { max-width: 560px; margin: 6px auto 0; padding: 0 16px; }
-    .location-card { background: rgba(22, 22, 26, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 18px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .location-info { display: flex; align-items: center; gap: 12px; }
-    .location-pin { width: 36px; height: 36px; border-radius: 10px; background: rgba(255, 59, 48, 0.12); border: 1px solid rgba(255, 59, 48, 0.25); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-    .hidden { display: none !important; }
-    .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; overflow-y: auto; }
-    .modal-box { background: var(--card-solid); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6); max-height: 92vh; overflow-y: auto; }
-    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .day-chip { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--input-bg); color: var(--muted); cursor: pointer; font-size: 12px; font-weight: 500; user-select: none; transition: 0.15s; }
-    .day-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .tag { display: inline-flex; align-items: center; gap: 6px; background: var(--input-bg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 500; margin: 3px; }
-    .admin-srv-check { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 6px; cursor: pointer; font-size: 13px; background: var(--input-bg); }
-    .admin-srv-check.active { border-color: var(--accent); background: rgba(255, 59, 48, 0.12); }
-    @media (max-width: 400px) { .slots-grid { grid-template-columns: repeat(3, 1fr); } .card { padding: 18px; } .cal-day { font-size: 13px; } }
+    header { position:sticky; top:0; z-index:20; background:rgba(11,11,13,0.82); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:12px 16px; margin-bottom:24px; }
+    .header-inner { max-width:560px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .logo-wrap { display:flex; align-items:center; gap:11px; min-width:0; }
+    .logo-circle { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 14px rgba(185,28,28,0.35),inset 0 1px 1px rgba(255,255,255,0.2); overflow:hidden; background:#140507; cursor:pointer; user-select:none; transition:transform 0.1s; }
+    .logo-circle:active { transform:scale(0.94); }
+    .logo-circle svg { width:100%; height:100%; display:block; pointer-events:none; }
+    .brand-title { font-weight:700; font-size:14px; letter-spacing:0.4px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .brand-sub { font-size:11px; color:var(--muted); white-space:nowrap; letter-spacing:0.2px; }
+    .header-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .container { max-width:560px; margin:0 auto; padding:0 16px; }
+    .card { background:var(--card); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:var(--radius-lg); padding:22px; margin-bottom:18px; box-shadow:0 10px 40px rgba(0,0,0,0.4); }
+    h2 { font-size:18px; font-weight:600; letter-spacing:-0.2px; margin-bottom:14px; display:flex; align-items:center; gap:10px; color:var(--text); }
+    .step-badge { width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,0.08); color:var(--text); font-size:12px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; }
+    .service-item { padding:14px 16px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--input-bg); cursor:pointer; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; transition:0.2s; user-select:none; }
+    .service-item:last-child { margin-bottom:0; }
+    .service-item:hover { border-color:var(--border-hover); background:rgba(255,255,255,0.06); }
+    .service-item.selected { border-color:var(--accent); background:rgba(255,59,48,0.08); box-shadow:0 0 20px rgba(255,59,48,0.15); }
+    .service-left { display:flex; align-items:center; gap:12px; }
+    .check-circle { width:20px; height:20px; border-radius:6px; border:1.5px solid var(--muted); display:flex; align-items:center; justify-content:center; font-size:12px; color:transparent; transition:0.15s; flex-shrink:0; }
+    .service-item.selected .check-circle { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .upsell-banner { margin-top:12px; padding:12px 14px; border-radius:12px; background:linear-gradient(135deg,rgba(245,158,11,0.14),rgba(255,59,48,0.1)); border:1px dashed rgba(245,158,11,0.45); display:flex; justify-content:space-between; align-items:center; gap:10px; cursor:pointer; transition:0.2s; }
+    .upsell-banner:hover { border-color:var(--amber); background:rgba(245,158,11,0.2); }
+    .summary-bar { margin-top:12px; padding:12px 16px; border-radius:var(--radius-md); background:rgba(255,59,48,0.1); border:1px solid rgba(255,59,48,0.25); display:flex; justify-content:space-between; align-items:center; font-size:13px; }
+    .cal-wrap { background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:14px; }
+    .cal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+    .cal-title { font-weight:600; font-size:15px; text-transform:capitalize; }
+    .cal-nav-btn { background:var(--input-bg); border:1px solid var(--border); color:var(--text); width:32px; height:32px; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:15px; }
+    .cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:11px; color:var(--muted); font-weight:500; margin-bottom:8px; }
+    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+    .cal-day { aspect-ratio:1; border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:14px; font-weight:600; user-select:none; position:relative; transition:0.15s; }
+    .cal-day.empty { background:transparent; pointer-events:none; }
+    .cal-day.off { background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.2); border:1px solid transparent; cursor:not-allowed; font-weight:400; }
+    .cal-day.admin-clickable { cursor:pointer; }
+    .cal-day.work { background:#1c1c21; color:#fff; border:1px solid rgba(255,255,255,0.16); cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.35); }
+    .cal-dots { display:flex; gap:3px; position:absolute; bottom:4px; }
+    .cal-dot { width:4px; height:4px; border-radius:50%; }
+    .cal-day.selected { background:var(--accent)!important; color:#fff!important; border-color:var(--accent)!important; box-shadow:0 4px 14px rgba(255,59,48,0.45)!important; }
+    .cal-day.selected .cal-dot { background:#fff!important; }
+    .cal-legend { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; font-size:11px; color:var(--muted); margin-top:12px; padding-top:10px; border-top:1px solid var(--border); }
+    .legend-item { display:flex; align-items:center; gap:5px; }
+    .legend-dot { width:7px; height:7px; border-radius:50%; }
+    .timeline-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:8px; }
+    .schedule-grid { border:1px solid var(--border); border-radius:14px; overflow:hidden; background:rgba(0,0,0,0.2); }
+    .slot-row { display:flex; align-items:stretch; border-bottom:1px solid rgba(255,255,255,0.05); min-height:38px; }
+    .slot-row:last-child { border-bottom:none; }
+    .slot-row.free-row { cursor:pointer; }
+    .slot-row.free-row:hover { background:rgba(255,255,255,0.04); }
+    .slot-time { width:58px; flex-shrink:0; font-size:12px; font-weight:600; color:var(--muted); display:flex; align-items:center; justify-content:center; border-right:1px solid rgba(255,255,255,0.05); user-select:none; }
+    .slot-time.half-hour { font-size:11px; font-weight:400; opacity:0.55; }
+    .slot-body { flex:1; padding:4px 8px; display:flex; align-items:center; }
+    .tl-card-busy { width:100%; background:rgba(255,59,48,0.1); border:1px solid rgba(255,59,48,0.3); border-left:4px solid var(--accent); border-radius:10px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+    .tl-card-break { width:100%; background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); border-left:4px solid var(--amber); border-radius:10px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+    .price-pill { display:inline-flex; align-items:center; gap:4px; background:rgba(52,199,89,0.14); color:#34c759; border:1px solid rgba(52,199,89,0.3); padding:2px 8px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; }
+    .confirmed-badge { display:inline-block; background:rgba(52,199,89,0.18); color:#34c759; font-size:10px; font-weight:700; padding:2px 6px; border-radius:5px; margin-left:4px; }
+    .note-box { font-size:11px; color:var(--amber); background:rgba(245,158,11,0.1); padding:3px 7px; border-radius:6px; margin-top:4px; display:inline-block; }
+    .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; }
+    .stat-card { background:var(--input-bg); border:1px solid var(--border); border-radius:14px; padding:14px; }
+    .stat-val { font-size:20px; font-weight:700; margin-top:4px; }
+    .client-suggestions { background:#1e1e24; border:1px solid var(--border-hover); border-radius:10px; margin-top:-8px; margin-bottom:12px; max-height:150px; overflow-y:auto; }
+    .client-sug-item { padding:9px 12px; font-size:13px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; justify-content:space-between; }
+    .client-sug-item:last-child { border-bottom:none; }
+    .mode-switch { display:flex; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:3px; margin-bottom:14px; }
+    .mode-btn { flex:1; padding:8px; text-align:center; font-size:13px; font-weight:600; border-radius:8px; cursor:pointer; color:var(--muted); user-select:none; }
+    .mode-btn.active-client { background:var(--accent); color:#fff; }
+    .mode-btn.active-break { background:var(--amber); color:#000; }
+    label { font-size:12px; font-weight:500; color:var(--muted); display:block; margin-bottom:6px; }
+    input, select, textarea { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 14px; color:var(--text); font-size:15px; font-family:inherit; margin-bottom:12px; appearance:none; }
+    input:focus, select:focus { outline:none; border-color:var(--tg); background:rgba(255,255,255,0.07); }
+    .btn { background:var(--accent); color:#fff; border:none; border-radius:var(--radius-md); padding:14px 18px; font-size:15px; font-weight:600; cursor:pointer; width:100%; text-decoration:none; display:inline-block; text-align:center; box-shadow:0 4px 16px rgba(255,59,48,0.3); }
+    .btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .btn-tg { background:var(--tg); color:#fff; border:none; border-radius:var(--radius-md); padding:13px 16px; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 16px rgba(10,132,255,0.3); }
+    .btn-pill { background:rgba(10,132,255,0.12); color:var(--tg); padding:6px 12px; border-radius:999px; font-size:12px; font-weight:600; text-decoration:none; border:1px solid rgba(10,132,255,0.2); white-space:nowrap; cursor:pointer; }
+    .btn-outline { background:var(--input-bg); color:var(--text); border:1px solid var(--border); padding:7px 12px; border-radius:9px; font-size:12px; font-weight:500; cursor:pointer; text-decoration:none; display:inline-block; white-space:nowrap; }
+    .btn-outline.active-tab { background:var(--tg); border-color:var(--tg); color:#fff; }
+    .slots-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:10px; }
+    .slot-btn { padding:11px 6px; border-radius:10px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); cursor:pointer; font-weight:500; font-size:13px; font-family:inherit; }
+    .slot-btn.selected { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600; box-shadow:0 4px 12px rgba(255,59,48,0.4); }
+    .location-footer { max-width:560px; margin:6px auto 0; padding:0 16px; }
+    .location-card { background:rgba(22,22,26,0.6); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:18px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .location-info { display:flex; align-items:center; gap:12px; }
+    .location-pin { width:36px; height:36px; border-radius:10px; background:rgba(255,59,48,0.12); border:1px solid rgba(255,59,48,0.25); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .hidden { display:none!important; }
+    .modal { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:center; padding:16px; z-index:50; overflow-y:auto; }
+    .modal-box { background:var(--card-solid); border:1px solid var(--border); border-radius:var(--radius-lg); padding:22px; width:100%; max-width:420px; box-shadow:0 25px 50px rgba(0,0,0,0.6); max-height:92vh; overflow-y:auto; }
+    .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .day-chip { padding:7px 12px; border-radius:999px; border:1px solid var(--border); background:var(--input-bg); color:var(--muted); cursor:pointer; font-size:12px; font-weight:500; user-select:none; }
+    .day-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .tag { display:inline-flex; align-items:center; gap:6px; background:var(--input-bg); border:1px solid var(--border); padding:4px 10px; border-radius:999px; font-size:11px; font-weight:500; margin:3px; }
+    .admin-srv-check { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border:1px solid var(--border); border-radius:8px; margin-bottom:6px; cursor:pointer; font-size:13px; background:var(--input-bg); }
+    .admin-srv-check.active { border-color:var(--accent); background:rgba(255,59,48,0.12); }
+    @media (max-width:400px) { .slots-grid { grid-template-columns:repeat(3,1fr); } .card { padding:18px; } .cal-day { font-size:13px; } }
   </style>
 </head>
 <body>
@@ -150,14 +123,10 @@
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <radialGradient id="afBg" cx="35%" cy="30%" r="70%">
-                <stop offset="0%" stop-color="#4a101d"/>
-                <stop offset="55%" stop-color="#24070e"/>
-                <stop offset="100%" stop-color="#0f0306"/>
+                <stop offset="0%" stop-color="#4a101d"/><stop offset="55%" stop-color="#24070e"/><stop offset="100%" stop-color="#0f0306"/>
               </radialGradient>
               <linearGradient id="afMark" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ff6b81"/>
-                <stop offset="45%" stop-color="#c81e3a"/>
-                <stop offset="100%" stop-color="#68091a"/>
+                <stop offset="0%" stop-color="#ff6b81"/><stop offset="45%" stop-color="#c81e3a"/><stop offset="100%" stop-color="#68091a"/>
               </linearGradient>
               <filter id="afShadow" x="-20%" y="-20%" width="140%" height="140%">
                 <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#000" flood-opacity="0.65"/>
@@ -183,21 +152,18 @@
   </header>
 
   <main class="container">
-    <!-- КЛИЕНТСКИЙ ЭКРАН -->
     <div id="client-view">
       <div class="card">
         <h2><span class="step-badge">1</span> Выберите услуги</h2>
         <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Можно выбрать сразу несколько услуг</p>
         <div id="services-list"></div>
-        
         <div id="upsell-box" class="upsell-banner hidden" onclick="applyWaxUpsell()">
           <div>
-            <div style="font-weight: 600; font-size: 13px; color: var(--amber);">💡 Добавить депиляцию воском?</div>
-            <div style="font-size: 11px; color: var(--muted);">Всего +5 минут к визиту · 200 ₽</div>
+            <div style="font-weight:600; font-size:13px; color:var(--amber);">💡 Добавить депиляцию воском?</div>
+            <div style="font-size:11px; color:var(--muted);">Всего +5 минут к визиту · 200 ₽</div>
           </div>
-          <span class="btn-outline" style="background: rgba(245, 158, 11, 0.2); border-color: var(--amber); color: #fff; font-weight: 600;">+ Добавить</span>
+          <span class="btn-outline" style="background:rgba(245,158,11,0.2); border-color:var(--amber); color:#fff; font-weight:600;">+ Добавить</span>
         </div>
-
         <div id="services-summary" class="summary-bar hidden"></div>
       </div>
 
@@ -205,23 +171,19 @@
         <h2><span class="step-badge">2</span> Дата и время</h2>
         <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Часы работы: 10:00 – 21:00</p>
         <input type="hidden" id="booking-date">
-
         <div class="cal-wrap">
           <div class="cal-header">
             <button type="button" class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
             <div class="cal-title" id="cal-month-title">Месяц</div>
             <button type="button" class="cal-nav-btn" onclick="changeMonth(1)">›</button>
           </div>
-          <div class="cal-weekdays">
-            <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
-          </div>
+          <div class="cal-weekdays"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div></div>
           <div class="cal-grid" id="cal-days-grid"></div>
           <div class="cal-legend">
             <div class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Рабочий день</div>
             <div class="legend-item"><span class="legend-dot" style="background:rgba(255,255,255,0.2);"></span> Выходной</div>
           </div>
         </div>
-        
         <div id="time-slots-container">
           <p style="font-size:13px; color:var(--muted); text-align:center;">Выберите услугу выше, чтобы увидеть свободное время</p>
         </div>
@@ -231,11 +193,9 @@
         <h2><span class="step-badge">3</span> Ваши контакты</h2>
         <label>Имя</label>
         <input type="text" id="client-name" placeholder="Александр">
-        
         <label>Телефон</label>
         <input type="tel" id="client-phone" value="+7 " oninput="formatPhoneInput(this)" onfocus="if(!this.value.startsWith('+7')) this.value='+7 '" placeholder="+7 (999) 000-00-00">
-        
-        <button onclick="submitBooking()" id="submit-btn" class="btn" style="margin-top: 4px;">Записаться</button>
+        <button onclick="submitBooking()" id="submit-btn" class="btn" style="margin-top:4px;">Записаться</button>
         <div id="booking-msg" class="hidden" style="margin-top:14px; text-align:center; font-size:14px;"></div>
       </div>
     </div>
@@ -255,7 +215,6 @@
         <h2>Настройка рабочих дней</h2>
         <label style="margin-bottom:6px;">Постоянные рабочие дни недели:</label>
         <div class="row" id="workdays-chips" style="margin-bottom:14px;"></div>
-
         <div style="border-top:1px solid var(--border); padding-top:12px; margin-top:6px;">
           <label>Исключения для конкретных дат:</label>
           <div class="row" style="margin-top:6px;">
@@ -287,9 +246,7 @@
             <div class="cal-title" id="admin-cal-title">Месяц</div>
             <button type="button" class="cal-nav-btn" onclick="changeAdminMonth(1)">›</button>
           </div>
-          <div class="cal-weekdays">
-            <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
-          </div>
+          <div class="cal-weekdays"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div></div>
           <div class="cal-grid" id="admin-cal-grid"></div>
           <div class="cal-legend">
             <div class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Рабочий</div>
@@ -307,15 +264,14 @@
       <div class="location-info">
         <div class="location-pin">📍</div>
         <div>
-          <div id="footer-address-text" style="font-weight: 600; font-size: 14px; color: var(--text);"></div>
-          <div id="footer-place-text" style="font-size: 12px; color: var(--muted);"></div>
+          <div id="footer-address-text" style="font-weight:600; font-size:14px; color:var(--text);"></div>
+          <div id="footer-place-text" style="font-size:12px; color:var(--muted);"></div>
         </div>
       </div>
       <a id="footer-map-link" href="#" target="_blank" class="btn-outline">На карте ↗</a>
     </div>
   </footer>
 
-  <!-- МОДАЛКА ПАРОЛЯ -->
   <div id="password-modal" class="modal hidden">
     <div class="modal-box">
       <h2 style="margin-bottom:12px;">Вход для мастера</h2>
@@ -327,58 +283,37 @@
     </div>
   </div>
 
-  <!-- МОДАЛКА РЕДАКТИРОВАНИЯ / СОЗДАНИЯ / ПЕРЕРЫВА -->
   <div id="edit-modal" class="modal hidden">
     <div class="modal-box">
       <h2 id="edit-modal-title">Запись</h2>
       <input type="hidden" id="edit-id">
-
       <div class="mode-switch">
         <div id="mode-client-btn" class="mode-btn active-client" onclick="setModalBreakMode(false)">👤 Запись клиента</div>
         <div id="mode-break-btn" class="mode-btn" onclick="setModalBreakMode(true)">☕ Перерыв</div>
       </div>
-
       <div id="client-fields-wrap">
-        <label>Имя клиента (начните вводить для быстрого поиска)</label>
+        <label>Имя клиента (поиск по базе)</label>
         <input type="text" id="edit-name" placeholder="Имя клиента" oninput="onAdminClientSearch(this.value)" autocomplete="off">
         <div id="client-suggestions-box" class="client-suggestions hidden"></div>
-        
         <label>Телефон</label>
         <input type="tel" id="edit-phone" oninput="formatPhoneInput(this); onAdminClientSearch(this.value);">
-        
-        <label>Услуги (можно выбрать несколько)</label>
-        <div id="edit-services-wrap" style="margin-bottom: 12px;"></div>
-
-        <div class="row">
-          <div style="flex: 1;">
-            <label>Сумма чека (₽) — можно изменить вручную</label>
-            <input type="number" id="edit-price" placeholder="1700" oninput="isCustomPriceEdited = true">
-          </div>
-        </div>
-
-        <label>Заметка мастера о клиенте (видна только вам)</label>
-        <input type="text" id="edit-notes" placeholder="Напр.: фейд с 0, биозавивка на желтые коклюшки">
+        <label>Услуги (можно несколько)</label>
+        <div id="edit-services-wrap" style="margin-bottom:12px;"></div>
+        <label>Сумма чека (₽) — можно изменить вручную</label>
+        <input type="number" id="edit-price" placeholder="1700" oninput="isCustomPriceEdited = true">
+        <label>Заметка мастера (видна только вам)</label>
+        <input type="text" id="edit-notes" placeholder="Напр.: фейд с 0, желтые коклюшки">
       </div>
-
       <div id="break-fields-wrap" class="hidden">
         <label>Комментарий (необязательно)</label>
         <input type="text" id="edit-break-note" placeholder="Например: Обед / Личные дела">
       </div>
-      
       <label>Дата</label>
       <input type="date" id="edit-date">
-      
       <div class="row">
-        <div style="flex:1;">
-          <label>Начало</label>
-          <input type="time" id="edit-time" onchange="autoCalcEndTime()">
-        </div>
-        <div style="flex:1;">
-          <label>Конец</label>
-          <input type="time" id="edit-end-time">
-        </div>
+        <div style="flex:1;"><label>Начало</label><input type="time" id="edit-time" onchange="autoCalcEndTime()"></div>
+        <div style="flex:1;"><label>Конец</label><input type="time" id="edit-end-time"></div>
       </div>
-
       <div class="row" style="margin-top:8px;">
         <button onclick="saveEdit()" id="save-edit-btn" class="btn" style="flex:1;">Сохранить</button>
         <button onclick="closeEditModal()" class="btn-outline" style="flex:1; padding:13px; text-align:center;">Отмена</button>
@@ -387,9 +322,7 @@
   </div>
 
   <script>
-    // =========================================================================
-    // ЕДИНЫЕ ПЕРЕМЕННЫЕ АДРЕСА И НАСТРОЕК (Менять адрес только здесь!)
-    // =========================================================================
+    // ЕДИНЫЕ ПЕРЕМЕННЫЕ АДРЕСА И НАСТРОЕК
     const LOCATION_ADDRESS = 'Санкт-Петербург, Итальянская, 12Ж';
     const LOCATION_PLACE = 'Барбершоп «Шум»';
     const LOCATION_FULL = `${LOCATION_ADDRESS} (${LOCATION_PLACE})`;
@@ -415,10 +348,7 @@
 
     function openMasterTelegram(e) {
       const url = `https://t.me/${MASTER_TG_USERNAME}`;
-      if (tgApp && tgApp.openTelegramLink) {
-        e.preventDefault();
-        tgApp.openTelegramLink(url);
-      }
+      if (tgApp && tgApp.openTelegramLink) { e.preventDefault(); tgApp.openTelegramLink(url); }
     }
 
     function getSavedAdminKey() {
@@ -438,182 +368,139 @@
       loadAppointments(true);
     }
 
-    let secretTapCount = 0;
-    let secretTapTimer = null;
-
+    let secretTapCount = 0, secretTapTimer = null;
     function handleSecretLogoTap() {
       secretTapCount++;
       clearTimeout(secretTapTimer);
       if (secretTapCount >= 5) {
         secretTapCount = 0;
-        if (hasSavedAdminAccess()) {
-          openAdminDirectly();
-        } else {
-          toggleAdminModal();
-        }
+        if (hasSavedAdminAccess()) openAdminDirectly();
+        else toggleAdminModal();
       } else {
         secretTapTimer = setTimeout(() => { secretTapCount = 0; }, 1500);
       }
     }
 
     const services = [
-      { id: 1, name: 'Стрижка', price: 1700, duration: 55 },
-      { id: 2, name: 'Борода', price: 1300, duration: 30 },
-      { id: 3, name: 'Комплекс стрижка + борода', price: 2500, duration: 85 },
-      { id: 4, name: 'Биозавивка топ зоны', price: 5000, duration: 120 },
-      { id: 5, name: 'Биозавивка всей головы', price: 6500, duration: 180 },
-      { id: 6, name: 'Депиляция воском', price: 200, duration: 5 }
+      { id:1, name:'Стрижка', price:1700, duration:55 },
+      { id:2, name:'Борода', price:1300, duration:30 },
+      { id:3, name:'Комплекс стрижка + борода', price:2500, duration:85 },
+      { id:4, name:'Биозавивка топ зоны', price:5000, duration:120 },
+      { id:5, name:'Биозавивка всей головы', price:6500, duration:180 },
+      { id:6, name:'Депиляция воском', price:200, duration:5 }
     ];
 
     const DAY_NAMES = [
-      { id: 1, label: 'Пн' }, { id: 2, label: 'Вт' }, { id: 3, label: 'Ср' },
-      { id: 4, label: 'Чт' }, { id: 5, label: 'Пт' }, { id: 6, label: 'Сб' }, { id: 0, label: 'Вс' }
+      { id:1, label:'Пн' }, { id:2, label:'Вт' }, { id:3, label:'Ср' },
+      { id:4, label:'Чт' }, { id:5, label:'Пт' }, { id:6, label:'Сб' }, { id:0, label:'Вс' }
     ];
 
-    const MONTH_NAMES = [
-      'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-      'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
-    ];
+    const MONTH_NAMES = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 
-    let selectedServices = [];
-    let adminSelectedServices = [];
-    let isModalBreakMode = false;
-    let isCustomPriceEdited = false;
-    let selectedTime = null;
-    let allAppointments = [];
-    let allExpenses = [];
-    let scheduleConfig = { workDays: [1, 2, 5, 6], extraWorkDates: [], closedDates: [] };
-    let lastBookingDetails = null;
-    
-    let isDataLoaded = false;
-    let fetchPromise = null;
+    let selectedServices = [], adminSelectedServices = [], isModalBreakMode = false, isCustomPriceEdited = false;
+    let selectedTime = null, allAppointments = [], allExpenses = [], lastBookingDetails = null;
+    let scheduleConfig = { workDays:[1,2,5,6], extraWorkDates:[], closedDates:[] };
+    let isDataLoaded = false, fetchPromise = null;
 
     const nowInit = new Date();
-    let currentCalYear = nowInit.getFullYear();
-    let currentCalMonth = nowInit.getMonth();
+    let currentCalYear = nowInit.getFullYear(), currentCalMonth = nowInit.getMonth();
+    let adminCalYear = nowInit.getFullYear(), adminCalMonth = nowInit.getMonth();
+    let adminSelectedDate = '', adminViewMode = 'day';
+    const START_HOUR = 10, END_HOUR = 21;
 
-    let adminCalYear = nowInit.getFullYear();
-    let adminCalMonth = nowInit.getMonth();
-    let adminSelectedDate = '';
-    let adminViewMode = 'day';
-
-    const START_HOUR = 10;
-    const END_HOUR = 21;
-
-    function isBreakEntry(app) {
-      return String(app.service_name || '').trim() === 'Перерыв' || String(app.client_name || '').startsWith('☕');
-    }
-
+    function isBreakEntry(app) { return String(app.service_name || '').trim() === 'Перерыв' || String(app.client_name || '').startsWith('☕'); }
     function getLocalTodayStr() {
-      const now = new Date();
-      return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+      const n = new Date();
+      return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
     }
-
     function formatDurationHuman(mins) {
-      const h = Math.floor(mins / 60);
-      const m = mins % 60;
+      const h = Math.floor(mins / 60), m = mins % 60;
       if (h > 0 && m > 0) return `${h} ч ${m} мин`;
-      if (h > 0) return `${h} ч`;
-      return `${m} мин`;
+      return h > 0 ? `${h} ч` : `${m} мин`;
     }
+    function getTotalDuration(list) { return list.reduce((s, x) => s + x.duration, 0); }
+    function getTotalPrice(list) { return list.reduce((s, x) => s + x.price, 0); }
+    function getCombinedNames(list) { return list.map(x => x.name).join(' + '); }
 
-    function getTotalDuration(srvList) { return srvList.reduce((sum, s) => sum + s.duration, 0); }
-    function getTotalPrice(srvList) { return srvList.reduce((sum, s) => sum + s.price, 0); }
-    function getCombinedNames(srvList) { return srvList.map(s => s.name).join(' + '); }
-
-    function calcDurationByNames(serviceNameStr) {
-      if (!serviceNameStr) return 60;
-      const parts = String(serviceNameStr).split(' + ').map(x => x.trim());
+    function calcDurationByNames(str) {
+      if (!str) return 60;
       let total = 0;
-      parts.forEach(p => {
-        const found = services.find(s => s.name === p);
-        if (found) total += found.duration;
+      String(str).split(' + ').forEach(p => {
+        const f = services.find(s => s.name === p.trim());
+        if (f) total += f.duration;
       });
       return total > 0 ? total : 60;
     }
 
-    function calcPriceByNames(serviceNameStr) {
-      if (!serviceNameStr || serviceNameStr === 'Перерыв') return 0;
-      const parts = String(serviceNameStr).split(' + ').map(x => x.trim());
+    function calcPriceByNames(str) {
+      if (!str || str === 'Перерыв') return 0;
       let total = 0;
-      parts.forEach(p => {
-        const found = services.find(s => s.name === p);
-        if (found) total += found.price;
+      String(str).split(' + ').forEach(p => {
+        const f = services.find(s => s.name === p.trim());
+        if (f) total += f.price;
       });
       return total;
     }
 
     function getAppActualPrice(app) {
       if (isBreakEntry(app)) return 0;
-      if (app.price !== undefined && app.price !== '' && !isNaN(Number(app.price))) {
-        return Number(app.price);
-      }
+      if (app.price !== undefined && app.price !== '' && !isNaN(Number(app.price))) return Number(app.price);
       return calcPriceByNames(app.service_name);
     }
 
     function formatPhoneInput(input) {
-      let digits = input.value.replace(/\D/g, '');
-      if (digits.startsWith('7') || digits.startsWith('8')) digits = digits.substring(1);
-      digits = digits.substring(0, 10);
-      let formatted = '+7';
-      if (digits.length > 0) formatted += ' (' + digits.substring(0, 3);
-      if (digits.length >= 4) formatted += ') ' + digits.substring(3, 6);
-      if (digits.length >= 7) formatted += '-' + digits.substring(6, 8);
-      if (digits.length >= 9) formatted += '-' + digits.substring(8, 10);
-      input.value = formatted;
+      let d = input.value.replace(/\D/g, '');
+      if (d.startsWith('7') || d.startsWith('8')) d = d.substring(1);
+      d = d.substring(0, 10);
+      let f = '+7';
+      if (d.length > 0) f += ' (' + d.substring(0, 3);
+      if (d.length >= 4) f += ') ' + d.substring(3, 6);
+      if (d.length >= 7) f += '-' + d.substring(6, 8);
+      if (d.length >= 9) f += '-' + d.substring(8, 10);
+      input.value = f;
     }
 
     function getCleanPhone(val) {
-      let digits = String(val).replace(/\D/g, '');
-      if (digits.startsWith('8')) digits = '7' + digits.substring(1);
-      if (!digits.startsWith('7')) digits = '7' + digits;
-      return '+' + digits;
+      let d = String(val).replace(/\D/g, '');
+      if (d.startsWith('8')) d = '7' + d.substring(1);
+      if (!d.startsWith('7')) d = '7' + d;
+      return '+' + d;
     }
 
     function normalizeDate(val) {
       if (!val) return '';
       const s = String(val).trim();
       if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
-      if (/^\d{2}\.\d{2}\.\d{4}/.test(s)) {
-        const [d, m, y] = s.slice(0, 10).split('.');
-        return `${y}-${m}-${d}`;
-      }
-      const d = new Date(s);
-      if (!isNaN(d.getTime())) {
-        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-      }
-      return s;
+      if (/^\d{2}\.\d{2}\.\d{4}/.test(s)) { const [d,m,y] = s.slice(0,10).split('.'); return `${y}-${m}-${d}`; }
+      const dt = new Date(s);
+      return !isNaN(dt.getTime()) ? `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}` : s;
     }
 
     function normalizeTime(val) {
       if (!val) return '';
       const s = String(val).trim();
-      const match = s.match(/(\d{1,2}):(\d{2})/);
-      if (match && !s.includes('T')) return match[1].padStart(2, '0') + ':' + match[2];
-      const d = new Date(s);
-      if (!isNaN(d.getTime())) return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
-      return s;
+      const m = s.match(/(\d{1,2}):(\d{2})/);
+      if (m && !s.includes('T')) return m[1].padStart(2, '0') + ':' + m[2];
+      const dt = new Date(s);
+      return !isNaN(dt.getTime()) ? String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0') : s;
     }
 
     function timeToMinutes(t) {
-      const clean = normalizeTime(t);
-      if (!clean) return 0;
-      const parts = clean.split(':').map(Number);
-      return (parts[0] || 0) * 60 + (parts[1] || 0);
+      const c = normalizeTime(t);
+      if (!c) return 0;
+      const p = c.split(':').map(Number);
+      return (p[0] || 0) * 60 + (p[1] || 0);
     }
 
     function minutesToTime(m) {
-      const h = Math.floor(m / 60).toString().padStart(2, '0');
-      const min = (m % 60).toString().padStart(2, '0');
-      return `${h}:${min}`;
+      return `${Math.floor(m / 60).toString().padStart(2, '0')}:${(m % 60).toString().padStart(2, '0')}`;
     }
 
     function isWorkingDate(dateStr) {
       if (scheduleConfig.closedDates && scheduleConfig.closedDates.includes(dateStr)) return false;
       if (scheduleConfig.extraWorkDates && scheduleConfig.extraWorkDates.includes(dateStr)) return true;
       const [y, m, d] = dateStr.split('-').map(Number);
-      const dayOfWeek = new Date(y, m - 1, d).getDay();
-      return scheduleConfig.workDays.includes(dayOfWeek);
+      return scheduleConfig.workDays.includes(new Date(y, m - 1, d).getDay());
     }
 
     function findNearestWorkingDate() {
@@ -630,14 +517,12 @@
       const titleEl = document.getElementById('cal-month-title');
       const gridEl = document.getElementById('cal-days-grid');
       if (!titleEl || !gridEl) return;
-
       titleEl.innerText = `${MONTH_NAMES[currentCalMonth]} ${currentCalYear}`;
       gridEl.innerHTML = '';
 
-      const firstDayObj = new Date(currentCalYear, currentCalMonth, 1);
-      const startOffset = (firstDayObj.getDay() + 6) % 7;
+      const firstDay = new Date(currentCalYear, currentCalMonth, 1);
+      const startOffset = (firstDay.getDay() + 6) % 7;
       const daysInMonth = new Date(currentCalYear, currentCalMonth + 1, 0).getDate();
-
       const todayStr = getLocalTodayStr();
       const selectedDateStr = document.getElementById('booking-date').value;
 
@@ -651,10 +536,7 @@
         const dateStr = `${currentCalYear}-${String(currentCalMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const cell = document.createElement('div');
         cell.innerHTML = `<span>${day}</span>`;
-
-        const isPast = dateStr < todayStr;
-        const isWork = !isPast && isWorkingDate(dateStr);
-
+        const isWork = (dateStr >= todayStr) && isWorkingDate(dateStr);
         if (isWork) {
           cell.className = 'cal-day work' + (dateStr === selectedDateStr ? ' selected' : '');
           cell.innerHTML += `<div class="cal-dots"><span class="cal-dot" style="background:#34c759;"></span></div>`;
@@ -686,14 +568,10 @@
       document.getElementById('footer-map-link').href = LOCATION_MAP_URL;
 
       try {
-        const savedName = localStorage.getItem(CLIENT_SAVED_NAME_KEY);
-        const savedPhone = localStorage.getItem(CLIENT_SAVED_PHONE_KEY);
-        if (savedName) document.getElementById('client-name').value = savedName;
-        if (savedPhone) {
-          const phInput = document.getElementById('client-phone');
-          phInput.value = savedPhone;
-          formatPhoneInput(phInput);
-        }
+        const sName = localStorage.getItem(CLIENT_SAVED_NAME_KEY);
+        const sPhone = localStorage.getItem(CLIENT_SAVED_PHONE_KEY);
+        if (sName) document.getElementById('client-name').value = sName;
+        if (sPhone) { const p = document.getElementById('client-phone'); p.value = sPhone; formatPhoneInput(p); }
       } catch (e) {}
 
       if (!document.getElementById('client-name').value && tgApp && tgApp.initDataUnsafe && tgApp.initDataUnsafe.user && tgApp.initDataUnsafe.user.first_name) {
@@ -719,10 +597,8 @@
         document.getElementById('booking-date').value = nearest;
         adminSelectedDate = nearest;
         const [ny, nm] = nearest.split('-').map(Number);
-        currentCalYear = ny;
-        currentCalMonth = nm - 1;
-        adminCalYear = ny;
-        adminCalMonth = nm - 1;
+        currentCalYear = ny; currentCalMonth = nm - 1;
+        adminCalYear = ny; adminCalMonth = nm - 1;
       }
 
       renderCalendar();
@@ -735,35 +611,20 @@
         try {
           let queryUrl = `${API_URL}?t=${Date.now()}`;
           if (asAdmin || hasSavedAdminAccess()) {
-            const key = encodeURIComponent(getSavedAdminKey());
-            const tgId = encodeURIComponent(currentTgChatId || '');
-            queryUrl += `&admin_key=${key}&admin_tg_id=${tgId}`;
+            queryUrl += `&admin_key=${encodeURIComponent(getSavedAdminKey())}&admin_tg_id=${encodeURIComponent(currentTgChatId || '')}`;
           }
-          const res = await fetch(queryUrl, { cache: 'no-store' });
+          const res = await fetch(queryUrl, { cache:'no-store' });
           const data = await res.json();
           const rawApps = Array.isArray(data) ? data : (data.appointments || []);
           if (data.schedule) scheduleConfig = data.schedule;
           if (data.expenses) {
-            allExpenses = data.expenses.map(e => ({
-              ...e,
-              date: normalizeDate(e.date),
-              amount: Number(e.amount) || 0
-            }));
+            allExpenses = data.expenses.map(e => ({ ...e, date:normalizeDate(e.date), amount:Number(e.amount)||0 }));
           }
-
           allAppointments = rawApps.map(item => {
             const startT = normalizeTime(item.appointment_time);
             let endT = normalizeTime(item.end_time);
-            if (!endT && startT) {
-              const dur = calcDurationByNames(item.service_name);
-              endT = minutesToTime(timeToMinutes(startT) + dur);
-            }
-            return {
-              ...item,
-              appointment_date: normalizeDate(item.appointment_date),
-              appointment_time: startT,
-              end_time: endT
-            };
+            if (!endT && startT) endT = minutesToTime(timeToMinutes(startT) + calcDurationByNames(item.service_name));
+            return { ...item, appointment_date:normalizeDate(item.appointment_date), appointment_time:startT, end_time:endT };
           });
           isDataLoaded = true;
           renderCalendar();
@@ -821,13 +682,8 @@
       else upsellEl.classList.add('hidden');
 
       if (selectedServices.length > 0) {
-        const totalDur = getTotalDuration(selectedServices);
-        const totalPrice = getTotalPrice(selectedServices);
         summaryEl.classList.remove('hidden');
-        summaryEl.innerHTML = `
-          <span>Выбрано: <b>${selectedServices.length}</b> (${totalDur} мин)</span>
-          <span style="font-weight:700; font-size:15px; color:#fff;">Итого: ${totalPrice} ₽</span>
-        `;
+        summaryEl.innerHTML = `<span>Выбрано: <b>${selectedServices.length}</b> (${getTotalDuration(selectedServices)} мин)</span><span style="font-weight:700; font-size:15px; color:#fff;">Итого: ${getTotalPrice(selectedServices)} ₽</span>`;
       } else {
         summaryEl.classList.add('hidden');
       }
@@ -862,9 +718,7 @@
       });
 
       const slots = [];
-      const startMin = START_HOUR * 60;
-      const endMin = END_HOUR * 60;
-
+      const startMin = START_HOUR * 60, endMin = END_HOUR * 60;
       const isToday = (dateVal === getLocalTodayStr());
       const now = new Date();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -872,8 +726,7 @@
       for (let t = startMin; t + totalDuration <= endMin; t += 30) {
         if (isToday && t <= currentMinutes) continue;
         const slotEnd = t + totalDuration;
-        const isConflict = busyIntervals.some(b => t < b.end && slotEnd > b.start);
-        if (!isConflict) slots.push(minutesToTime(t));
+        if (!busyIntervals.some(b => t < b.end && slotEnd > b.start)) slots.push(minutesToTime(t));
       }
 
       if (slots.length === 0) {
@@ -881,10 +734,7 @@
         return;
       }
 
-      container.innerHTML = `
-        <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">Доступное время на <b>${dateVal}</b>:</div>
-        <div class="slots-grid" id="slots-grid"></div>
-      `;
+      container.innerHTML = `<div style="font-size:12px; color:var(--muted); margin-bottom:6px;">Доступное время на <b>${dateVal}</b>:</div><div class="slots-grid" id="slots-grid"></div>`;
       const grid = document.getElementById('slots-grid');
       slots.forEach(time => {
         const btn = document.createElement('button');
@@ -904,35 +754,27 @@
       const { service, date, start, end } = lastBookingDetails;
       const dtStart = date.replace(/-/g, '') + 'T' + start.replace(':', '') + '00';
       const dtEnd = date.replace(/-/g, '') + 'T' + end.replace(':', '') + '00';
-
-      const icsContent = [
-        'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Anton Frantsuzov//Barber Booking//RU',
-        'BEGIN:VEVENT', `DTSTART:${dtStart}`, `DTEND:${dtEnd}`,
-        `SUMMARY:Барбер Антон Французов (${service})`,
-        `LOCATION:${LOCATION_FULL}`,
-        `DESCRIPTION:Услуга: ${service}. Связь с мастером: https://t.me/${MASTER_TG_USERNAME}`,
-        'END:VEVENT', 'END:VCALENDAR'
+      const ics = [
+        'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Anton Frantsuzov//Barber Booking//RU',
+        'BEGIN:VEVENT',`DTSTART:${dtStart}`,`DTEND:${dtEnd}`,
+        `SUMMARY:Барбер Антон Французов (${service})`,`LOCATION:${LOCATION_FULL}`,
+        `DESCRIPTION:Услуга: ${service}. Связь: https://t.me/${MASTER_TG_USERNAME}`,
+        'END:VEVENT','END:VCALENDAR'
       ].join('\r\n');
-
-      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
       const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
+      link.href = URL.createObjectURL(new Blob([ics], { type:'text/calendar;charset=utf-8' }));
       link.setAttribute('download', `barber-${date}.ics`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
 
     async function submitBooking() {
       const name = document.getElementById('client-name').value.trim();
-      const rawPhone = document.getElementById('client-phone').value;
-      const cleanPhone = getCleanPhone(rawPhone);
+      const cleanPhone = getCleanPhone(document.getElementById('client-phone').value);
       const dateVal = document.getElementById('booking-date').value;
       const msg = document.getElementById('booking-msg');
 
       if (selectedServices.length === 0 || !dateVal || !selectedTime || !name || cleanPhone.length < 12) {
-        msg.className = '';
-        msg.style.color = 'var(--accent)';
+        msg.className = ''; msg.style.color = 'var(--accent)';
         msg.innerText = 'Выберите услугу, время, а также укажите имя и телефон.';
         return;
       }
@@ -950,128 +792,76 @@
       const endMin = startMin + totalDuration;
       const endTime = minutesToTime(endMin);
 
-      lastBookingDetails = { service: combinedServiceName, date: dateVal, start: bookedTime, end: endTime };
+      lastBookingDetails = { service:combinedServiceName, date:dateVal, start:bookedTime, end:endTime };
 
       const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.innerText = 'Проверка и сохранение...';
+      btn.disabled = true; btn.innerText = 'Проверка и сохранение...';
 
       try {
         await fetchAllData();
-        const bookedOnDay = allAppointments.filter(a => a.appointment_date === dateVal);
-        const hasConflict = bookedOnDay.some(b => {
-          const bStart = timeToMinutes(b.appointment_time);
-          const bEnd = b.end_time ? timeToMinutes(b.end_time) : (bStart + calcDurationByNames(b.service_name));
-          return startMin < bEnd && endMin > bStart;
+        const hasConflict = allAppointments.filter(a => a.appointment_date === dateVal).some(b => {
+          const bS = timeToMinutes(b.appointment_time);
+          const bE = b.end_time ? timeToMinutes(b.end_time) : (bS + calcDurationByNames(b.service_name));
+          return startMin < bE && endMin > bS;
         });
 
         if (hasConflict) {
-          msg.className = '';
-          msg.style.color = 'var(--accent)';
-          msg.innerText = 'К сожалению, это время уже занято. Пожалуйста, выберите другое окно.';
-          btn.disabled = false;
-          btn.innerText = 'Записаться';
+          msg.className = ''; msg.style.color = 'var(--accent)';
+          msg.innerText = 'К сожалению, это время уже занято. Выберите другое окно.';
+          btn.disabled = false; btn.innerText = 'Записаться';
           await renderTimeSlots(true);
           return;
         }
 
         const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action: 'create',
-            client_name: name,
-            client_phone: cleanPhone,
-            service_name: combinedServiceName,
-            appointment_date: dateVal,
-            appointment_time: bookedTime,
-            end_time: endTime,
-            price: totalPrice,
-            tg_chat_id: currentTgChatId
+          method:'POST',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body:JSON.stringify({
+            action:'create', client_name:name, client_phone:cleanPhone,
+            service_name:combinedServiceName, appointment_date:dateVal,
+            appointment_time:bookedTime, end_time:endTime, price:totalPrice, tg_chat_id:currentTgChatId
           })
         });
-
         const resData = await res.json();
 
-        allAppointments.push({
-          id: Date.now().toString(),
-          client_name: name,
-          client_phone: cleanPhone,
-          service_name: combinedServiceName,
-          appointment_date: dateVal,
-          appointment_time: bookedTime,
-          end_time: endTime,
-          price: totalPrice
-        });
+        allAppointments.push({ id:Date.now().toString(), client_name:name, client_phone:cleanPhone, service_name:combinedServiceName, appointment_date:dateVal, appointment_time:bookedTime, end_time:endTime, price:totalPrice });
 
-        const cleanDigits = cleanPhone.replace('+', '');
-        const tgBotLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
+        const tgBotLink = `https://t.me/${BOT_USERNAME}?start=${cleanPhone.replace('+', '')}`;
         const masterLink = `https://t.me/${MASTER_TG_USERNAME}`;
 
-        msg.className = '';
-        msg.style.backgroundColor = 'var(--input-bg)';
-        msg.style.border = '1px solid var(--border)';
-        msg.style.padding = '18px';
-        msg.style.borderRadius = '14px';
+        msg.className = ''; msg.style.backgroundColor = 'var(--input-bg)'; msg.style.border = '1px solid var(--border)'; msg.style.padding = '18px'; msg.style.borderRadius = '14px';
 
-        const calendarBtnHtml = `
-          <button type="button" onclick="downloadClientCalendarIcs()" class="btn-outline" style="width: 100%; padding: 11px; margin-bottom: 10px; font-weight: 600;">
-            📅 Добавить в календарь телефона
-          </button>
-        `;
+        const calendarBtnHtml = `<button type="button" onclick="downloadClientCalendarIcs()" class="btn-outline" style="width:100%; padding:11px; margin-bottom:10px; font-weight:600;">📅 Добавить в календарь телефона</button>`;
 
         if (currentTgChatId || (resData && resData.tg_notified)) {
           msg.innerHTML = `
-            <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
-            <div style="font-size: 13px; color: var(--text); margin-bottom: 12px;">
-              ${combinedServiceName} (${totalPrice} ₽)<br>
-              <b>${dateVal} (${bookedTime} – ${endTime})</b><br>
-              <span style="color: var(--muted); font-size: 12px;">📍 ${LOCATION_FULL}</span>
-            </div>
-            <div style="padding: 10px; border-radius: 10px; background: rgba(52, 199, 89, 0.12); color: #34c759; font-size: 13px; margin-bottom: 10px;">
-              📩 Подтверждение и схема проезда отправлены вам в чат бота!
-            </div>
+            <div style="color:#34c759; font-weight:600; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${name}!</div>
+            <div style="font-size:13px; color:var(--text); margin-bottom:12px;">${combinedServiceName} (${totalPrice} ₽)<br><b>${dateVal} (${bookedTime} – ${endTime})</b><br><span style="color:var(--muted); font-size:12px;">📍 ${LOCATION_FULL}</span></div>
+            <div style="padding:10px; border-radius:10px; background:rgba(52,199,89,0.12); color:#34c759; font-size:13px; margin-bottom:10px;">📩 Подтверждение и схема проезда отправлены вам в чат бота!</div>
             ${calendarBtnHtml}
-            ${currentTgChatId ? `<button onclick="window.Telegram.WebApp.close()" class="btn-tg" style="width: 100%; margin-bottom: 8px;">Вернуться в чат</button>` : ''}
-            <div style="font-size: 12px; color: var(--muted); margin-top: 6px;">
-              Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color: var(--tg); text-decoration: none;">Написать мастеру (@${MASTER_TG_USERNAME})</a>
-            </div>
+            ${currentTgChatId ? `<button onclick="window.Telegram.WebApp.close()" class="btn-tg" style="width:100%; margin-bottom:8px;">Вернуться в чат</button>` : ''}
+            <div style="font-size:12px; color:var(--muted); margin-top:6px;">Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color:var(--tg); text-decoration:none;">Написать мастеру (@${MASTER_TG_USERNAME})</a></div>
           `;
         } else {
           msg.innerHTML = `
-            <div style="color: #34c759; font-weight: 600; font-size: 15px; margin-bottom: 6px;">✅ Вы успешно записаны, ${name}!</div>
-            <div style="font-size: 13px; color: var(--text); margin-bottom: 14px;">
-              ${combinedServiceName} (${totalPrice} ₽)<br>
-              <b>${dateVal} (${bookedTime} – ${endTime})</b><br>
-              <span style="color: var(--muted); font-size: 12px;">📍 ${LOCATION_FULL}</span>
-            </div>
-            <a href="${tgBotLink}" target="_blank" class="btn-tg" style="width: 100%; margin-bottom: 8px;">
-              🔔 Получить подтверждение и схему проезда в Telegram
-            </a>
-            <div style="font-size: 11px; color: var(--muted); margin-bottom: 10px;">
-              После перехода в бота нажмите <b>«Старт»</b> (или кнопку «Привязать номер» внизу чата).
-            </div>
+            <div style="color:#34c759; font-weight:600; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${name}!</div>
+            <div style="font-size:13px; color:var(--text); margin-bottom:14px;">${combinedServiceName} (${totalPrice} ₽)<br><b>${dateVal} (${bookedTime} – ${endTime})</b><br><span style="color:var(--muted); font-size:12px;">📍 ${LOCATION_FULL}</span></div>
+            <a href="${tgBotLink}" target="_blank" class="btn-tg" style="width:100%; margin-bottom:8px;">🔔 Получить подтверждение и схему проезда в Telegram</a>
+            <div style="font-size:11px; color:var(--muted); margin-bottom:10px;">После перехода в бота нажмите <b>«Старт»</b> внизу чата.</div>
             ${calendarBtnHtml}
-            <div style="font-size: 12px; color: var(--muted);">
-              Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color: var(--tg); text-decoration: none;">Написать мастеру (@${MASTER_TG_USERNAME})</a>
-            </div>
+            <div style="font-size:12px; color:var(--muted);">Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color:var(--tg); text-decoration:none;">Написать мастеру (@${MASTER_TG_USERNAME})</a></div>
           `;
         }
 
-        selectedServices = [];
-        renderServices();
-        await renderTimeSlots(true);
+        selectedServices = []; renderServices(); await renderTimeSlots(true);
       } catch (err) {
-        msg.className = '';
-        msg.style.color = 'var(--accent)';
-        msg.innerText = 'Ошибка при сохранении. Попробуйте еще раз.';
+        msg.className = ''; msg.style.color = 'var(--accent)'; msg.innerText = 'Ошибка при сохранении. Попробуйте еще раз.';
       }
-
       btn.disabled = false;
       if (btn.innerText === 'Проверка и сохранение...') btn.innerText = 'Записаться';
     }
 
-    // --- КАБИНЕТ МАСТЕРА (БЕЗОПАСНАЯ ПРОВЕРКА ЧЕРЕЗ СЕРВЕР) ---
+    // --- КАБИНЕТ МАСТЕРА ---
     function toggleAdminModal() {
       const modal = document.getElementById('password-modal');
       modal.classList.toggle('hidden');
@@ -1084,14 +874,12 @@
       const val = document.getElementById('admin-pass-input').value.trim();
       if (!val) return;
       const btn = document.getElementById('login-admin-btn');
-      btn.disabled = true;
-      btn.innerText = 'Проверка...';
-
+      btn.disabled = true; btn.innerText = 'Проверка...';
       try {
         const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'verify_admin', admin_key: val, admin_tg_id: currentTgChatId })
+          method:'POST',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body:JSON.stringify({ action:'verify_admin', admin_key:val, admin_tg_id:currentTgChatId })
         });
         const data = await res.json();
         if (data.status === 'ok') {
@@ -1103,17 +891,14 @@
       } catch (e) {
         alert('Ошибка соединения с сервером.');
       }
-
-      btn.disabled = false;
-      btn.innerText = 'Войти';
+      btn.disabled = false; btn.innerText = 'Войти';
     }
 
     function exitAdmin() {
       if (window.location.hash === '#admin') history.replaceState(null, null, ' ');
       document.getElementById('admin-view').classList.add('hidden');
       document.getElementById('client-view').classList.remove('hidden');
-      renderCalendar();
-      renderTimeSlots(true);
+      renderCalendar(); renderTimeSlots(true);
     }
 
     function setAdminMode(mode) {
@@ -1137,12 +922,11 @@
       const titleEl = document.getElementById('admin-cal-title');
       const gridEl = document.getElementById('admin-cal-grid');
       if (!titleEl || !gridEl) return;
-
       titleEl.innerText = `${MONTH_NAMES[adminCalMonth]} ${adminCalYear}`;
       gridEl.innerHTML = '';
 
-      const firstDayObj = new Date(adminCalYear, adminCalMonth, 1);
-      const startOffset = (firstDayObj.getDay() + 6) % 7;
+      const firstDay = new Date(adminCalYear, adminCalMonth, 1);
+      const startOffset = (firstDay.getDay() + 6) % 7;
       const daysInMonth = new Date(adminCalYear, adminCalMonth + 1, 0).getDate();
 
       for (let i = 0; i < startOffset; i++) {
@@ -1156,20 +940,13 @@
         const cell = document.createElement('div');
         const isWork = isWorkingDate(dateStr);
         const dayAppsCount = allAppointments.filter(a => a.id && a.appointment_date === dateStr && !isBreakEntry(a)).length;
-
         cell.className = 'cal-day admin-clickable ' + (isWork ? 'work' : 'off') + (dateStr === adminSelectedDate ? ' selected' : '');
-        
-        let dotsHtml = '<div class="cal-dots">';
-        if (isWork) dotsHtml += `<span class="cal-dot" style="background:#34c759;"></span>`;
-        if (dayAppsCount > 0) dotsHtml += `<span class="cal-dot" style="background:#0a84ff;"></span>`;
-        dotsHtml += '</div>';
-
-        cell.innerHTML = `<span>${day}</span>${dotsHtml}`;
-        cell.onclick = () => {
-          adminSelectedDate = dateStr;
-          renderAdminCalendar();
-          renderAdminList();
-        };
+        let dots = '<div class="cal-dots">';
+        if (isWork) dots += `<span class="cal-dot" style="background:#34c759;"></span>`;
+        if (dayAppsCount > 0) dots += `<span class="cal-dot" style="background:#0a84ff;"></span>`;
+        dots += '</div>';
+        cell.innerHTML = `<span>${day}</span>${dots}`;
+        cell.onclick = () => { adminSelectedDate = dateStr; renderAdminCalendar(); renderAdminList(); };
         gridEl.appendChild(cell);
       }
     }
@@ -1220,19 +997,12 @@
       const btn = document.getElementById('save-sched-btn');
       btn.innerText = 'Сохранение...';
       await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'save_schedule',
-          schedule: scheduleConfig,
-          admin_key: getSavedAdminKey(),
-          admin_tg_id: currentTgChatId
-        })
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body:JSON.stringify({ action:'save_schedule', schedule:scheduleConfig, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
       });
       btn.innerText = 'Сохранено!';
-      renderCalendar();
-      renderAdminCalendar();
-      renderAdminList();
+      renderCalendar(); renderAdminCalendar(); renderAdminList();
       setTimeout(() => btn.innerText = 'Сохранить график', 1500);
     }
 
@@ -1240,9 +1010,7 @@
       const list = document.getElementById('admin-appointments-list');
       list.innerHTML = '<p style="font-size:13px; color:var(--muted); text-align:center;">Загрузка расписания...</p>';
       if (forceFetch) await fetchAllData(true);
-      renderScheduleAdmin();
-      renderAdminCalendar();
-      renderAdminList();
+      renderScheduleAdmin(); renderAdminCalendar(); renderAdminList();
     }
 
     async function quickEditPrice(appId, currentPrice) {
@@ -1250,17 +1018,10 @@
       if (newVal === null) return;
       const num = Number(newVal);
       if (isNaN(num) || num < 0) return;
-
       await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'update_price',
-          id: appId,
-          price: num,
-          admin_key: getSavedAdminKey(),
-          admin_tg_id: currentTgChatId
-        })
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body:JSON.stringify({ action:'update_price', id:appId, price:num, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
       });
       await loadAppointments(true);
     }
@@ -1270,23 +1031,13 @@
       const category = document.getElementById('exp-category').value;
       const amount = Number(document.getElementById('exp-amount').value);
       const comment = document.getElementById('exp-comment').value.trim();
-
-      if (!amount || amount <= 0) {
-        alert('Укажите сумму расхода!');
-        return;
-      }
-
+      if (!amount || amount <= 0) { alert('Укажите сумму расхода!'); return; }
       const btn = document.getElementById('add-exp-btn');
       btn.innerText = 'Сохранение...';
       await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'add_expense',
-          date, category, amount, comment,
-          admin_key: getSavedAdminKey(),
-          admin_tg_id: currentTgChatId
-        })
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body:JSON.stringify({ action:'add_expense', date, category, amount, comment, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
       });
       await loadAppointments(true);
     }
@@ -1294,14 +1045,9 @@
     async function deleteExpenseItem(id) {
       if (!confirm('Удалить эту запись расхода?')) return;
       await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'delete_expense',
-          id,
-          admin_key: getSavedAdminKey(),
-          admin_tg_id: currentTgChatId
-        })
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body:JSON.stringify({ action:'delete_expense', id, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
       });
       await loadAppointments(true);
     }
@@ -1312,7 +1058,6 @@
       if (adminViewMode === 'stats') {
         const monthPrefix = `${adminCalYear}-${String(adminCalMonth + 1).padStart(2, '0')}`;
         const todayStr = getLocalTodayStr();
-
         const monthApps = allAppointments.filter(a => a.id && !isBreakEntry(a) && String(a.appointment_date).startsWith(monthPrefix));
         const dayApps = allAppointments.filter(a => a.id && !isBreakEntry(a) && a.appointment_date === adminSelectedDate);
         const monthExpenses = allExpenses.filter(e => String(e.date).startsWith(monthPrefix));
@@ -1329,48 +1074,20 @@
           expListHtml = `<div style="font-size:12px; color:var(--muted); text-align:center; padding:10px;">Расходов в этом месяце пока не записано</div>`;
         } else {
           monthExpenses.sort((a, b) => String(b.date).localeCompare(String(a.date))).forEach(e => {
-            expListHtml += `
-              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid var(--border); font-size:13px;">
-                <div>
-                  <b>${e.category}</b> <span style="color:var(--muted); font-size:11px;">(${e.date})</span>
-                  ${e.comment ? `<div style="font-size:11px; color:var(--muted);">${e.comment}</div>` : ''}
-                </div>
-                <div class="row">
-                  <span style="color:var(--accent); font-weight:700;">-${e.amount} ₽</span>
-                  <button onclick="deleteExpenseItem('${e.id}')" class="btn-outline" style="padding:3px 7px;">×</button>
-                </div>
-              </div>
-            `;
+            expListHtml += `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid var(--border); font-size:13px;"><div><b>${e.category}</b> <span style="color:var(--muted); font-size:11px;">(${e.date})</span>${e.comment ? `<div style="font-size:11px; color:var(--muted);">${e.comment}</div>` : ''}</div><div class="row"><span style="color:var(--accent); font-weight:700;">-${e.amount} ₽</span><button onclick="deleteExpenseItem('${e.id}')" class="btn-outline" style="padding:3px 7px;">×</button></div></div>`;
           });
         }
 
         list.innerHTML = `
           <h2 style="margin-bottom:12px;">📊 Отчёт: ${MONTH_NAMES[adminCalMonth]} ${adminCalYear}</h2>
           <div class="stats-grid">
-            <div class="stat-card">
-              <div style="font-size:11px; color:var(--muted);">Касса за ${adminSelectedDate}</div>
-              <div class="stat-val" style="color:var(--tg);">${dayRevenue.toLocaleString('ru-RU')} ₽</div>
-              <div style="font-size:11px; color:var(--muted); margin-top:2px;">Клиентов: ${dayApps.length}</div>
-            </div>
-            <div class="stat-card">
-              <div style="font-size:11px; color:var(--muted);">Выручка за месяц (План/Факт)</div>
-              <div class="stat-val" style="color:#34c759;">${monthTotalRevenue.toLocaleString('ru-RU')} ₽</div>
-              <div style="font-size:11px; color:var(--muted); margin-top:2px;">Уже в кассе: ${monthFactRevenue.toLocaleString('ru-RU')} ₽</div>
-            </div>
-            <div class="stat-card">
-              <div style="font-size:11px; color:var(--muted);">Расходы за месяц</div>
-              <div class="stat-val" style="color:var(--accent);">-${monthExpensesSum.toLocaleString('ru-RU')} ₽</div>
-              <div style="font-size:11px; color:var(--muted); margin-top:2px;">Записей: ${monthExpenses.length}</div>
-            </div>
-            <div class="stat-card">
-              <div style="font-size:11px; color:var(--muted);">Чистая прибыль</div>
-              <div class="stat-val" style="color:#fff;">${netProfit.toLocaleString('ru-RU')} ₽</div>
-              <div style="font-size:11px; color:var(--muted); margin-top:2px;">Средний чек: ${avgCheck} ₽ (${monthApps.length} кл.)</div>
-            </div>
+            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Касса за ${adminSelectedDate}</div><div class="stat-val" style="color:var(--tg);">${dayRevenue.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Клиентов: ${dayApps.length}</div></div>
+            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Выручка за месяц (План/Факт)</div><div class="stat-val" style="color:#34c759;">${monthTotalRevenue.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Уже в кассе: ${monthFactRevenue.toLocaleString('ru-RU')} ₽</div></div>
+            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Расходы за месяц</div><div class="stat-val" style="color:var(--accent);">-${monthExpensesSum.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Записей: ${monthExpenses.length}</div></div>
+            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Чистая прибыль</div><div class="stat-val" style="color:#fff;">${netProfit.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Ср. чек: ${avgCheck} ₽ (${monthApps.length} кл.)</div></div>
           </div>
-
           <div style="border-top:1px solid var(--border); padding-top:14px; margin-top:8px;">
-            <h2 style="font-size:15px; margin-bottom:10px;">➕ Добавить расход (Аренда / Расходники)</h2>
+            <h2 style="font-size:15px; margin-bottom:10px;">➕ Добавить расход</h2>
             <div class="row">
               <select id="exp-category" style="flex:1; margin-bottom:8px;">
                 <option value="Аренда">🏢 Аренда</option>
@@ -1383,14 +1100,11 @@
             </div>
             <div class="row">
               <input type="date" id="exp-date" value="${adminSelectedDate}" style="flex:1; margin-bottom:8px;">
-              <input type="text" id="exp-comment" placeholder="Комментарий (напр. Hair Sekta)" style="flex:1.5; margin-bottom:8px;">
+              <input type="text" id="exp-comment" placeholder="Комментарий" style="flex:1.5; margin-bottom:8px;">
             </div>
             <button onclick="addExpenseItem()" id="add-exp-btn" class="btn" style="padding:11px; margin-bottom:14px;">Записать расход</button>
-
             <h2 style="font-size:15px; margin-bottom:8px;">История расходов за ${MONTH_NAMES[adminCalMonth]}</h2>
-            <div style="background:rgba(0,0,0,0.2); border:1px solid var(--border); border-radius:12px; overflow:hidden;">
-              ${expListHtml}
-            </div>
+            <div style="background:rgba(0,0,0,0.2); border:1px solid var(--border); border-radius:12px; overflow:hidden;">${expListHtml}</div>
           </div>
         `;
         return;
@@ -1400,50 +1114,33 @@
         const today = getLocalTodayStr();
         let data = [...allAppointments].filter(a => a.id && a.appointment_date >= today);
         data.sort((a, b) => (a.appointment_date + ' ' + a.appointment_time).localeCompare(b.appointment_date + ' ' + b.appointment_time));
-
-        if (data.length === 0) {
-          list.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:14px;">Будущих записей пока нет</div>';
-          return;
-        }
-
+        if (data.length === 0) { list.innerHTML = '<div style="text-align:center; color:var(--muted); font-size:14px;">Будущих записей пока нет</div>'; return; }
         list.innerHTML = `<h2 style="margin-bottom:14px;">Все будущие записи (${data.length})</h2>`;
-        data.forEach(app => {
-          list.appendChild(createBusyCardElement(app, true));
-        });
+        data.forEach(app => list.appendChild(createBusyCardElement(app, true)));
         return;
       }
 
       const isWork = isWorkingDate(adminSelectedDate);
-      const dayApps = [...allAppointments]
-        .filter(a => a.id && a.appointment_date === adminSelectedDate)
-        .sort((a, b) => timeToMinutes(a.appointment_time) - timeToMinutes(b.appointment_time));
-
+      const dayApps = [...allAppointments].filter(a => a.id && a.appointment_date === adminSelectedDate).sort((a, b) => timeToMinutes(a.appointment_time) - timeToMinutes(b.appointment_time));
       const daySum = dayApps.reduce((s, a) => s + getAppActualPrice(a), 0);
 
       list.innerHTML = `
         <div class="timeline-header">
           <div>
             <div style="font-weight:700; font-size:16px;">${adminSelectedDate}</div>
-            <div style="font-size:12px; color:${isWork ? '#34c759' : '#ff3b30'};">
-              ${isWork ? '● Рабочий день' : '● Выходной день'} · Касса дня: <b style="color:#fff;">${daySum} ₽</b>
-            </div>
+            <div style="font-size:12px; color:${isWork ? '#34c759' : '#ff3b30'};">${isWork ? '● Рабочий день' : '● Выходной день'} · Касса дня: <b style="color:#fff;">${daySum} ₽</b></div>
           </div>
-          <div style="font-size:11px; color:var(--muted);">
-            Нажмите на сумму чека, чтобы изменить её
-          </div>
+          <div style="font-size:11px; color:var(--muted);">Нажмите на сумму чека, чтобы изменить</div>
         </div>
         <div class="schedule-grid" id="schedule-grid-wrap"></div>
       `;
 
       const gridWrap = document.getElementById('schedule-grid-wrap');
       const renderedIds = new Set();
-      const dayStartMin = START_HOUR * 60;
-      const dayEndMin = END_HOUR * 60;
 
-      for (let t = dayStartMin; t < dayEndMin; t += 30) {
+      for (let t = START_HOUR * 60; t < END_HOUR * 60; t += 30) {
         const timeStr = minutesToTime(t);
         const isHalfHour = (t % 60 !== 0);
-
         const coveringApp = dayApps.find(a => {
           const s = timeToMinutes(a.appointment_time);
           const e = a.end_time ? timeToMinutes(a.end_time) : (s + calcDurationByNames(a.service_name));
@@ -1453,79 +1150,47 @@
         if (coveringApp) {
           if (renderedIds.has(coveringApp.id)) continue;
           renderedIds.add(coveringApp.id);
-
           const sMin = timeToMinutes(coveringApp.appointment_time);
           const eMin = coveringApp.end_time ? timeToMinutes(coveringApp.end_time) : (sMin + calcDurationByNames(coveringApp.service_name));
           const startLabel = coveringApp.appointment_time;
           const endLabel = coveringApp.end_time || minutesToTime(eMin);
           const isBreak = isBreakEntry(coveringApp);
-
           const row = document.createElement('div');
           row.className = 'slot-row';
 
           if (isBreak) {
             row.innerHTML = `
-              <div class="slot-time" style="flex-direction:column; gap:2px;">
-                <span style="color:var(--amber);">${startLabel}</span>
-                <span style="font-size:10px; opacity:0.6;">${endLabel}</span>
-              </div>
+              <div class="slot-time" style="flex-direction:column; gap:2px;"><span style="color:var(--amber);">${startLabel}</span><span style="font-size:10px; opacity:0.6;">${endLabel}</span></div>
               <div class="slot-body">
                 <div class="tl-card-break">
-                  <div>
-                    <div style="font-weight:700; font-size:14px; color:var(--amber);">${coveringApp.client_name || '☕ Перерыв'}</div>
-                    <div style="font-size:12px; color:var(--muted);">${startLabel} – ${endLabel} (${formatDurationHuman(Math.max(0, eMin - sMin))})</div>
-                  </div>
-                  <div class="row">
-                    <button onclick='openEditModal(${JSON.stringify(coveringApp)})' class="btn-outline">Изм.</button>
-                    <button onclick="deleteAppointment('${coveringApp.id}')" class="btn-outline" style="color:var(--accent);">×</button>
-                  </div>
+                  <div><div style="font-weight:700; font-size:14px; color:var(--amber);">${coveringApp.client_name || '☕ Перерыв'}</div><div style="font-size:12px; color:var(--muted);">${startLabel} – ${endLabel} (${formatDurationHuman(Math.max(0, eMin - sMin))})</div></div>
+                  <div class="row"><button onclick='openEditModal(${JSON.stringify(coveringApp)})' class="btn-outline">Изм.</button><button onclick="deleteAppointment('${coveringApp.id}')" class="btn-outline" style="color:var(--accent);">×</button></div>
                 </div>
-              </div>
-            `;
+              </div>`;
           } else {
             const actualPrice = getAppActualPrice(coveringApp);
             const isConfirmed = String(coveringApp.reminded || '').includes('confirmed');
             const cleanDigits = String(coveringApp.client_phone || '').replace(/\D/g, '');
-            const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
-            const inviteText = encodeURIComponent(`Привет, ${coveringApp.client_name}! Записал тебя на ${coveringApp.appointment_date} в ${coveringApp.appointment_time} (${coveringApp.service_name}). Адрес: ${LOCATION_FULL}. Подтверждение и напоминания в боте: ${clientTgLink}`);
-
+            const inviteText = encodeURIComponent(`Привет, ${coveringApp.client_name}! Записал тебя на ${coveringApp.appointment_date} в ${coveringApp.appointment_time} (${coveringApp.service_name}). Адрес: ${LOCATION_FULL}. Напоминания в боте: https://t.me/${BOT_USERNAME}?start=${cleanDigits}`);
             row.innerHTML = `
-              <div class="slot-time" style="flex-direction:column; gap:2px;">
-                <span style="color:var(--text);">${startLabel}</span>
-                <span style="font-size:10px; opacity:0.6;">${endLabel}</span>
-              </div>
+              <div class="slot-time" style="flex-direction:column; gap:2px;"><span style="color:var(--text);">${startLabel}</span><span style="font-size:10px; opacity:0.6;">${endLabel}</span></div>
               <div class="slot-body">
                 <div class="tl-card-busy">
                   <div>
-                    <div style="font-weight:700; font-size:15px;">
-                      ${coveringApp.client_name}
-                      ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''}
-                      <a href="tel:${coveringApp.client_phone || ''}" style="font-weight:400; font-size:12px; color:var(--tg); text-decoration:none;">${coveringApp.client_phone || ''}</a>
-                    </div>
-                    <div style="font-size:13px; color:#d4d4d4; margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                      <span>✂️ ${coveringApp.service_name}</span>
-                      <span class="price-pill" onclick="quickEditPrice('${coveringApp.id}', ${actualPrice})" title="Нажмите, чтобы изменить сумму чека">💰 ${actualPrice} ₽ ✎</span>
-                    </div>
+                    <div style="font-weight:700; font-size:15px;">${coveringApp.client_name} ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''} <a href="tel:${coveringApp.client_phone || ''}" style="font-weight:400; font-size:12px; color:var(--tg); text-decoration:none;">${coveringApp.client_phone || ''}</a></div>
+                    <div style="font-size:13px; color:#d4d4d4; margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;"><span>✂️ ${coveringApp.service_name}</span><span class="price-pill" onclick="quickEditPrice('${coveringApp.id}', ${actualPrice})">💰 ${actualPrice} ₽ ✎</span></div>
                     ${coveringApp.notes ? `<div class="note-box">📝 ${coveringApp.notes}</div>` : ''}
                   </div>
-                  <div class="row">
-                    <a href="sms:${coveringApp.client_phone || ''}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.12); color:var(--tg); border:none;">СМС</a>
-                    <button onclick='openEditModal(${JSON.stringify(coveringApp)})' class="btn-outline">Изм.</button>
-                    <button onclick="deleteAppointment('${coveringApp.id}')" class="btn-outline" style="color:var(--accent);">×</button>
-                  </div>
+                  <div class="row"><a href="sms:${coveringApp.client_phone || ''}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.12); color:var(--tg); border:none;">СМС</a><button onclick='openEditModal(${JSON.stringify(coveringApp)})' class="btn-outline">Изм.</button><button onclick="deleteAppointment('${coveringApp.id}')" class="btn-outline" style="color:var(--accent);">×</button></div>
                 </div>
-              </div>
-            `;
+              </div>`;
           }
           gridWrap.appendChild(row);
         } else {
           const row = document.createElement('div');
           row.className = 'slot-row free-row';
           row.onclick = () => openEditModal(null, adminSelectedDate, timeStr, false);
-          row.innerHTML = `
-            <div class="slot-time ${isHalfHour ? 'half-hour' : ''}">${timeStr}</div>
-            <div class="slot-body"></div>
-          `;
+          row.innerHTML = `<div class="slot-time ${isHalfHour ? 'half-hour' : ''}">${timeStr}</div><div class="slot-body"></div>`;
           gridWrap.appendChild(row);
         }
       }
@@ -1536,61 +1201,24 @@
       const div = document.createElement('div');
       div.className = isBreak ? 'tl-card-break' : 'tl-card-busy';
       div.style.marginBottom = '10px';
-
       if (isBreak) {
-        div.innerHTML = `
-          <div>
-            <div style="font-size:12px; color:var(--amber); font-weight:600;">${showDate ? app.appointment_date + ' · ' : ''}${app.appointment_time} – ${app.end_time || ''}</div>
-            <div style="font-weight:600; font-size:15px; margin:2px 0;">${app.client_name || '☕ Перерыв'}</div>
-          </div>
-          <div class="row">
-            <button onclick='openEditModal(${JSON.stringify(app)})' class="btn-outline">Изменить</button>
-            <button onclick="deleteAppointment('${app.id}')" class="btn-outline" style="color:var(--accent);">Удалить</button>
-          </div>
-        `;
+        div.innerHTML = `<div><div style="font-size:12px; color:var(--amber); font-weight:600;">${showDate ? app.appointment_date + ' · ' : ''}${app.appointment_time} – ${app.end_time || ''}</div><div style="font-weight:600; font-size:15px; margin:2px 0;">${app.client_name || '☕ Перерыв'}</div></div><div class="row"><button onclick='openEditModal(${JSON.stringify(app)})' class="btn-outline">Изменить</button><button onclick="deleteAppointment('${app.id}')" class="btn-outline" style="color:var(--accent);">Удалить</button></div>`;
         return div;
       }
-
       const actualPrice = getAppActualPrice(app);
       const isConfirmed = String(app.reminded || '').includes('confirmed');
       const cleanDigits = String(app.client_phone || '').replace(/\D/g, '');
-      const clientTgLink = `https://t.me/${BOT_USERNAME}?start=${cleanDigits}`;
-      const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Адрес: ${LOCATION_FULL}. Подтверждение и напоминания в боте: ${clientTgLink}`);
-
-      div.innerHTML = `
-        <div>
-          <div style="font-size:12px; color:var(--tg); font-weight:600;">${showDate ? app.appointment_date + ' · ' : ''}${app.appointment_time} – ${app.end_time || ''}</div>
-          <div style="font-weight:600; font-size:15px; margin:2px 0;">
-            ${app.client_name}
-            ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''}
-            <a href="tel:${app.client_phone || ''}" style="font-weight:400; font-size:12px; color:var(--muted); text-decoration:none;">(${app.client_phone || ''})</a>
-          </div>
-          <div style="font-size:13px; color:var(--muted); display:flex; align-items:center; gap:6px;">
-            <span>${app.service_name}</span>
-            <span class="price-pill" onclick="quickEditPrice('${app.id}', ${actualPrice})">${actualPrice} ₽ ✎</span>
-          </div>
-          ${app.notes ? `<div class="note-box">📝 ${app.notes}</div>` : ''}
-        </div>
-        <div class="row">
-          <a href="sms:${app.client_phone || ''}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.1); color:var(--tg); border:none;">СМС</a>
-          <button onclick='openEditModal(${JSON.stringify(app)})' class="btn-outline">Изменить</button>
-          <button onclick="deleteAppointment('${app.id}')" class="btn-outline" style="color:var(--accent);">Удалить</button>
-        </div>
-      `;
+      const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Адрес: ${LOCATION_FULL}. Напоминания в боте: https://t.me/${BOT_USERNAME}?start=${cleanDigits}`);
+      div.innerHTML = `<div><div style="font-size:12px; color:var(--tg); font-weight:600;">${showDate ? app.appointment_date + ' · ' : ''}${app.appointment_time} – ${app.end_time || ''}</div><div style="font-weight:600; font-size:15px; margin:2px 0;">${app.client_name} ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''} <a href="tel:${app.client_phone || ''}" style="font-weight:400; font-size:12px; color:var(--muted); text-decoration:none;">(${app.client_phone || ''})</a></div><div style="font-size:13px; color:var(--muted); display:flex; align-items:center; gap:6px;"><span>${app.service_name}</span><span class="price-pill" onclick="quickEditPrice('${app.id}', ${actualPrice})">${actualPrice} ₽ ✎</span></div>${app.notes ? `<div class="note-box">📝 ${app.notes}</div>` : ''}</div><div class="row"><a href="sms:${app.client_phone || ''}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.1); color:var(--tg); border:none;">СМС</a><button onclick='openEditModal(${JSON.stringify(app)})' class="btn-outline">Изменить</button><button onclick="deleteAppointment('${app.id}')" class="btn-outline" style="color:var(--accent);">Удалить</button></div>`;
       return div;
     }
 
     async function deleteAppointment(id) {
       if (!confirm('Удалить эту запись?')) return;
       await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'delete',
-          id,
-          admin_key: getSavedAdminKey(),
-          admin_tg_id: currentTgChatId
-        })
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body:JSON.stringify({ action:'delete', id, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
       });
       await loadAppointments(true);
     }
@@ -1601,12 +1229,8 @@
         if (!a.client_phone || isBreakEntry(a)) return;
         const clean = getCleanPhone(a.client_phone);
         if (clean.length < 11) return;
-        if (!map[clean]) {
-          map[clean] = { name: a.client_name, phone: clean, notes: a.notes || '' };
-        } else {
-          if (a.client_name) map[clean].name = a.client_name;
-          if (a.notes) map[clean].notes = a.notes;
-        }
+        if (!map[clean]) map[clean] = { name:a.client_name, phone:clean, notes:a.notes || '' };
+        else { if (a.client_name) map[clean].name = a.client_name; if (a.notes) map[clean].notes = a.notes; }
       });
       return Object.values(map);
     }
@@ -1614,35 +1238,18 @@
     function onAdminClientSearch(query) {
       const box = document.getElementById('client-suggestions-box');
       const q = String(query || '').trim().toLowerCase();
-      if (q.length < 2 || q === '+7') {
-        box.classList.add('hidden');
-        return;
-      }
-
-      const db = getUniqueClientsDatabase();
-      const matches = db.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q)).slice(0, 5);
-
-      if (matches.length === 0) {
-        box.classList.add('hidden');
-        return;
-      }
-
+      if (q.length < 2 || q === '+7') { box.classList.add('hidden'); return; }
+      const matches = getUniqueClientsDatabase().filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q)).slice(0, 5);
+      if (matches.length === 0) { box.classList.add('hidden'); return; }
       box.innerHTML = '';
       matches.forEach(c => {
         const item = document.createElement('div');
         item.className = 'client-sug-item';
-        item.innerHTML = `
-          <span><b>${c.name}</b> ${c.notes ? `<span style="color:var(--amber); font-size:11px;">(${c.notes})</span>` : ''}</span>
-          <span style="color:var(--muted);">${c.phone}</span>
-        `;
+        item.innerHTML = `<span><b>${c.name}</b> ${c.notes ? `<span style="color:var(--amber); font-size:11px;">(${c.notes})</span>` : ''}</span><span style="color:var(--muted);">${c.phone}</span>`;
         item.onclick = () => {
           document.getElementById('edit-name').value = c.name;
-          const phEl = document.getElementById('edit-phone');
-          phEl.value = c.phone;
-          formatPhoneInput(phEl);
-          if (c.notes && !document.getElementById('edit-notes').value) {
-            document.getElementById('edit-notes').value = c.notes;
-          }
+          const phEl = document.getElementById('edit-phone'); phEl.value = c.phone; formatPhoneInput(phEl);
+          if (c.notes && !document.getElementById('edit-notes').value) document.getElementById('edit-notes').value = c.notes;
           box.classList.add('hidden');
         };
         box.appendChild(item);
@@ -1669,16 +1276,10 @@
         div.onclick = () => {
           if (active) adminSelectedServices = adminSelectedServices.filter(x => x.id !== s.id);
           else adminSelectedServices.push(s);
-          renderAdminServicesCheckboxes();
-          autoCalcEndTime();
-          if (!isCustomPriceEdited) {
-            document.getElementById('edit-price').value = getTotalPrice(adminSelectedServices);
-          }
+          renderAdminServicesCheckboxes(); autoCalcEndTime();
+          if (!isCustomPriceEdited) document.getElementById('edit-price').value = getTotalPrice(adminSelectedServices);
         };
-        div.innerHTML = `
-          <span>${active ? '✓ ' : ''}${s.name}</span>
-          <span style="color:var(--muted); font-size:12px;">${s.duration} мин · ${s.price} ₽</span>
-        `;
+        div.innerHTML = `<span>${active ? '✓ ' : ''}${s.name}</span><span style="color:var(--muted); font-size:12px;">${s.duration} мин · ${s.price} ₽</span>`;
         wrap.appendChild(div);
       });
     }
@@ -1686,12 +1287,8 @@
     function autoCalcEndTime() {
       const startVal = document.getElementById('edit-time').value;
       if (!startVal) return;
-      if (isModalBreakMode) {
-        document.getElementById('edit-end-time').value = minutesToTime(timeToMinutes(startVal) + 60);
-      } else {
-        const dur = adminSelectedServices.length > 0 ? getTotalDuration(adminSelectedServices) : 55;
-        document.getElementById('edit-end-time').value = minutesToTime(timeToMinutes(startVal) + dur);
-      }
+      const dur = isModalBreakMode ? 60 : (adminSelectedServices.length > 0 ? getTotalDuration(adminSelectedServices) : 55);
+      document.getElementById('edit-end-time').value = minutesToTime(timeToMinutes(startVal) + dur);
     }
 
     function openEditModal(app, defaultDate = null, defaultTime = null, defaultBreak = false) {
@@ -1699,13 +1296,11 @@
       const breakMode = isNew ? defaultBreak : isBreakEntry(app);
       isCustomPriceEdited = !isNew;
       document.getElementById('client-suggestions-box').classList.add('hidden');
-
       document.getElementById('edit-modal-title').innerText = isNew ? 'Добавить в график' : 'Редактировать';
       document.getElementById('edit-id').value = isNew ? '' : app.id;
       
       if (breakMode) {
-        const rawNote = isNew ? '' : String(app.client_name || '').replace(/^☕\s*Перерыв\s*:?\s*/i, '').trim();
-        document.getElementById('edit-break-note').value = rawNote;
+        document.getElementById('edit-break-note').value = isNew ? '' : String(app.client_name || '').replace(/^☕\s*Перерыв\s*:?\s*/i, '').trim();
         document.getElementById('edit-name').value = '';
         document.getElementById('edit-phone').value = '+7 ';
         document.getElementById('edit-price').value = 0;
@@ -1729,7 +1324,6 @@
 
       renderAdminServicesCheckboxes();
       setModalBreakMode(breakMode);
-
       document.getElementById('edit-date').value = isNew ? (defaultDate || adminSelectedDate || getLocalTodayStr()) : app.appointment_date;
       document.getElementById('edit-time').value = isNew ? (defaultTime || '12:00') : app.appointment_time;
       if (isNew) autoCalcEndTime();
@@ -1737,33 +1331,21 @@
       document.getElementById('edit-modal').classList.remove('hidden');
     }
 
-    function closeEditModal() {
-      document.getElementById('edit-modal').classList.add('hidden');
-    }
+    function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); }
 
     async function saveEdit() {
       const id = document.getElementById('edit-id').value;
       const appointment_date = document.getElementById('edit-date').value;
       const appointment_time = document.getElementById('edit-time').value;
       const end_time = document.getElementById('edit-end-time').value;
-
-      let client_name = '';
-      let client_phone = '';
-      let service_name = '';
-      let price = 0;
-      let notes = '';
+      let client_name = '', client_phone = '', service_name = '', price = 0, notes = '';
 
       if (isModalBreakMode) {
         const note = document.getElementById('edit-break-note').value.trim();
         client_name = note ? `☕ Перерыв: ${note}` : '☕ Перерыв';
-        client_phone = '';
         service_name = 'Перерыв';
-        price = 0;
       } else {
-        if (adminSelectedServices.length === 0) {
-          alert('Выберите хотя бы одну услугу!');
-          return;
-        }
+        if (adminSelectedServices.length === 0) { alert('Выберите хотя бы одну услугу!'); return; }
         client_name = document.getElementById('edit-name').value.trim() || 'Клиент';
         client_phone = getCleanPhone(document.getElementById('edit-phone').value);
         service_name = getCombinedNames(adminSelectedServices);
@@ -1773,19 +1355,15 @@
 
       const btn = document.getElementById('save-edit-btn');
       btn.innerText = 'Сохранение...';
-
       await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: id ? 'update' : 'create',
-          from_admin: true,
-          admin_key: getSavedAdminKey(),
-          admin_tg_id: currentTgChatId,
+        method:'POST',
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+        body:JSON.stringify({
+          action:id ? 'update' : 'create', from_admin:true,
+          admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId,
           id, client_name, client_phone, service_name, appointment_date, appointment_time, end_time, price, notes
         })
       });
-
       btn.innerText = 'Сохранить';
       closeEditModal();
       adminSelectedDate = appointment_date;
