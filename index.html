@@ -1724,7 +1724,7 @@
         await renderTimeSlots(true);
       } catch (err) {
         msg.className = ''; msg.style.color = 'var(--danger)';
-        msg.innerText = err.message && err.message !== 'Server error' ? err.message : 'Ошибка при сохранении записи. Проверьте интернет и попробуйте еще раз.';
+        msg.innerText = 'Ошибка при сохранении записи. Проверьте интернет и попробуйте еще раз.';
       }
       btn.disabled = false;
       btn.innerText = 'Записаться';
