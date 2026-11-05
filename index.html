@@ -2,147 +2,719 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Anton Frantsuzov | Онлайн-запись</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Anton Frantsuzov | Запись</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:#0b0b0d; --card:rgba(22,22,26,0.75); --card-solid:#16161a;
-      --border:rgba(255,255,255,0.08); --border-hover:rgba(255,255,255,0.2);
-      --text:#f5f5f7; --muted:#8e8e93; --accent:#ff3b30; --accent-hover:#ff453a;
-      --tg:#0a84ff; --green:#34c759; --amber:#f59e0b;
-      --input-bg:rgba(255,255,255,0.04); --radius-lg:20px; --radius-md:12px;
+      --bg: #08080a;
+      --card: rgba(18, 19, 23, 0.68);
+      --card-solid: #121317;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.22);
+      --text: #f5f6f8;
+      --muted: #9ba0aa;
+      /* Премиальный платиново-титановый акцент */
+      --accent: #e5e7eb;
+      --accent-text: #0b0c10;
+      --accent-hover: #ffffff;
+      --accent-glow: rgba(229, 231, 235, 0.25);
+      --tg: #38bdf8;
+      --green: #4ade80;
+      --amber: #fbbf24;
+      --danger: #f87171;
+      --input-bg: rgba(255, 255, 255, 0.035);
+      --radius-lg: 24px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
     }
-    * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
     body {
-      background:var(--bg); color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;
-      padding-bottom:50px; line-height:1.45; -webkit-font-smoothing:antialiased;
-      background-image:radial-gradient(circle at 10% 20%,rgba(255,59,48,0.06) 0%,transparent 40%),radial-gradient(circle at 90% 80%,rgba(10,132,255,0.06) 0%,transparent 40%);
-      background-attachment:fixed;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      padding-bottom: 60px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      min-height: 100vh;
     }
-    header { position:sticky; top:0; z-index:20; background:rgba(11,11,13,0.82); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:12px 16px; margin-bottom:24px; }
-    .header-inner { max-width:560px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:8px; }
-    .logo-wrap { display:flex; align-items:center; gap:11px; min-width:0; }
-    .logo-circle { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 14px rgba(185,28,28,0.35),inset 0 1px 1px rgba(255,255,255,0.2); overflow:hidden; background:#140507; cursor:pointer; user-select:none; transition:transform 0.1s; }
-    .logo-circle:active { transform:scale(0.94); }
-    .logo-circle svg { width:100%; height:100%; display:block; pointer-events:none; }
-    .brand-title { font-weight:700; font-size:14px; letter-spacing:0.4px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .brand-sub { font-size:11px; color:var(--muted); white-space:nowrap; letter-spacing:0.2px; }
-    .header-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
-    .container { max-width:560px; margin:0 auto; padding:0 16px; }
-    .card { background:var(--card); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:var(--radius-lg); padding:22px; margin-bottom:18px; box-shadow:0 10px 40px rgba(0,0,0,0.4); }
-    h2 { font-size:18px; font-weight:600; letter-spacing:-0.2px; margin-bottom:14px; display:flex; align-items:center; gap:10px; color:var(--text); }
-    .step-badge { width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,0.08); color:var(--text); font-size:12px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; }
-    .service-item { padding:14px 16px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--input-bg); cursor:pointer; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; transition:0.2s; user-select:none; }
-    .service-item:last-child { margin-bottom:0; }
-    .service-item:hover { border-color:var(--border-hover); background:rgba(255,255,255,0.06); }
-    .service-item.selected { border-color:var(--accent); background:rgba(255,59,48,0.08); box-shadow:0 0 20px rgba(255,59,48,0.15); }
-    .service-left { display:flex; align-items:center; gap:12px; }
-    .check-circle { width:20px; height:20px; border-radius:6px; border:1.5px solid var(--muted); display:flex; align-items:center; justify-content:center; font-size:12px; color:transparent; transition:0.15s; flex-shrink:0; }
-    .service-item.selected .check-circle { background:var(--accent); border-color:var(--accent); color:#fff; }
-    .upsell-banner { margin-top:12px; padding:12px 14px; border-radius:12px; background:linear-gradient(135deg,rgba(245,158,11,0.14),rgba(255,59,48,0.1)); border:1px dashed rgba(245,158,11,0.45); display:flex; justify-content:space-between; align-items:center; gap:10px; cursor:pointer; transition:0.2s; }
-    .upsell-banner:hover { border-color:var(--amber); background:rgba(245,158,11,0.2); }
-    .summary-bar { margin-top:12px; padding:12px 16px; border-radius:var(--radius-md); background:rgba(255,59,48,0.1); border:1px solid rgba(255,59,48,0.25); display:flex; justify-content:space-between; align-items:center; font-size:13px; }
-    .cal-wrap { background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:14px; }
-    .cal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
-    .cal-title { font-weight:600; font-size:15px; text-transform:capitalize; }
-    .cal-nav-btn { background:var(--input-bg); border:1px solid var(--border); color:var(--text); width:32px; height:32px; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:15px; }
-    .cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:11px; color:var(--muted); font-weight:500; margin-bottom:8px; }
-    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
-    .cal-day { aspect-ratio:1; border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:14px; font-weight:600; user-select:none; position:relative; transition:0.15s; }
-    .cal-day.empty { background:transparent; pointer-events:none; }
-    .cal-day.off { background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.2); border:1px solid transparent; cursor:not-allowed; font-weight:400; }
-    .cal-day.admin-clickable { cursor:pointer; }
-    .cal-day.work { background:#1c1c21; color:#fff; border:1px solid rgba(255,255,255,0.16); cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.35); }
-    .cal-dots { display:flex; gap:3px; position:absolute; bottom:4px; }
-    .cal-dot { width:4px; height:4px; border-radius:50%; }
-    .cal-day.selected { background:var(--accent)!important; color:#fff!important; border-color:var(--accent)!important; box-shadow:0 4px 14px rgba(255,59,48,0.45)!important; }
-    .cal-day.selected .cal-dot { background:#fff!important; }
-    .cal-legend { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; font-size:11px; color:var(--muted); margin-top:12px; padding-top:10px; border-top:1px solid var(--border); }
-    .legend-item { display:flex; align-items:center; gap:5px; }
-    .legend-dot { width:7px; height:7px; border-radius:50%; }
-    .timeline-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:8px; }
-    .schedule-grid { border:1px solid var(--border); border-radius:14px; overflow:hidden; background:rgba(0,0,0,0.2); }
-    .slot-row { display:flex; align-items:stretch; border-bottom:1px solid rgba(255,255,255,0.05); min-height:38px; }
-    .slot-row:last-child { border-bottom:none; }
-    .slot-row.free-row { cursor:pointer; }
-    .slot-row.free-row:hover { background:rgba(255,255,255,0.04); }
-    .slot-time { width:58px; flex-shrink:0; font-size:12px; font-weight:600; color:var(--muted); display:flex; align-items:center; justify-content:center; border-right:1px solid rgba(255,255,255,0.05); user-select:none; }
-    .slot-time.half-hour { font-size:11px; font-weight:400; opacity:0.55; }
-    .slot-body { flex:1; padding:4px 8px; display:flex; align-items:center; }
-    .tl-card-busy { width:100%; background:rgba(255,59,48,0.1); border:1px solid rgba(255,59,48,0.3); border-left:4px solid var(--accent); border-radius:10px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
-    .tl-card-break { width:100%; background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.3); border-left:4px solid var(--amber); border-radius:10px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
-    .price-pill { display:inline-flex; align-items:center; gap:4px; background:rgba(52,199,89,0.14); color:#34c759; border:1px solid rgba(52,199,89,0.3); padding:2px 8px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; }
-    .confirmed-badge { display:inline-block; background:rgba(52,199,89,0.18); color:#34c759; font-size:10px; font-weight:700; padding:2px 6px; border-radius:5px; margin-left:4px; }
-    .note-box { font-size:11px; color:var(--amber); background:rgba(245,158,11,0.1); padding:3px 7px; border-radius:6px; margin-top:4px; display:inline-block; }
-    .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; }
-    .stat-card { background:var(--input-bg); border:1px solid var(--border); border-radius:14px; padding:14px; }
-    .stat-val { font-size:20px; font-weight:700; margin-top:4px; }
-    .client-suggestions { background:#1e1e24; border:1px solid var(--border-hover); border-radius:10px; margin-top:-8px; margin-bottom:12px; max-height:150px; overflow-y:auto; }
-    .client-sug-item { padding:9px 12px; font-size:13px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; justify-content:space-between; }
-    .client-sug-item:last-child { border-bottom:none; }
-    .mode-switch { display:flex; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:3px; margin-bottom:14px; }
-    .mode-btn { flex:1; padding:8px; text-align:center; font-size:13px; font-weight:600; border-radius:8px; cursor:pointer; color:var(--muted); user-select:none; }
-    .mode-btn.active-client { background:var(--accent); color:#fff; }
-    .mode-btn.active-break { background:var(--amber); color:#000; }
-    label { font-size:12px; font-weight:500; color:var(--muted); display:block; margin-bottom:6px; }
-    input, select, textarea { width:100%; background:var(--input-bg); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 14px; color:var(--text); font-size:15px; font-family:inherit; margin-bottom:12px; appearance:none; }
-    input:focus, select:focus { outline:none; border-color:var(--tg); background:rgba(255,255,255,0.07); }
-    .btn { background:var(--accent); color:#fff; border:none; border-radius:var(--radius-md); padding:14px 18px; font-size:15px; font-weight:600; cursor:pointer; width:100%; text-decoration:none; display:inline-block; text-align:center; box-shadow:0 4px 16px rgba(255,59,48,0.3); }
-    .btn:disabled { opacity:0.4; cursor:not-allowed; }
-    .btn-tg { background:var(--tg); color:#fff; border:none; border-radius:var(--radius-md); padding:13px 16px; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 16px rgba(10,132,255,0.3); }
-    .btn-pill { background:rgba(10,132,255,0.12); color:var(--tg); padding:6px 12px; border-radius:999px; font-size:12px; font-weight:600; text-decoration:none; border:1px solid rgba(10,132,255,0.2); white-space:nowrap; cursor:pointer; }
-    .btn-outline { background:var(--input-bg); color:var(--text); border:1px solid var(--border); padding:7px 12px; border-radius:9px; font-size:12px; font-weight:500; cursor:pointer; text-decoration:none; display:inline-block; white-space:nowrap; }
-    .btn-outline.active-tab { background:var(--tg); border-color:var(--tg); color:#fff; }
-    .slots-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:10px; }
-    .slot-btn { padding:11px 6px; border-radius:10px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); cursor:pointer; font-weight:500; font-size:13px; font-family:inherit; }
-    .slot-btn.selected { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600; box-shadow:0 4px 12px rgba(255,59,48,0.4); }
-    .location-footer { max-width:560px; margin:6px auto 0; padding:0 16px; }
-    .location-card { background:rgba(22,22,26,0.6); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid var(--border); border-radius:18px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
-    .location-info { display:flex; align-items:center; gap:12px; }
-    .location-pin { width:36px; height:36px; border-radius:10px; background:rgba(255,59,48,0.12); border:1px solid rgba(255,59,48,0.25); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
-    .hidden { display:none!important; }
-    .modal { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:center; padding:16px; z-index:50; overflow-y:auto; }
-    .modal-box { background:var(--card-solid); border:1px solid var(--border); border-radius:var(--radius-lg); padding:22px; width:100%; max-width:420px; box-shadow:0 25px 50px rgba(0,0,0,0.6); max-height:92vh; overflow-y:auto; }
-    .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-    .day-chip { padding:7px 12px; border-radius:999px; border:1px solid var(--border); background:var(--input-bg); color:var(--muted); cursor:pointer; font-size:12px; font-weight:500; user-select:none; }
-    .day-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
-    .tag { display:inline-flex; align-items:center; gap:6px; background:var(--input-bg); border:1px solid var(--border); padding:4px 10px; border-radius:999px; font-size:11px; font-weight:500; margin:3px; }
-    .admin-srv-check { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border:1px solid var(--border); border-radius:8px; margin-bottom:6px; cursor:pointer; font-size:13px; background:var(--input-bg); }
-    .admin-srv-check.active { border-color:var(--accent); background:rgba(255,59,48,0.12); }
-    @media (max-width:400px) { .slots-grid { grid-template-columns:repeat(3,1fr); } .card { padding:18px; } .cal-day { font-size:13px; } }
+
+    /* Фоновое фото с деликатным затемнением и блюром */
+    .bg-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(180deg, rgba(8, 8, 10, 0.82) 0%, rgba(8, 8, 10, 0.94) 60%, #08080a 100%),
+        radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.04) 0%, transparent 60%),
+        url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1600&q=80') center center / cover no-repeat;
+      filter: blur(14px) brightness(0.65);
+      transform: scale(1.08);
+      pointer-events: none;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(8, 8, 10, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 18px;
+      margin-bottom: 24px;
+    }
+
+    .header-inner {
+      max-width: 560px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-wrap { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    
+    .logo-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+      overflow: hidden;
+      background: linear-gradient(145deg, #1f2128, #111215);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease, border-color 0.2s;
+    }
+
+    .logo-circle:active { transform: scale(0.93); }
+    .logo-circle svg { width: 100%; height: 100%; display: block; pointer-events: none; }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.8px;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      letter-spacing: 0.6px;
+      font-weight: 500;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .container { max-width: 560px; margin: 0 auto; padding: 0 16px; }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.55);
+      transition: border-color 0.2s;
+    }
+
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+    }
+
+    .step-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .service-item {
+      padding: 15px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+
+    .service-item:last-child { margin-bottom: 0; }
+    .service-item:hover { border-color: var(--border-hover); background: rgba(255, 255, 255, 0.05); }
+    
+    .service-item.selected {
+      border-color: rgba(255, 255, 255, 0.45);
+      background: rgba(255, 255, 255, 0.07);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
+
+    .service-left { display: flex; align-items: center; gap: 14px; }
+
+    .check-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: transparent;
+      transition: 0.2s;
+      flex-shrink: 0;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .service-item.selected .check-circle {
+      background: #ffffff;
+      border-color: #ffffff;
+      color: #0b0c10;
+      font-weight: 800;
+    }
+
+    .service-title { font-weight: 600; font-size: 14.5px; color: #fff; }
+    .service-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .service-price { font-weight: 700; font-size: 15px; color: #ffffff; letter-spacing: 0.2px; }
+
+    .upsell-banner {
+      margin-top: 14px;
+      padding: 13px 16px;
+      border-radius: var(--radius-md);
+      background: rgba(251, 191, 36, 0.06);
+      border: 1px dashed rgba(251, 191, 36, 0.35);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .upsell-banner:hover { background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.6); }
+
+    .summary-bar {
+      margin-top: 14px;
+      padding: 13px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13.5px;
+    }
+
+    .cal-wrap {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .cal-title { font-weight: 700; font-size: 15px; text-transform: capitalize; letter-spacing: 0.2px; }
+    .cal-nav-btn {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      transition: 0.15s;
+    }
+    .cal-nav-btn:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.08); }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+
+    .cal-day {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 13.5px;
+      font-weight: 600;
+      user-select: none;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cal-day.empty { background: transparent; pointer-events: none; }
+    .cal-day.off {
+      background: rgba(255, 255, 255, 0.015);
+      color: rgba(255, 255, 255, 0.18);
+      border: 1px solid transparent;
+      cursor: not-allowed;
+      font-weight: 400;
+    }
+
+    .cal-day.admin-clickable { cursor: pointer; }
+    .cal-day.work {
+      background: #17181d;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .cal-day.work:hover { border-color: rgba(255, 255, 255, 0.35); transform: translateY(-1px); }
+
+    .cal-dots { display: flex; gap: 3px; position: absolute; bottom: 5px; }
+    .cal-dot { width: 4px; height: 4px; border-radius: 50%; }
+
+    .cal-day.selected {
+      background: #ffffff !important;
+      color: #0b0c10 !important;
+      border-color: #ffffff !important;
+      box-shadow: 0 4px 18px rgba(255, 255, 255, 0.25) !important;
+      font-weight: 800;
+    }
+    .cal-day.selected .cal-dot { background: #0b0c10 !important; }
+
+    .cal-legend {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .schedule-grid {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    .slot-row { display: flex; align-items: stretch; border-bottom: 1px solid rgba(255, 255, 255, 0.04); min-height: 40px; }
+    .slot-row:last-child { border-bottom: none; }
+    .slot-row.free-row { cursor: pointer; transition: background 0.15s; }
+    .slot-row.free-row:hover { background: rgba(255, 255, 255, 0.04); }
+
+    .slot-time {
+      width: 60px;
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      user-select: none;
+    }
+    .slot-time.half-hour { font-size: 11px; font-weight: 400; opacity: 0.5; }
+    .slot-body { flex: 1; padding: 4px 8px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+
+    .tl-card-busy {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-left: 3px solid #ffffff;
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tl-card-break {
+      width: 100%;
+      background: rgba(251, 191, 36, 0.07);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      border-left: 3px solid var(--amber);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .price-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(74, 222, 128, 0.12);
+      color: var(--green);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .confirmed-badge {
+      display: inline-block;
+      background: rgba(74, 222, 128, 0.16);
+      color: var(--green);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      margin-left: 4px;
+    }
+
+    .note-box {
+      font-size: 11px;
+      color: var(--amber);
+      background: rgba(251, 191, 36, 0.1);
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+    .stat-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; }
+    .stat-val { font-size: 20px; font-weight: 800; margin-top: 4px; color: #fff; }
+
+    .client-suggestions {
+      background: #18191f;
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-sm);
+      margin-top: -8px;
+      margin-bottom: 12px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .client-sug-item { padding: 9px 12px; font-size: 13px; border-bottom: 1px solid var(--border); cursor: pointer; display: flex; justify-content: space-between; }
+    .client-sug-item:last-child { border-bottom: none; }
+    .client-sug-item:hover { background: rgba(255, 255, 255, 0.08); }
+
+    .mode-switch { display: flex; background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 3px; margin-bottom: 14px; }
+    .mode-btn { flex: 1; padding: 8px; text-align: center; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; color: var(--muted); user-select: none; transition: 0.15s; }
+    .mode-btn.active-client { background: #ffffff; color: #0b0c10; font-weight: 700; }
+    .mode-btn.active-break { background: var(--amber); color: #000; font-weight: 700; }
+
+    label { font-size: 12px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+    
+    input, select, textarea {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 13px 15px;
+      color: var(--text);
+      font-size: 14.5px;
+      font-family: inherit;
+      margin-bottom: 12px;
+      appearance: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .btn {
+      background: var(--accent);
+      color: var(--accent-text);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 15px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      transition: all 0.2s ease;
+      letter-spacing: 0.2px;
+    }
+    .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-tg {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--tg);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius-md);
+      padding: 13px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: 0.2s;
+    }
+    .btn-tg:hover { background: rgba(56, 189, 248, 0.2); }
+
+    .btn-pill {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .btn-pill:hover { background: rgba(255, 255, 255, 0.12); }
+
+    .btn-outline {
+      background: var(--input-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      white-space: nowrap;
+      transition: 0.15s;
+    }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); }
+    .btn-outline.active-tab { background: #ffffff; border-color: #ffffff; color: #0b0c10; font-weight: 700; }
+
+    .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+    .slot-btn {
+      padding: 12px 6px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      font-family: inherit;
+      transition: 0.15s;
+    }
+    .slot-btn:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.08); }
+    .slot-btn.selected {
+      background: #ffffff;
+      color: #0b0c10;
+      border-color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 4px 16px rgba(255, 255, 255, 0.3);
+    }
+
+    .location-footer { max-width: 560px; margin: 8px auto 0; padding: 0 16px; }
+    .location-card {
+      background: var(--card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .location-info { display: flex; align-items: center; gap: 14px; }
+    .location-pin {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .hidden { display: none !important; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+      overflow-y: auto;
+    }
+    .modal-box {
+      background: var(--card-solid);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .day-chip {
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      user-select: none;
+      transition: 0.15s;
+    }
+    .day-chip.active { background: #ffffff; color: #0b0c10; border-color: #ffffff; }
+    .tag { display: inline-flex; align-items: center; gap: 6px; background: var(--input-bg); border: 1px solid var(--border); padding: 5px 11px; border-radius: 999px; font-size: 11.5px; font-weight: 600; margin: 3px; }
+    .admin-srv-check {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      background: var(--input-bg);
+    }
+    .admin-srv-check.active { border-color: rgba(255,255,255,0.4); background: rgba(255, 255, 255, 0.08); }
+
+    .toast-hint {
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: var(--tg);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 400px) {
+      .slots-grid { grid-template-columns: repeat(3, 1fr); }
+      .card { padding: 20px; }
+      .cal-day { font-size: 13px; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Задний фактурный фон -->
+  <div class="bg-backdrop"></div>
+
   <header>
     <div class="header-inner">
       <div class="logo-wrap">
+        <!-- Матовый титановый логотип AF -->
         <div class="logo-circle" onclick="handleSecretLogoTap()" title="Anton Frantsuzov">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <radialGradient id="afBg" cx="35%" cy="30%" r="70%">
-                <stop offset="0%" stop-color="#4a101d"/><stop offset="55%" stop-color="#24070e"/><stop offset="100%" stop-color="#0f0306"/>
+              <radialGradient id="afBg" cx="30%" cy="25%" r="75%">
+                <stop offset="0%" stop-color="#2a2c35"/>
+                <stop offset="60%" stop-color="#14151a"/>
+                <stop offset="100%" stop-color="#0a0a0d"/>
               </radialGradient>
               <linearGradient id="afMark" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ff6b81"/><stop offset="45%" stop-color="#c81e3a"/><stop offset="100%" stop-color="#68091a"/>
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="60%" stop-color="#cfd4dc"/>
+                <stop offset="100%" stop-color="#808794"/>
               </linearGradient>
               <filter id="afShadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#000" flood-opacity="0.65"/>
+                <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#000" flood-opacity="0.8"/>
               </filter>
             </defs>
-            <circle cx="50" cy="50" r="48.5" fill="url(#afBg)" stroke="url(#afMark)" stroke-width="2"/>
+            <circle cx="50" cy="50" r="48.5" fill="url(#afBg)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
             <g filter="url(#afShadow)" fill="none" stroke="url(#afMark)" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M 22 72 L 38 28 C 40 23 44 23 46 28 L 57 60" stroke-width="8.5"/>
-              <path d="M 27 56 C 40 56 48 52 57 52 L 77 52" stroke-width="8"/>
-              <path d="M 57 72 L 57 35 C 57 29 61 26 67 26 L 80 26" stroke-width="8.5"/>
+              <path d="M 22 72 L 38 28 C 40 23 44 23 46 28 L 57 60" stroke-width="8"/>
+              <path d="M 27 56 C 40 56 48 52 57 52 L 77 52" stroke-width="7.5"/>
+              <path d="M 57 72 L 57 35 C 57 29 61 26 67 26 L 80 26" stroke-width="8"/>
             </g>
           </svg>
         </div>
         <div>
           <div class="brand-title">ANTON FRANTSUZOV</div>
-          <div class="brand-sub">BARBER & BIO-CURLING</div>
+          <div class="brand-sub">Barber & Bio-Curling</div>
         </div>
       </div>
       <div class="header-actions">
@@ -154,22 +726,21 @@
   <main class="container">
     <div id="client-view">
       <div class="card">
-        <h2><span class="step-badge">1</span> Выберите услуги</h2>
-        <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Можно выбрать сразу несколько услуг</p>
+        <h2><span class="step-badge">1</span> Услуги</h2>
         <div id="services-list"></div>
+        <div id="service-auto-hint" class="toast-hint hidden"></div>
         <div id="upsell-box" class="upsell-banner hidden" onclick="applyWaxUpsell()">
           <div>
-            <div style="font-weight:600; font-size:13px; color:var(--amber);">💡 Добавить депиляцию воском?</div>
-            <div style="font-size:11px; color:var(--muted);">Всего +5 минут к визиту · 200 ₽</div>
+            <div style="font-weight:700; font-size:13px; color:var(--amber);">💡 Депиляция воском</div>
+            <div style="font-size:11px; color:var(--muted); margin-top:2px;">Дополнительно +5 минут · 200 ₽</div>
           </div>
-          <span class="btn-outline" style="background:rgba(245,158,11,0.2); border-color:var(--amber); color:#fff; font-weight:600;">+ Добавить</span>
+          <span class="btn-outline" style="background:rgba(251,191,36,0.15); border-color:rgba(251,191,36,0.4); color:#fff; font-weight:700;">+ Добавить</span>
         </div>
         <div id="services-summary" class="summary-bar hidden"></div>
       </div>
 
       <div class="card">
         <h2><span class="step-badge">2</span> Дата и время</h2>
-        <p style="font-size:12px; color:var(--muted); margin-bottom:12px;">Часы работы: 10:00 – 21:00</p>
         <input type="hidden" id="booking-date">
         <div class="cal-wrap">
           <div class="cal-header">
@@ -180,22 +751,32 @@
           <div class="cal-weekdays"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div></div>
           <div class="cal-grid" id="cal-days-grid"></div>
           <div class="cal-legend">
-            <div class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Рабочий день</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--green);"></span> Рабочий день</div>
             <div class="legend-item"><span class="legend-dot" style="background:rgba(255,255,255,0.2);"></span> Выходной</div>
           </div>
         </div>
         <div id="time-slots-container">
-          <p style="font-size:13px; color:var(--muted); text-align:center;">Выберите услугу выше, чтобы увидеть свободное время</p>
+          <p style="font-size:13px; color:var(--muted); text-align:center;">Выберите услугу, чтобы увидеть свободные окна</p>
         </div>
       </div>
 
       <div class="card">
-        <h2><span class="step-badge">3</span> Ваши контакты</h2>
-        <label>Имя</label>
-        <input type="text" id="client-name" placeholder="Александр">
-        <label>Телефон</label>
-        <input type="tel" id="client-phone" value="+7 " oninput="formatPhoneInput(this)" onfocus="if(!this.value.startsWith('+7')) this.value='+7 '" placeholder="+7 (999) 000-00-00">
-        <button onclick="submitBooking()" id="submit-btn" class="btn" style="margin-top:4px;">Записаться</button>
+        <h2><span class="step-badge">3</span> Контакты</h2>
+        <label for="client-name">Имя *</label>
+        <input type="text" id="client-name" placeholder="Александр" maxlength="60" autocomplete="given-name">
+        <label for="client-phone">Телефон (обязательно для записи) *</label>
+        <input
+          type="tel"
+          id="client-phone"
+          value="+7 "
+          autocomplete="tel"
+          inputmode="tel"
+          oninput="formatPhoneInput(this)"
+          onpaste="handlePhonePaste(event, this)"
+          onfocus="if(!this.value || !this.value.startsWith('+7')) this.value='+7 '"
+          placeholder="+7 (999) 000-00-00"
+        >
+        <button onclick="submitBooking()" id="submit-btn" class="btn" style="margin-top:6px;">Записаться</button>
         <div id="booking-msg" class="hidden" style="margin-top:14px; text-align:center; font-size:14px;"></div>
       </div>
     </div>
@@ -206,25 +787,26 @@
         <h2 style="margin:0; font-size:21px;">Кабинет мастера</h2>
         <div class="row">
           <button onclick="document.getElementById('schedule-settings-card').classList.toggle('hidden')" class="btn-outline">⚙️ График</button>
-          <button onclick="loadAppointments(true)" class="btn-outline">🔄</button>
-          <button onclick="exitAdmin()" class="btn-outline" style="color:var(--accent);">Выйти</button>
+          <button onclick="loadAppointments(true)" class="btn-outline" title="Обновить">🔄</button>
+          <button onclick="exitAdmin(false)" class="btn-outline" style="color:var(--muted);">На сайт</button>
+          <button onclick="exitAdmin(true)" class="btn-outline" style="color:var(--danger); border-color:rgba(248,113,113,0.3);">Выйти</button>
         </div>
       </div>
 
       <div id="schedule-settings-card" class="card hidden">
         <h2>Настройка рабочих дней</h2>
-        <label style="margin-bottom:6px;">Постоянные рабочие дни недели:</label>
+        <label style="margin-bottom:6px;">Постоянные рабочие дни:</label>
         <div class="row" id="workdays-chips" style="margin-bottom:14px;"></div>
         <div style="border-top:1px solid var(--border); padding-top:12px; margin-top:6px;">
-          <label>Исключения для конкретных дат:</label>
+          <label>Исключения для дат:</label>
           <div class="row" style="margin-top:6px;">
             <input type="date" id="override-date" style="flex:1; margin:0;">
-            <button onclick="addDateOverride('open')" class="btn-outline" style="color:#34c759; border-color:rgba(52,199,89,0.3); background:rgba(52,199,89,0.1);">+ Рабочий</button>
-            <button onclick="addDateOverride('closed')" class="btn-outline" style="color:#ff3b30; border-color:rgba(255,59,48,0.3); background:rgba(255,59,48,0.1);">+ Выходной</button>
+            <button onclick="addDateOverride('open')" class="btn-outline" style="color:var(--green); border-color:rgba(74,222,128,0.3); background:rgba(74,222,128,0.1);">+ Рабочий</button>
+            <button onclick="addDateOverride('closed')" class="btn-outline" style="color:var(--muted); border-color:var(--border);">+ Выходной</button>
           </div>
           <div id="overrides-list" style="margin-top:10px;"></div>
         </div>
-        <button onclick="saveSchedule()" id="save-sched-btn" class="btn" style="margin-top:12px; padding:11px;">Сохранить график</button>
+        <button onclick="saveSchedule()" id="save-sched-btn" class="btn" style="margin-top:12px; padding:12px;">Сохранить график</button>
       </div>
 
       <div class="card">
@@ -235,8 +817,8 @@
             <button id="tab-stats-btn" onclick="setAdminMode('stats')" class="btn-outline">📊 Касса</button>
           </div>
           <div class="row">
-            <button onclick="openEditModal(null, adminSelectedDate, '13:00', true)" class="btn-outline" style="background:rgba(245,158,11,0.15); color:var(--amber); border-color:rgba(245,158,11,0.35);">☕ Перерыв</button>
-            <button onclick="openEditModal(null, adminSelectedDate, '12:00', false)" class="btn-outline" style="background:var(--accent); color:#fff; border:none;">+ Запись</button>
+            <button onclick="openEditModal(null, adminSelectedDate, '13:00', true)" class="btn-outline" style="background:rgba(251,191,36,0.12); color:var(--amber); border-color:rgba(251,191,36,0.3);">☕ Перерыв</button>
+            <button onclick="openEditModal(null, adminSelectedDate, '12:00', false)" class="btn-outline" style="background:#ffffff; color:#0b0c10; font-weight:700;">+ Запись</button>
           </div>
         </div>
 
@@ -249,8 +831,8 @@
           <div class="cal-weekdays"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div></div>
           <div class="cal-grid" id="admin-cal-grid"></div>
           <div class="cal-legend">
-            <div class="legend-item"><span class="legend-dot" style="background:#34c759;"></span> Рабочий</div>
-            <div class="legend-item"><span class="legend-dot" style="background:#0a84ff;"></span> Есть записи</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--green);"></span> Рабочий</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--tg);"></span> Есть записи</div>
           </div>
         </div>
       </div>
@@ -264,15 +846,15 @@
       <div class="location-info">
         <div class="location-pin">📍</div>
         <div>
-          <div id="footer-address-text" style="font-weight:600; font-size:14px; color:var(--text);"></div>
-          <div id="footer-place-text" style="font-size:12px; color:var(--muted);"></div>
+          <div id="footer-address-text" style="font-weight:700; font-size:14px; color:var(--text);"></div>
+          <div id="footer-place-text" style="font-size:12px; color:var(--muted); margin-top:1px;"></div>
         </div>
       </div>
-      <a id="footer-map-link" href="#" target="_blank" class="btn-outline">На карте ↗</a>
+      <a id="footer-map-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-outline">На карте ↗</a>
     </div>
   </footer>
 
-  <div id="password-modal" class="modal hidden">
+  <div id="password-modal" class="modal hidden" onclick="if(event.target===this) toggleAdminModal()">
     <div class="modal-box">
       <h2 style="margin-bottom:12px;">Вход для мастера</h2>
       <input type="password" id="admin-pass-input" placeholder="Введите ключ доступа" onkeydown="if(event.key==='Enter') checkAdminPass()">
@@ -283,30 +865,36 @@
     </div>
   </div>
 
-  <div id="edit-modal" class="modal hidden">
+  <div id="edit-modal" class="modal hidden" onclick="if(event.target===this) closeEditModal()">
     <div class="modal-box">
       <h2 id="edit-modal-title">Запись</h2>
       <input type="hidden" id="edit-id">
       <div class="mode-switch">
-        <div id="mode-client-btn" class="mode-btn active-client" onclick="setModalBreakMode(false)">👤 Запись клиента</div>
+        <div id="mode-client-btn" class="mode-btn active-client" onclick="setModalBreakMode(false)">👤 Клиент</div>
         <div id="mode-break-btn" class="mode-btn" onclick="setModalBreakMode(true)">☕ Перерыв</div>
       </div>
       <div id="client-fields-wrap">
-        <label>Имя клиента (поиск по базе)</label>
+        <label>Имя клиента (поиск)</label>
         <input type="text" id="edit-name" placeholder="Имя клиента" oninput="onAdminClientSearch(this.value)" autocomplete="off">
         <div id="client-suggestions-box" class="client-suggestions hidden"></div>
         <label>Телефон</label>
-        <input type="tel" id="edit-phone" oninput="formatPhoneInput(this); onAdminClientSearch(this.value);">
-        <label>Услуги (можно несколько)</label>
+        <input
+          type="tel"
+          id="edit-phone"
+          inputmode="tel"
+          oninput="formatPhoneInput(this); onAdminClientSearch(this.value);"
+          onpaste="handlePhonePaste(event, this); onAdminClientSearch(this.value);"
+        >
+        <label>Услуги</label>
         <div id="edit-services-wrap" style="margin-bottom:12px;"></div>
-        <label>Сумма чека (₽) — можно изменить вручную</label>
-        <input type="number" id="edit-price" placeholder="1700" oninput="isCustomPriceEdited = true">
-        <label>Заметка мастера (видна только вам)</label>
+        <label>Сумма чека (₽)</label>
+        <input type="number" id="edit-price" placeholder="1700" min="0" oninput="isCustomPriceEdited = true">
+        <label>Заметка мастера</label>
         <input type="text" id="edit-notes" placeholder="Напр.: фейд с 0, желтые коклюшки">
       </div>
       <div id="break-fields-wrap" class="hidden">
-        <label>Комментарий (необязательно)</label>
-        <input type="text" id="edit-break-note" placeholder="Например: Обед / Личные дела">
+        <label>Комментарий</label>
+        <input type="text" id="edit-break-note" placeholder="Обед / Личные дела">
       </div>
       <label>Дата</label>
       <input type="date" id="edit-date">
@@ -314,7 +902,7 @@
         <div style="flex:1;"><label>Начало</label><input type="time" id="edit-time" onchange="autoCalcEndTime()"></div>
         <div style="flex:1;"><label>Конец</label><input type="time" id="edit-end-time"></div>
       </div>
-      <div class="row" style="margin-top:8px;">
+      <div class="row" style="margin-top:10px;">
         <button onclick="saveEdit()" id="save-edit-btn" class="btn" style="flex:1;">Сохранить</button>
         <button onclick="closeEditModal()" class="btn-outline" style="flex:1; padding:13px; text-align:center;">Отмена</button>
       </div>
@@ -322,19 +910,27 @@
   </div>
 
   <script>
-    // ЕДИНЫЕ ПЕРЕМЕННЫЕ АДРЕСА И НАСТРОЕК
-    const LOCATION_ADDRESS = 'Санкт-Петербург, Итальянская, 12Ж';
-    const LOCATION_PLACE = 'Барбершоп «Шум»';
-    const LOCATION_FULL = `${LOCATION_ADDRESS} (${LOCATION_PLACE})`;
+    /* =========================================================================
+       ЕДИНАЯ НАСТРОЙКА АДРЕСА (Меняется только здесь — обновляется везде)
+       ========================================================================= */
+    const BARBERSHOP_ADDRESS = 'Санкт-Петербург, Итальянская, 12Ж (Барбершоп «Шум»)';
+
+    // Автоматический разбор для футера, карт и уведомлений
+    const LOCATION_FULL = BARBERSHOP_ADDRESS;
+    const LOCATION_ADDRESS = BARBERSHOP_ADDRESS.replace(/\s*\(.*?\)\s*$/, '').trim();
+    const LOCATION_PLACE = (BARBERSHOP_ADDRESS.match(/\((.*?)\)/) || [null, 'Барбершоп «Шум»'])[1];
     const LOCATION_MAP_URL = `https://yandex.ru/maps/?text=${encodeURIComponent(LOCATION_ADDRESS)}`;
+
+    const SPB_TIMEZONE = 'Europe/Moscow';
+    const MAX_ACTIVE_BOOKINGS_PER_CLIENT = 2;
 
     const API_URL = 'https://script.google.com/macros/s/AKfycbygzBCtiQOGgt6uKHVzjYMvXELFuHVWgvofBAlYk_ZrroyEKnCc5-MkxscbI1M6ZXyY/exec';
     const BOT_USERNAME = 'frantsuzov_barberbooking_bot'; 
     const MASTER_TG_USERNAME = 'afrant5';
-    const MASTER_TG_ID = '189835141';
     const ADMIN_PASS_KEY = 'af_barber_admin_token';
     const CLIENT_SAVED_NAME_KEY = 'af_client_saved_name';
     const CLIENT_SAVED_PHONE_KEY = 'af_client_saved_phone';
+    const CLIENT_ACTIVE_HISTORY_KEY = 'af_client_booked_slots_v1';
 
     const tgApp = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     let currentTgChatId = null;
@@ -344,6 +940,66 @@
       if (tgApp.initDataUnsafe && tgApp.initDataUnsafe.user && tgApp.initDataUnsafe.user.id) {
         currentTgChatId = String(tgApp.initDataUnsafe.user.id);
       }
+    }
+
+    // Закрытие модальных окон по клавише Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.getElementById('password-modal').classList.add('hidden');
+        document.getElementById('edit-modal').classList.add('hidden');
+      }
+    });
+
+    // Защита от XSS при выводе пользовательских строк в HTML
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Получение текущей даты и времени строго по часовому поясу Санкт-Петербурга (Europe/Moscow)
+    function getSpbNowParts() {
+      try {
+        const fmt = new Intl.DateTimeFormat('en-CA', {
+          timeZone: SPB_TIMEZONE,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        const parts = {};
+        fmt.formatToParts(new Date()).forEach(p => { parts[p.type] = p.value; });
+        const year = Number(parts.year);
+        const month = Number(parts.month);
+        const day = Number(parts.day);
+        const hour = Number(parts.hour === '24' ? '0' : parts.hour);
+        const minute = Number(parts.minute);
+        return {
+          dateStr: `${parts.year}-${parts.month}-${parts.day}`,
+          year,
+          monthIndex: month - 1,
+          day,
+          minutesOfDay: hour * 60 + minute
+        };
+      } catch (e) {
+        const n = new Date();
+        return {
+          dateStr: `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`,
+          year: n.getFullYear(),
+          monthIndex: n.getMonth(),
+          day: n.getDate(),
+          minutesOfDay: n.getHours() * 60 + n.getMinutes()
+        };
+      }
+    }
+
+    function getLocalTodayStr() {
+      return getSpbNowParts().dateStr;
     }
 
     function openMasterTelegram(e) {
@@ -356,7 +1012,6 @@
     }
 
     function hasSavedAdminAccess() {
-      if (currentTgChatId === MASTER_TG_ID) return true;
       return Boolean(getSavedAdminKey());
     }
 
@@ -400,19 +1055,16 @@
     let selectedServices = [], adminSelectedServices = [], isModalBreakMode = false, isCustomPriceEdited = false;
     let selectedTime = null, allAppointments = [], allExpenses = [], lastBookingDetails = null;
     let scheduleConfig = { workDays:[1,2,5,6], extraWorkDates:[], closedDates:[] };
-    let isDataLoaded = false, fetchPromise = null;
+    let isDataLoaded = false, fetchPromise = null, userManuallyPickedDate = false;
 
-    const nowInit = new Date();
-    let currentCalYear = nowInit.getFullYear(), currentCalMonth = nowInit.getMonth();
-    let adminCalYear = nowInit.getFullYear(), adminCalMonth = nowInit.getMonth();
+    const spbInit = getSpbNowParts();
+    let currentCalYear = spbInit.year, currentCalMonth = spbInit.monthIndex;
+    let adminCalYear = spbInit.year, adminCalMonth = spbInit.monthIndex;
     let adminSelectedDate = '', adminViewMode = 'day';
     const START_HOUR = 10, END_HOUR = 21;
 
     function isBreakEntry(app) { return String(app.service_name || '').trim() === 'Перерыв' || String(app.client_name || '').startsWith('☕'); }
-    function getLocalTodayStr() {
-      const n = new Date();
-      return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
-    }
+
     function formatDurationHuman(mins) {
       const h = Math.floor(mins / 60), m = mins % 60;
       if (h > 0 && m > 0) return `${h} ч ${m} мин`;
@@ -444,27 +1096,82 @@
 
     function getAppActualPrice(app) {
       if (isBreakEntry(app)) return 0;
-      if (app.price !== undefined && app.price !== '' && !isNaN(Number(app.price))) return Number(app.price);
+      if (app.price !== undefined && app.price !== null && app.price !== '' && !isNaN(Number(app.price))) {
+        return Number(app.price);
+      }
       return calcPriceByNames(app.service_name);
     }
 
-    function formatPhoneInput(input) {
-      let d = input.value.replace(/\D/g, '');
-      if (d.startsWith('7') || d.startsWith('8')) d = d.substring(1);
-      d = d.substring(0, 10);
+    /* =========================================================================
+       УМНАЯ ОБРАБОТКА НОМЕРА ТЕЛЕФОНА (+7 и защита от обрезания при копировании)
+       ========================================================================= */
+    function extractRussian10Digits(raw) {
+      let d = String(raw || '').replace(/\D/g, '');
+      if (!d) return '';
+
+      // Если вставили в поле, где уже было "+7 ", в начале образуется "789..." или "779..." (12 цифр)
+      while (d.length > 10 && (d.startsWith('7') || d.startsWith('8'))) {
+        d = d.substring(1);
+      }
+
+      // Если ровно 11 цифр и начинается с 7 или 8 — убираем код страны
+      if (d.length === 11 && (d.startsWith('7') || d.startsWith('8'))) {
+        d = d.substring(1);
+      }
+
+      // Если в строке есть '9' и после нее минимум 9 цифр (вставка полного номера с мусором)
+      const nineIdx = d.indexOf('9');
+      if (d.length > 10 && nineIdx !== -1 && d.length - nineIdx >= 10) {
+        d = d.substring(nineIdx, nineIdx + 10);
+      } else if (d.length === 10 && (d.startsWith('7') || d.startsWith('8')) && d[1] === '9') {
+        // Пользователь начал печатать +7 (7999...) или вставил без последней цифры, но с 7/8 в начале
+        d = d.substring(1);
+      } else if (d.length <= 10 && (d.startsWith('7') || d.startsWith('8'))) {
+        // Обычный посимвольный ввод в поле "+7 "
+        d = d.substring(1);
+      }
+
+      return d.substring(0, 10);
+    }
+
+    function formatDigitsToMask(d) {
       let f = '+7';
       if (d.length > 0) f += ' (' + d.substring(0, 3);
       if (d.length >= 4) f += ') ' + d.substring(3, 6);
       if (d.length >= 7) f += '-' + d.substring(6, 8);
       if (d.length >= 9) f += '-' + d.substring(8, 10);
-      input.value = f;
+      return f;
+    }
+
+    function handlePhonePaste(e, input) {
+      const pasted = (e.clipboardData || window.clipboardData)?.getData('text');
+      if (!pasted) return;
+      e.preventDefault();
+      let digits = pasted.replace(/\D/g, '');
+      // При чистой вставке из буфера: если 11 цифр и начинается с 7 или 8 — отрезаем 1 цифру, либо ищем с 9
+      const nineIdx = digits.indexOf('9');
+      if (digits.length >= 10 && nineIdx !== -1 && digits.length - nineIdx >= 10) {
+        digits = digits.substring(nineIdx, nineIdx + 10);
+      } else if (digits.length >= 11 && (digits.startsWith('7') || digits.startsWith('8'))) {
+        digits = digits.substring(1, 11);
+      } else {
+        digits = digits.substring(0, 10);
+      }
+      input.value = formatDigitsToMask(digits);
+    }
+
+    function formatPhoneInput(input) {
+      const d = extractRussian10Digits(input.value);
+      input.value = formatDigitsToMask(d);
     }
 
     function getCleanPhone(val) {
-      let d = String(val).replace(/\D/g, '');
-      if (d.startsWith('8')) d = '7' + d.substring(1);
-      if (!d.startsWith('7')) d = '7' + d;
-      return '+' + d;
+      const d = extractRussian10Digits(val);
+      return '+7' + d;
+    }
+
+    function isValidRussianPhone(cleanPhone) {
+      return /^\+79\d{9}$/.test(cleanPhone) || /^\+7\d{10}$/.test(cleanPhone);
     }
 
     function normalizeDate(val) {
@@ -493,10 +1200,12 @@
     }
 
     function minutesToTime(m) {
-      return `${Math.floor(m / 60).toString().padStart(2, '0')}:${(m % 60).toString().padStart(2, '0')}`;
+      const safe = Math.max(0, m);
+      return `${Math.floor(safe / 60).toString().padStart(2, '0')}:${(safe % 60).toString().padStart(2, '0')}`;
     }
 
     function isWorkingDate(dateStr) {
+      if (!dateStr) return false;
       if (scheduleConfig.closedDates && scheduleConfig.closedDates.includes(dateStr)) return false;
       if (scheduleConfig.extraWorkDates && scheduleConfig.extraWorkDates.includes(dateStr)) return true;
       const [y, m, d] = dateStr.split('-').map(Number);
@@ -504,13 +1213,68 @@
     }
 
     function findNearestWorkingDate() {
-      const base = new Date();
+      const spb = getSpbNowParts();
+      const base = new Date(spb.year, spb.monthIndex, spb.day);
       for (let i = 0; i < 60; i++) {
         const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + i);
         const dStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         if (isWorkingDate(dStr)) return dStr;
       }
-      return getLocalTodayStr();
+      return spb.dateStr;
+    }
+
+    /* =========================================================================
+       КОНТРОЛЬ ЛИМИТА ЗАПИСЕЙ (Максимум 2 активные записи на один номер/аккаунт)
+       ========================================================================= */
+    function isFutureSlotSpb(dateStr, timeStr) {
+      const spb = getSpbNowParts();
+      if (dateStr > spb.dateStr) return true;
+      if (dateStr < spb.dateStr) return false;
+      return timeToMinutes(timeStr) > spb.minutesOfDay;
+    }
+
+    function getClientLocalBookings() {
+      try {
+        const raw = localStorage.getItem(CLIENT_ACTIVE_HISTORY_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveClientLocalBooking(phone, dateStr, timeStr) {
+      try {
+        const list = getClientLocalBookings().filter(item => isFutureSlotSpb(item.date, item.time));
+        list.push({ phone, date: dateStr, time: timeStr });
+        localStorage.setItem(CLIENT_ACTIVE_HISTORY_KEY, JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    function countActiveBookingsForClient(cleanPhone) {
+      // 1. Считаем будущие записи по этому номеру телефона в загруженном расписании
+      const serverMatches = allAppointments.filter(a => {
+        if (isBreakEntry(a) || !a.appointment_date || !a.appointment_time) return false;
+        if (!isFutureSlotSpb(a.appointment_date, a.appointment_time)) return false;
+        if (a.client_phone && getCleanPhone(a.client_phone) === cleanPhone) return true;
+        return false;
+      });
+
+      // 2. Считаем записи, созданные с этого браузера/устройства (на случай если сервер скрывает телефоны в публичном GET)
+      const localMatches = getClientLocalBookings().filter(item => {
+        if (!isFutureSlotSpb(item.date, item.time)) return false;
+        // Проверяем, что эта запись все еще существует в общем списке занятых слотов
+        const stillExistsInSchedule = allAppointments.some(a =>
+          a.appointment_date === item.date && a.appointment_time === item.time
+        );
+        return stillExistsInSchedule;
+      });
+
+      const uniqueKeys = new Set();
+      serverMatches.forEach(a => uniqueKeys.add(`${a.appointment_date}_${a.appointment_time}`));
+      localMatches.forEach(l => uniqueKeys.add(`${l.date}_${l.time}`));
+
+      return uniqueKeys.size;
     }
 
     function renderCalendar() {
@@ -539,7 +1303,7 @@
         const isWork = (dateStr >= todayStr) && isWorkingDate(dateStr);
         if (isWork) {
           cell.className = 'cal-day work' + (dateStr === selectedDateStr ? ' selected' : '');
-          cell.innerHTML += `<div class="cal-dots"><span class="cal-dot" style="background:#34c759;"></span></div>`;
+          cell.innerHTML += `<div class="cal-dots"><span class="cal-dot" style="background:var(--green);"></span></div>`;
           cell.onclick = () => selectCalendarDate(dateStr);
         } else {
           cell.className = 'cal-day off';
@@ -556,6 +1320,7 @@
     }
 
     function selectCalendarDate(dateStr) {
+      userManuallyPickedDate = true;
       document.getElementById('booking-date').value = dateStr;
       renderCalendar();
       renderTimeSlots(isDataLoaded);
@@ -592,7 +1357,7 @@
       await fetchAllData();
 
       const curVal = document.getElementById('booking-date').value;
-      if (!isWorkingDate(curVal)) {
+      if (!userManuallyPickedDate && !isWorkingDate(curVal)) {
         const nearest = findNearestWorkingDate();
         document.getElementById('booking-date').value = nearest;
         adminSelectedDate = nearest;
@@ -610,8 +1375,8 @@
       fetchPromise = (async () => {
         try {
           let queryUrl = `${API_URL}?t=${Date.now()}`;
-          if (asAdmin || hasSavedAdminAccess()) {
-            queryUrl += `&admin_key=${encodeURIComponent(getSavedAdminKey())}&admin_tg_id=${encodeURIComponent(currentTgChatId || '')}`;
+          if (asAdmin && hasSavedAdminAccess()) {
+            queryUrl += `&admin_key=${encodeURIComponent(getSavedAdminKey())}`;
           }
           const res = await fetch(queryUrl, { cache:'no-store' });
           const data = await res.json();
@@ -647,6 +1412,48 @@
       }
     }
 
+    // Взаимоисключение конфликтующих услуг и авто-объединение Стрижка + Борода -> Комплекс
+    function toggleClientServiceSelection(clickedService) {
+      const hintEl = document.getElementById('service-auto-hint');
+      hintEl.classList.add('hidden');
+
+      const isAlreadySelected = selectedServices.some(item => item.id === clickedService.id);
+      if (isAlreadySelected) {
+        selectedServices = selectedServices.filter(item => item.id !== clickedService.id);
+        return;
+      }
+
+      // Если выбран Комплекс (3), убираем отдельные Стрижку (1) и Бороду (2)
+      if (clickedService.id === 3) {
+        selectedServices = selectedServices.filter(item => item.id !== 1 && item.id !== 2);
+      }
+
+      // Если выбрана Стрижка (1) или Борода (2), когда уже выбран Комплекс (3) — заменяем Комплекс
+      if ((clickedService.id === 1 || clickedService.id === 2) && selectedServices.some(item => item.id === 3)) {
+        selectedServices = selectedServices.filter(item => item.id !== 3);
+      }
+
+      // Взаимоисключение двух видов биозавивки (4 и 5)
+      if (clickedService.id === 4) {
+        selectedServices = selectedServices.filter(item => item.id !== 5);
+      } else if (clickedService.id === 5) {
+        selectedServices = selectedServices.filter(item => item.id !== 4);
+      }
+
+      selectedServices.push(clickedService);
+
+      // Если одновременно выбраны Стрижка (1) и Борода (2) — автоматически объединяем в Комплекс (3) с выгодой 500 ₽
+      const hasHaircut = selectedServices.some(item => item.id === 1);
+      const hasBeard = selectedServices.some(item => item.id === 2);
+      if (hasHaircut && hasBeard) {
+        const combo = services.find(s => s.id === 3);
+        selectedServices = selectedServices.filter(item => item.id !== 1 && item.id !== 2);
+        if (combo) selectedServices.unshift(combo);
+        hintEl.innerText = '✨ «Стрижка» + «Борода» автоматически объединены в выгодный «Комплекс» (2500 ₽ вместо 3000 ₽)';
+        hintEl.classList.remove('hidden');
+      }
+    }
+
     function renderServices() {
       const container = document.getElementById('services-list');
       const summaryEl = document.getElementById('services-summary');
@@ -658,8 +1465,7 @@
         const div = document.createElement('div');
         div.className = `service-item ${isSelected ? 'selected' : ''}`;
         div.onclick = () => {
-          if (isSelected) selectedServices = selectedServices.filter(item => item.id !== s.id);
-          else selectedServices.push(s);
+          toggleClientServiceSelection(s);
           selectedTime = null;
           renderServices();
           renderTimeSlots(isDataLoaded);
@@ -668,11 +1474,11 @@
           <div class="service-left">
             <div class="check-circle">✓</div>
             <div>
-              <div style="font-weight:600; font-size:14px;">${s.name}</div>
-              <div style="font-size:12px; color:var(--muted); margin-top:2px;">${s.duration} мин</div>
+              <div class="service-title">${escapeHtml(s.name)}</div>
+              <div class="service-meta">${s.duration} мин</div>
             </div>
           </div>
-          <div style="font-weight:600; font-size:15px;">${s.price} ₽</div>
+          <div class="service-price">${s.price} ₽</div>
         `;
         container.appendChild(div);
       });
@@ -704,13 +1510,14 @@
         await fetchAllData();
       }
 
-      if (!isWorkingDate(dateVal)) {
+      const activeDateVal = document.getElementById('booking-date').value;
+      if (!isWorkingDate(activeDateVal)) {
         container.innerHTML = '<div style="padding:12px; border-radius:10px; background:var(--input-bg); color:var(--muted); font-size:13px; text-align:center;">В этот день мастер не принимает. Выберите рабочий день в календаре.</div>';
         return;
       }
 
       const totalDuration = getTotalDuration(selectedServices);
-      const booked = allAppointments.filter(a => a.appointment_date === dateVal);
+      const booked = allAppointments.filter(a => a.appointment_date === activeDateVal);
       const busyIntervals = booked.map(b => {
         const start = timeToMinutes(b.appointment_time);
         const end = b.end_time ? timeToMinutes(b.end_time) : (start + calcDurationByNames(b.service_name));
@@ -719,9 +1526,9 @@
 
       const slots = [];
       const startMin = START_HOUR * 60, endMin = END_HOUR * 60;
-      const isToday = (dateVal === getLocalTodayStr());
-      const now = new Date();
-      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      const spbNow = getSpbNowParts();
+      const isToday = (activeDateVal === spbNow.dateStr);
+      const currentMinutes = spbNow.minutesOfDay;
 
       for (let t = startMin; t + totalDuration <= endMin; t += 30) {
         if (isToday && t <= currentMinutes) continue;
@@ -730,14 +1537,15 @@
       }
 
       if (slots.length === 0) {
-        container.innerHTML = '<p style="font-size:13px; color:var(--accent); text-align:center;">На выбранную дату нет свободных окон для такой длительности.</p>';
+        container.innerHTML = '<p style="font-size:13px; color:var(--muted); text-align:center;">На выбранную дату нет свободных окон для такой длительности.</p>';
         return;
       }
 
-      container.innerHTML = `<div style="font-size:12px; color:var(--muted); margin-bottom:6px;">Доступное время на <b>${dateVal}</b>:</div><div class="slots-grid" id="slots-grid"></div>`;
+      container.innerHTML = `<div style="font-size:12px; color:var(--muted); margin-bottom:6px;">Доступное время на <b>${escapeHtml(activeDateVal)}</b> (время СПб):</div><div class="slots-grid" id="slots-grid"></div>`;
       const grid = document.getElementById('slots-grid');
       slots.forEach(time => {
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'slot-btn';
         btn.innerText = time;
         btn.onclick = () => {
@@ -755,27 +1563,50 @@
       const dtStart = date.replace(/-/g, '') + 'T' + start.replace(':', '') + '00';
       const dtEnd = date.replace(/-/g, '') + 'T' + end.replace(':', '') + '00';
       const ics = [
-        'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Anton Frantsuzov//Barber Booking//RU',
-        'BEGIN:VEVENT',`DTSTART:${dtStart}`,`DTEND:${dtEnd}`,
-        `SUMMARY:Барбер Антон Французов (${service})`,`LOCATION:${LOCATION_FULL}`,
-        `DESCRIPTION:Услуга: ${service}. Связь: https://t.me/${MASTER_TG_USERNAME}`,
-        'END:VEVENT','END:VCALENDAR'
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Anton Frantsuzov//Barber Booking//RU',
+        'BEGIN:VEVENT',
+        `DTSTART;TZID=${SPB_TIMEZONE}:${dtStart}`,
+        `DTEND;TZID=${SPB_TIMEZONE}:${dtEnd}`,
+        `SUMMARY:Барбер Антон Французов (${service})`,
+        `LOCATION:${LOCATION_FULL}`,
+        `DESCRIPTION:Услуга: ${service}. Адрес: ${LOCATION_FULL}. Связь: https://t.me/${MASTER_TG_USERNAME}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
       ].join('\r\n');
+      const blobUrl = URL.createObjectURL(new Blob([ics], { type:'text/calendar;charset=utf-8' }));
       const link = document.createElement('a');
-      link.href = URL.createObjectURL(new Blob([ics], { type:'text/calendar;charset=utf-8' }));
+      link.href = blobUrl;
       link.setAttribute('download', `barber-${date}.ics`);
-      document.body.appendChild(link); link.click(); document.body.removeChild(link);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
     }
 
     async function submitBooking() {
       const name = document.getElementById('client-name').value.trim();
-      const cleanPhone = getCleanPhone(document.getElementById('client-phone').value);
+      const rawPhoneVal = document.getElementById('client-phone').value;
+      const cleanPhone = getCleanPhone(rawPhoneVal);
       const dateVal = document.getElementById('booking-date').value;
       const msg = document.getElementById('booking-msg');
 
-      if (selectedServices.length === 0 || !dateVal || !selectedTime || !name || cleanPhone.length < 12) {
-        msg.className = ''; msg.style.color = 'var(--accent)';
-        msg.innerText = 'Выберите услугу, время, а также укажите имя и телефон.';
+      if (selectedServices.length === 0 || !dateVal || !selectedTime) {
+        msg.className = ''; msg.style.color = 'var(--danger)';
+        msg.innerText = 'Пожалуйста, выберите услугу, дату и свободное время.';
+        return;
+      }
+
+      if (!name) {
+        msg.className = ''; msg.style.color = 'var(--danger)';
+        msg.innerText = 'Пожалуйста, укажите ваше имя.';
+        return;
+      }
+
+      if (!isValidRussianPhone(cleanPhone)) {
+        msg.className = ''; msg.style.color = 'var(--danger)';
+        msg.innerText = 'Для записи обязательно укажите корректный номер телефона в формате +7 (9XX) XXX-XX-XX.';
         return;
       }
 
@@ -792,13 +1623,21 @@
       const endMin = startMin + totalDuration;
       const endTime = minutesToTime(endMin);
 
-      lastBookingDetails = { service:combinedServiceName, date:dateVal, start:bookedTime, end:endTime };
-
       const btn = document.getElementById('submit-btn');
       btn.disabled = true; btn.innerText = 'Проверка и сохранение...';
 
       try {
         await fetchAllData();
+
+        // Проверка лимита активных записей (максимум 2 будущие записи на один номер/устройство)
+        const activeCount = countActiveBookingsForClient(cleanPhone);
+        if (activeCount >= MAX_ACTIVE_BOOKINGS_PER_CLIENT) {
+          msg.className = ''; msg.style.color = 'var(--danger)';
+          msg.innerText = `У вас уже есть ${activeCount} активные записи. Чтобы избежать спама, одновременно можно иметь не более ${MAX_ACTIVE_BOOKINGS_PER_CLIENT} записей. Для переноса напишите мастеру.`;
+          btn.disabled = false; btn.innerText = 'Записаться';
+          return;
+        }
+
         const hasConflict = allAppointments.filter(a => a.appointment_date === dateVal).some(b => {
           const bS = timeToMinutes(b.appointment_time);
           const bE = b.end_time ? timeToMinutes(b.end_time) : (bS + calcDurationByNames(b.service_name));
@@ -806,8 +1645,8 @@
         });
 
         if (hasConflict) {
-          msg.className = ''; msg.style.color = 'var(--accent)';
-          msg.innerText = 'К сожалению, это время уже занято. Выберите другое окно.';
+          msg.className = ''; msg.style.color = 'var(--danger)';
+          msg.innerText = 'К сожалению, это время только что заняли. Выберите другое окно.';
           btn.disabled = false; btn.innerText = 'Записаться';
           await renderTimeSlots(true);
           return;
@@ -822,46 +1661,75 @@
             appointment_time:bookedTime, end_time:endTime, price:totalPrice, tg_chat_id:currentTgChatId
           })
         });
-        const resData = await res.json();
 
-        allAppointments.push({ id:Date.now().toString(), client_name:name, client_phone:cleanPhone, service_name:combinedServiceName, appointment_date:dateVal, appointment_time:bookedTime, end_time:endTime, price:totalPrice });
+        if (!res.ok) throw new Error('Server error');
+        const resData = await res.json();
+        if (resData && resData.status === 'error') {
+          throw new Error(resData.message || 'Booking error');
+        }
+
+        lastBookingDetails = { service:combinedServiceName, date:dateVal, start:bookedTime, end:endTime };
+        const createdId = (resData && resData.id) ? String(resData.id) : Date.now().toString();
+
+        allAppointments.push({
+          id:createdId, client_name:name, client_phone:cleanPhone,
+          service_name:combinedServiceName, appointment_date:dateVal,
+          appointment_time:bookedTime, end_time:endTime, price:totalPrice
+        });
+        saveClientLocalBooking(cleanPhone, dateVal, bookedTime);
 
         const tgBotLink = `https://t.me/${BOT_USERNAME}?start=${cleanPhone.replace('+', '')}`;
         const masterLink = `https://t.me/${MASTER_TG_USERNAME}`;
 
-        msg.className = ''; msg.style.backgroundColor = 'var(--input-bg)'; msg.style.border = '1px solid var(--border)'; msg.style.padding = '18px'; msg.style.borderRadius = '14px';
+        const safeName = escapeHtml(name);
+        const safeService = escapeHtml(combinedServiceName);
+        const safeDate = escapeHtml(dateVal);
+        const safeStart = escapeHtml(bookedTime);
+        const safeEnd = escapeHtml(endTime);
+        const safeLoc = escapeHtml(LOCATION_FULL);
+        const safePhone = escapeHtml(cleanPhone);
+
+        msg.className = '';
+        msg.style.color = 'var(--text)';
+        msg.style.backgroundColor = 'var(--input-bg)';
+        msg.style.border = '1px solid var(--border)';
+        msg.style.padding = '18px';
+        msg.style.borderRadius = '16px';
 
         const calendarBtnHtml = `<button type="button" onclick="downloadClientCalendarIcs()" class="btn-outline" style="width:100%; padding:11px; margin-bottom:10px; font-weight:600;">📅 Добавить в календарь телефона</button>`;
 
         if (currentTgChatId || (resData && resData.tg_notified)) {
           msg.innerHTML = `
-            <div style="color:#34c759; font-weight:600; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${name}!</div>
-            <div style="font-size:13px; color:var(--text); margin-bottom:12px;">${combinedServiceName} (${totalPrice} ₽)<br><b>${dateVal} (${bookedTime} – ${endTime})</b><br><span style="color:var(--muted); font-size:12px;">📍 ${LOCATION_FULL}</span></div>
-            <div style="padding:10px; border-radius:10px; background:rgba(52,199,89,0.12); color:#34c759; font-size:13px; margin-bottom:10px;">📩 Подтверждение и схема проезда отправлены вам в чат бота!</div>
+            <div style="color:var(--green); font-weight:700; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${safeName}!</div>
+            <div style="font-size:13px; color:var(--text); margin-bottom:12px;">${safeService} (${totalPrice} ₽)<br><b>${safeDate} (${safeStart} – ${safeEnd})</b><br><span style="color:var(--muted); font-size:12px;">📞 Номер: ${safePhone}</span><br><span style="color:var(--muted); font-size:12px;">📍 ${safeLoc}</span></div>
+            <div style="padding:10px; border-radius:10px; background:rgba(74,222,128,0.1); color:var(--green); font-size:13px; margin-bottom:10px;">📩 Подтверждение и схема проезда отправлены вам в Telegram!</div>
             ${calendarBtnHtml}
-            ${currentTgChatId ? `<button onclick="window.Telegram.WebApp.close()" class="btn-tg" style="width:100%; margin-bottom:8px;">Вернуться в чат</button>` : ''}
+            ${currentTgChatId ? `<button type="button" onclick="window.Telegram.WebApp.close()" class="btn-tg" style="width:100%; margin-bottom:8px;">Вернуться в чат</button>` : ''}
             <div style="font-size:12px; color:var(--muted); margin-top:6px;">Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color:var(--tg); text-decoration:none;">Написать мастеру (@${MASTER_TG_USERNAME})</a></div>
           `;
         } else {
           msg.innerHTML = `
-            <div style="color:#34c759; font-weight:600; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${name}!</div>
-            <div style="font-size:13px; color:var(--text); margin-bottom:14px;">${combinedServiceName} (${totalPrice} ₽)<br><b>${dateVal} (${bookedTime} – ${endTime})</b><br><span style="color:var(--muted); font-size:12px;">📍 ${LOCATION_FULL}</span></div>
-            <a href="${tgBotLink}" target="_blank" class="btn-tg" style="width:100%; margin-bottom:8px;">🔔 Получить подтверждение и схему проезда в Telegram</a>
-            <div style="font-size:11px; color:var(--muted); margin-bottom:10px;">После перехода в бота нажмите <b>«Старт»</b> внизу чата.</div>
+            <div style="color:var(--green); font-weight:700; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${safeName}!</div>
+            <div style="font-size:13px; color:var(--text); margin-bottom:14px;">${safeService} (${totalPrice} ₽)<br><b>${safeDate} (${safeStart} – ${safeEnd})</b><br><span style="color:var(--muted); font-size:12px;">📞 Запись привязана к номеру: ${safePhone}</span><br><span style="color:var(--muted); font-size:12px;">📍 ${safeLoc}</span></div>
             ${calendarBtnHtml}
+            <a href="${tgBotLink}" target="_blank" rel="noopener noreferrer" class="btn-tg" style="width:100%; margin-bottom:6px;">🔔 Напоминание в Telegram (по желанию)</a>
+            <div style="font-size:11px; color:var(--muted); margin-bottom:10px;">Запись уже подтверждена по номеру телефона. Если хотите получить схему проезда в Telegram — нажмите кнопку выше.</div>
             <div style="font-size:12px; color:var(--muted);">Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color:var(--tg); text-decoration:none;">Написать мастеру (@${MASTER_TG_USERNAME})</a></div>
           `;
         }
 
-        selectedServices = []; renderServices(); await renderTimeSlots(true);
+        selectedServices = [];
+        document.getElementById('service-auto-hint').classList.add('hidden');
+        renderServices();
+        await renderTimeSlots(true);
       } catch (err) {
-        msg.className = ''; msg.style.color = 'var(--accent)'; msg.innerText = 'Ошибка при сохранении. Попробуйте еще раз.';
+        msg.className = ''; msg.style.color = 'var(--danger)';
+        msg.innerText = err.message && err.message !== 'Server error' ? err.message : 'Ошибка при сохранении записи. Проверьте интернет и попробуйте еще раз.';
       }
       btn.disabled = false;
-      if (btn.innerText === 'Проверка и сохранение...') btn.innerText = 'Записаться';
+      btn.innerText = 'Записаться';
     }
 
-    // --- КАБИНЕТ МАСТЕРА ---
     function toggleAdminModal() {
       const modal = document.getElementById('password-modal');
       modal.classList.toggle('hidden');
@@ -894,11 +1762,15 @@
       btn.disabled = false; btn.innerText = 'Войти';
     }
 
-    function exitAdmin() {
+    function exitAdmin(clearToken = false) {
+      if (clearToken) {
+        try { localStorage.removeItem(ADMIN_PASS_KEY); } catch (e) {}
+      }
       if (window.location.hash === '#admin') history.replaceState(null, null, ' ');
       document.getElementById('admin-view').classList.add('hidden');
       document.getElementById('client-view').classList.remove('hidden');
-      renderCalendar(); renderTimeSlots(true);
+      renderCalendar();
+      renderTimeSlots(true);
     }
 
     function setAdminMode(mode) {
@@ -942,8 +1814,8 @@
         const dayAppsCount = allAppointments.filter(a => a.id && a.appointment_date === dateStr && !isBreakEntry(a)).length;
         cell.className = 'cal-day admin-clickable ' + (isWork ? 'work' : 'off') + (dateStr === adminSelectedDate ? ' selected' : '');
         let dots = '<div class="cal-dots">';
-        if (isWork) dots += `<span class="cal-dot" style="background:#34c759;"></span>`;
-        if (dayAppsCount > 0) dots += `<span class="cal-dot" style="background:#0a84ff;"></span>`;
+        if (isWork) dots += `<span class="cal-dot" style="background:var(--green);"></span>`;
+        if (dayAppsCount > 0) dots += `<span class="cal-dot" style="background:var(--tg);"></span>`;
         dots += '</div>';
         cell.innerHTML = `<span>${day}</span>${dots}`;
         cell.onclick = () => { adminSelectedDate = dateStr; renderAdminCalendar(); renderAdminList(); };
@@ -970,10 +1842,12 @@
       const ovList = document.getElementById('overrides-list');
       ovList.innerHTML = '';
       (scheduleConfig.extraWorkDates || []).forEach(dt => {
-        ovList.innerHTML += `<span class="tag" style="color:#34c759; background:rgba(52,199,89,0.1);">Рабочий: ${dt} <b style="cursor:pointer;" onclick="removeOverride('${dt}')">×</b></span>`;
+        const safeDt = escapeHtml(dt);
+        ovList.innerHTML += `<span class="tag" style="color:var(--green); background:rgba(74,222,128,0.1);">Рабочий: ${safeDt} <b style="cursor:pointer;" onclick="removeOverride('${safeDt}')">×</b></span>`;
       });
       (scheduleConfig.closedDates || []).forEach(dt => {
-        ovList.innerHTML += `<span class="tag" style="color:#ff3b30; background:rgba(255,59,48,0.1);">Выходной: ${dt} <b style="cursor:pointer;" onclick="removeOverride('${dt}')">×</b></span>`;
+        const safeDt = escapeHtml(dt);
+        ovList.innerHTML += `<span class="tag" style="color:var(--muted); background:rgba(255,255,255,0.06);">Выходной: ${safeDt} <b style="cursor:pointer;" onclick="removeOverride('${safeDt}')">×</b></span>`;
       });
     }
 
@@ -995,15 +1869,23 @@
 
     async function saveSchedule() {
       const btn = document.getElementById('save-sched-btn');
+      btn.disabled = true;
       btn.innerText = 'Сохранение...';
-      await fetch(API_URL, {
-        method:'POST',
-        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-        body:JSON.stringify({ action:'save_schedule', schedule:scheduleConfig, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
-      });
-      btn.innerText = 'Сохранено!';
-      renderCalendar(); renderAdminCalendar(); renderAdminList();
-      setTimeout(() => btn.innerText = 'Сохранить график', 1500);
+      try {
+        const res = await fetch(API_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body:JSON.stringify({ action:'save_schedule', schedule:scheduleConfig, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
+        });
+        if (!res.ok) throw new Error('Network error');
+        btn.innerText = 'Сохранено!';
+        renderCalendar(); renderAdminCalendar(); renderAdminList();
+      } catch (e) {
+        alert('Не удалось сохранить график. Проверьте подключение.');
+      } finally {
+        btn.disabled = false;
+        setTimeout(() => { btn.innerText = 'Сохранить график'; }, 1500);
+      }
     }
 
     async function loadAppointments(forceFetch = false) {
@@ -1018,12 +1900,16 @@
       if (newVal === null) return;
       const num = Number(newVal);
       if (isNaN(num) || num < 0) return;
-      await fetch(API_URL, {
-        method:'POST',
-        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-        body:JSON.stringify({ action:'update_price', id:appId, price:num, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
-      });
-      await loadAppointments(true);
+      try {
+        await fetch(API_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body:JSON.stringify({ action:'update_price', id:appId, price:num, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
+        });
+        await loadAppointments(true);
+      } catch (e) {
+        alert('Ошибка при обновлении суммы чека.');
+      }
     }
 
     async function addExpenseItem() {
@@ -1033,23 +1919,40 @@
       const comment = document.getElementById('exp-comment').value.trim();
       if (!amount || amount <= 0) { alert('Укажите сумму расхода!'); return; }
       const btn = document.getElementById('add-exp-btn');
+      btn.disabled = true;
       btn.innerText = 'Сохранение...';
-      await fetch(API_URL, {
-        method:'POST',
-        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-        body:JSON.stringify({ action:'add_expense', date, category, amount, comment, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
-      });
-      await loadAppointments(true);
+      try {
+        await fetch(API_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body:JSON.stringify({ action:'add_expense', date, category, amount, comment, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
+        });
+        await loadAppointments(true);
+      } catch (e) {
+        alert('Не удалось сохранить расход.');
+        btn.disabled = false;
+        btn.innerText = 'Записать расход';
+      }
     }
 
     async function deleteExpenseItem(id) {
       if (!confirm('Удалить эту запись расхода?')) return;
-      await fetch(API_URL, {
-        method:'POST',
-        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-        body:JSON.stringify({ action:'delete_expense', id, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
-      });
-      await loadAppointments(true);
+      try {
+        await fetch(API_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body:JSON.stringify({ action:'delete_expense', id, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
+        });
+        await loadAppointments(true);
+      } catch (e) {
+        alert('Ошибка при удалении расхода.');
+      }
+    }
+
+    // Безопасное открытие модалки по ID записи (без вставки сырого JSON в HTML-атрибуты)
+    function openEditModalById(appId) {
+      const app = allAppointments.find(a => String(a.id) === String(appId));
+      if (app) openEditModal(app);
     }
 
     function renderAdminList() {
@@ -1074,16 +1977,20 @@
           expListHtml = `<div style="font-size:12px; color:var(--muted); text-align:center; padding:10px;">Расходов в этом месяце пока не записано</div>`;
         } else {
           monthExpenses.sort((a, b) => String(b.date).localeCompare(String(a.date))).forEach(e => {
-            expListHtml += `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid var(--border); font-size:13px;"><div><b>${e.category}</b> <span style="color:var(--muted); font-size:11px;">(${e.date})</span>${e.comment ? `<div style="font-size:11px; color:var(--muted);">${e.comment}</div>` : ''}</div><div class="row"><span style="color:var(--accent); font-weight:700;">-${e.amount} ₽</span><button onclick="deleteExpenseItem('${e.id}')" class="btn-outline" style="padding:3px 7px;">×</button></div></div>`;
+            const safeCat = escapeHtml(e.category);
+            const safeDate = escapeHtml(e.date);
+            const safeComment = escapeHtml(e.comment);
+            const safeId = escapeHtml(e.id);
+            expListHtml += `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid var(--border); font-size:13px;"><div><b>${safeCat}</b> <span style="color:var(--muted); font-size:11px;">(${safeDate})</span>${safeComment ? `<div style="font-size:11px; color:var(--muted);">${safeComment}</div>` : ''}</div><div class="row"><span style="color:#f87171; font-weight:700;">-${Number(e.amount) || 0} ₽</span><button onclick="deleteExpenseItem('${safeId}')" class="btn-outline" style="padding:3px 7px;">×</button></div></div>`;
           });
         }
 
         list.innerHTML = `
           <h2 style="margin-bottom:12px;">📊 Отчёт: ${MONTH_NAMES[adminCalMonth]} ${adminCalYear}</h2>
           <div class="stats-grid">
-            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Касса за ${adminSelectedDate}</div><div class="stat-val" style="color:var(--tg);">${dayRevenue.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Клиентов: ${dayApps.length}</div></div>
-            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Выручка за месяц (План/Факт)</div><div class="stat-val" style="color:#34c759;">${monthTotalRevenue.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Уже в кассе: ${monthFactRevenue.toLocaleString('ru-RU')} ₽</div></div>
-            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Расходы за месяц</div><div class="stat-val" style="color:var(--accent);">-${monthExpensesSum.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Записей: ${monthExpenses.length}</div></div>
+            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Касса за ${escapeHtml(adminSelectedDate)}</div><div class="stat-val" style="color:var(--tg);">${dayRevenue.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Клиентов: ${dayApps.length}</div></div>
+            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Выручка (План/Факт)</div><div class="stat-val" style="color:var(--green);">${monthTotalRevenue.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Уже в кассе: ${monthFactRevenue.toLocaleString('ru-RU')} ₽</div></div>
+            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Расходы за месяц</div><div class="stat-val" style="color:#f87171;">-${monthExpensesSum.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Записей: ${monthExpenses.length}</div></div>
             <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Чистая прибыль</div><div class="stat-val" style="color:#fff;">${netProfit.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Ср. чек: ${avgCheck} ₽ (${monthApps.length} кл.)</div></div>
           </div>
           <div style="border-top:1px solid var(--border); padding-top:14px; margin-top:8px;">
@@ -1099,7 +2006,7 @@
               <input type="number" id="exp-amount" placeholder="Сумма (₽)" style="flex:1; margin-bottom:8px;">
             </div>
             <div class="row">
-              <input type="date" id="exp-date" value="${adminSelectedDate}" style="flex:1; margin-bottom:8px;">
+              <input type="date" id="exp-date" value="${escapeHtml(adminSelectedDate)}" style="flex:1; margin-bottom:8px;">
               <input type="text" id="exp-comment" placeholder="Комментарий" style="flex:1.5; margin-bottom:8px;">
             </div>
             <button onclick="addExpenseItem()" id="add-exp-btn" class="btn" style="padding:11px; margin-bottom:14px;">Записать расход</button>
@@ -1127,8 +2034,8 @@
       list.innerHTML = `
         <div class="timeline-header">
           <div>
-            <div style="font-weight:700; font-size:16px;">${adminSelectedDate}</div>
-            <div style="font-size:12px; color:${isWork ? '#34c759' : '#ff3b30'};">${isWork ? '● Рабочий день' : '● Выходной день'} · Касса дня: <b style="color:#fff;">${daySum} ₽</b></div>
+            <div style="font-weight:700; font-size:16px;">${escapeHtml(adminSelectedDate)}</div>
+            <div style="font-size:12px; color:${isWork ? 'var(--green)' : 'var(--muted)'};">${isWork ? '● Рабочий день' : '● Выходной день'} · Касса: <b style="color:#fff;">${daySum} ₽</b></div>
           </div>
           <div style="font-size:11px; color:var(--muted);">Нажмите на сумму чека, чтобы изменить</div>
         </div>
@@ -1138,53 +2045,54 @@
       const gridWrap = document.getElementById('schedule-grid-wrap');
       const renderedIds = new Set();
 
-      for (let t = START_HOUR * 60; t < END_HOUR * 60; t += 30) {
+      // Динамическое расширение сетки, если есть записи раньше 10:00 или позже 21:00
+      let minTimelineMin = START_HOUR * 60;
+      let maxTimelineMin = END_HOUR * 60;
+      dayApps.forEach(a => {
+        const s = timeToMinutes(a.appointment_time);
+        const e = a.end_time ? timeToMinutes(a.end_time) : (s + calcDurationByNames(a.service_name));
+        if (s < minTimelineMin) minTimelineMin = Math.floor(s / 30) * 30;
+        if (e > maxTimelineMin) maxTimelineMin = Math.ceil(e / 30) * 30;
+      });
+
+      for (let t = minTimelineMin; t < maxTimelineMin; t += 30) {
         const timeStr = minutesToTime(t);
         const isHalfHour = (t % 60 !== 0);
-        const coveringApp = dayApps.find(a => {
+        const coveringApps = dayApps.filter(a => {
           const s = timeToMinutes(a.appointment_time);
           const e = a.end_time ? timeToMinutes(a.end_time) : (s + calcDurationByNames(a.service_name));
           return t < e && (t + 30) > s;
         });
 
-        if (coveringApp) {
-          if (renderedIds.has(coveringApp.id)) continue;
-          renderedIds.add(coveringApp.id);
-          const sMin = timeToMinutes(coveringApp.appointment_time);
-          const eMin = coveringApp.end_time ? timeToMinutes(coveringApp.end_time) : (sMin + calcDurationByNames(coveringApp.service_name));
-          const startLabel = coveringApp.appointment_time;
-          const endLabel = coveringApp.end_time || minutesToTime(eMin);
-          const isBreak = isBreakEntry(coveringApp);
+        if (coveringApps.length > 0) {
+          const unrendered = coveringApps.filter(a => !renderedIds.has(a.id));
+          if (unrendered.length === 0) continue;
+
+          const firstApp = unrendered[0];
+          const sMin = timeToMinutes(firstApp.appointment_time);
+          const eMin = firstApp.end_time ? timeToMinutes(firstApp.end_time) : (sMin + calcDurationByNames(firstApp.service_name));
+          const startLabel = escapeHtml(firstApp.appointment_time);
+          const endLabel = escapeHtml(firstApp.end_time || minutesToTime(eMin));
+
           const row = document.createElement('div');
           row.className = 'slot-row';
 
-          if (isBreak) {
-            row.innerHTML = `
-              <div class="slot-time" style="flex-direction:column; gap:2px;"><span style="color:var(--amber);">${startLabel}</span><span style="font-size:10px; opacity:0.6;">${endLabel}</span></div>
-              <div class="slot-body">
-                <div class="tl-card-break">
-                  <div><div style="font-weight:700; font-size:14px; color:var(--amber);">${coveringApp.client_name || '☕ Перерыв'}</div><div style="font-size:12px; color:var(--muted);">${startLabel} – ${endLabel} (${formatDurationHuman(Math.max(0, eMin - sMin))})</div></div>
-                  <div class="row"><button onclick='openEditModal(${JSON.stringify(coveringApp)})' class="btn-outline">Изм.</button><button onclick="deleteAppointment('${coveringApp.id}')" class="btn-outline" style="color:var(--accent);">×</button></div>
-                </div>
-              </div>`;
-          } else {
-            const actualPrice = getAppActualPrice(coveringApp);
-            const isConfirmed = String(coveringApp.reminded || '').includes('confirmed');
-            const cleanDigits = String(coveringApp.client_phone || '').replace(/\D/g, '');
-            const inviteText = encodeURIComponent(`Привет, ${coveringApp.client_name}! Записал тебя на ${coveringApp.appointment_date} в ${coveringApp.appointment_time} (${coveringApp.service_name}). Адрес: ${LOCATION_FULL}. Напоминания в боте: https://t.me/${BOT_USERNAME}?start=${cleanDigits}`);
-            row.innerHTML = `
-              <div class="slot-time" style="flex-direction:column; gap:2px;"><span style="color:var(--text);">${startLabel}</span><span style="font-size:10px; opacity:0.6;">${endLabel}</span></div>
-              <div class="slot-body">
-                <div class="tl-card-busy">
-                  <div>
-                    <div style="font-weight:700; font-size:15px;">${coveringApp.client_name} ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''} <a href="tel:${coveringApp.client_phone || ''}" style="font-weight:400; font-size:12px; color:var(--tg); text-decoration:none;">${coveringApp.client_phone || ''}</a></div>
-                    <div style="font-size:13px; color:#d4d4d4; margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;"><span>✂️ ${coveringApp.service_name}</span><span class="price-pill" onclick="quickEditPrice('${coveringApp.id}', ${actualPrice})">💰 ${actualPrice} ₽ ✎</span></div>
-                    ${coveringApp.notes ? `<div class="note-box">📝 ${coveringApp.notes}</div>` : ''}
-                  </div>
-                  <div class="row"><a href="sms:${coveringApp.client_phone || ''}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.12); color:var(--tg); border:none;">СМС</a><button onclick='openEditModal(${JSON.stringify(coveringApp)})' class="btn-outline">Изм.</button><button onclick="deleteAppointment('${coveringApp.id}')" class="btn-outline" style="color:var(--accent);">×</button></div>
-                </div>
-              </div>`;
-          }
+          const timeCol = document.createElement('div');
+          timeCol.className = 'slot-time';
+          timeCol.style.flexDirection = 'column';
+          timeCol.style.gap = '2px';
+          timeCol.innerHTML = `<span style="color:${isBreakEntry(firstApp) ? 'var(--amber)' : '#ffffff'};">${startLabel}</span><span style="font-size:10px; opacity:0.6;">${endLabel}</span>`;
+
+          const bodyCol = document.createElement('div');
+          bodyCol.className = 'slot-body';
+
+          unrendered.forEach(appItem => {
+            renderedIds.add(appItem.id);
+            bodyCol.appendChild(createBusyCardElement(appItem, false));
+          });
+
+          row.appendChild(timeCol);
+          row.appendChild(bodyCol);
           gridWrap.appendChild(row);
         } else {
           const row = document.createElement('div');
@@ -1200,27 +2108,67 @@
       const isBreak = isBreakEntry(app);
       const div = document.createElement('div');
       div.className = isBreak ? 'tl-card-break' : 'tl-card-busy';
-      div.style.marginBottom = '10px';
+      if (showDate) div.style.marginBottom = '10px';
+
+      const sMin = timeToMinutes(app.appointment_time);
+      const eMin = app.end_time ? timeToMinutes(app.end_time) : (sMin + calcDurationByNames(app.service_name));
+      const safeId = escapeHtml(app.id);
+      const safeDate = escapeHtml(app.appointment_date);
+      const safeStart = escapeHtml(app.appointment_time);
+      const safeEnd = escapeHtml(app.end_time || minutesToTime(eMin));
+      const safeName = escapeHtml(app.client_name || (isBreak ? '☕ Перерыв' : 'Клиент'));
+      const safePhone = escapeHtml(app.client_phone || '');
+      const safeService = escapeHtml(app.service_name || '');
+      const safeNotes = escapeHtml(app.notes || '');
+
       if (isBreak) {
-        div.innerHTML = `<div><div style="font-size:12px; color:var(--amber); font-weight:600;">${showDate ? app.appointment_date + ' · ' : ''}${app.appointment_time} – ${app.end_time || ''}</div><div style="font-weight:600; font-size:15px; margin:2px 0;">${app.client_name || '☕ Перерыв'}</div></div><div class="row"><button onclick='openEditModal(${JSON.stringify(app)})' class="btn-outline">Изменить</button><button onclick="deleteAppointment('${app.id}')" class="btn-outline" style="color:var(--accent);">Удалить</button></div>`;
+        div.innerHTML = `
+          <div>
+            <div style="font-weight:700; font-size:14px; color:var(--amber);">${safeName}</div>
+            <div style="font-size:12px; color:var(--muted);">${showDate ? safeDate + ' · ' : ''}${safeStart} – ${safeEnd} (${formatDurationHuman(Math.max(0, eMin - sMin))})</div>
+          </div>
+          <div class="row">
+            <button type="button" onclick="openEditModalById('${safeId}')" class="btn-outline">Изм.</button>
+            <button type="button" onclick="deleteAppointment('${safeId}')" class="btn-outline" style="color:var(--muted);">×</button>
+          </div>`;
         return div;
       }
+
       const actualPrice = getAppActualPrice(app);
       const isConfirmed = String(app.reminded || '').includes('confirmed');
       const cleanDigits = String(app.client_phone || '').replace(/\D/g, '');
       const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Адрес: ${LOCATION_FULL}. Напоминания в боте: https://t.me/${BOT_USERNAME}?start=${cleanDigits}`);
-      div.innerHTML = `<div><div style="font-size:12px; color:var(--tg); font-weight:600;">${showDate ? app.appointment_date + ' · ' : ''}${app.appointment_time} – ${app.end_time || ''}</div><div style="font-weight:600; font-size:15px; margin:2px 0;">${app.client_name} ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''} <a href="tel:${app.client_phone || ''}" style="font-weight:400; font-size:12px; color:var(--muted); text-decoration:none;">(${app.client_phone || ''})</a></div><div style="font-size:13px; color:var(--muted); display:flex; align-items:center; gap:6px;"><span>${app.service_name}</span><span class="price-pill" onclick="quickEditPrice('${app.id}', ${actualPrice})">${actualPrice} ₽ ✎</span></div>${app.notes ? `<div class="note-box">📝 ${app.notes}</div>` : ''}</div><div class="row"><a href="sms:${app.client_phone || ''}?body=${inviteText}" class="btn-outline" style="background:rgba(10,132,255,0.1); color:var(--tg); border:none;">СМС</a><button onclick='openEditModal(${JSON.stringify(app)})' class="btn-outline">Изменить</button><button onclick="deleteAppointment('${app.id}')" class="btn-outline" style="color:var(--accent);">Удалить</button></div>`;
+
+      div.innerHTML = `
+        <div>
+          ${showDate ? `<div style="font-size:12px; color:var(--tg); font-weight:600; margin-bottom:2px;">${safeDate} · ${safeStart} – ${safeEnd}</div>` : ''}
+          <div style="font-weight:700; font-size:15px;">${safeName} ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''} <a href="tel:${safePhone}" style="font-weight:500; font-size:12px; color:var(--tg); text-decoration:none;">${safePhone}</a></div>
+          <div style="font-size:13px; color:#d4d4d4; margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span>✂️ ${safeService}</span>
+            <span class="price-pill" onclick="quickEditPrice('${safeId}', ${actualPrice})">${actualPrice} ₽ ✎</span>
+          </div>
+          ${safeNotes ? `<div class="note-box">📝 ${safeNotes}</div>` : ''}
+        </div>
+        <div class="row">
+          <a href="sms:${safePhone}?body=${inviteText}" class="btn-outline" style="background:rgba(56,189,248,0.1); color:var(--tg); border:none;">СМС</a>
+          <button type="button" onclick="openEditModalById('${safeId}')" class="btn-outline">Изм.</button>
+          <button type="button" onclick="deleteAppointment('${safeId}')" class="btn-outline" style="color:var(--muted);">×</button>
+        </div>`;
       return div;
     }
 
     async function deleteAppointment(id) {
       if (!confirm('Удалить эту запись?')) return;
-      await fetch(API_URL, {
-        method:'POST',
-        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-        body:JSON.stringify({ action:'delete', id, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
-      });
-      await loadAppointments(true);
+      try {
+        await fetch(API_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body:JSON.stringify({ action:'delete', id, admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId })
+        });
+        await loadAppointments(true);
+      } catch (e) {
+        alert('Ошибка при удалении записи.');
+      }
     }
 
     function getUniqueClientsDatabase() {
@@ -1228,7 +2176,7 @@
       allAppointments.forEach(a => {
         if (!a.client_phone || isBreakEntry(a)) return;
         const clean = getCleanPhone(a.client_phone);
-        if (clean.length < 11) return;
+        if (clean.length < 12) return;
         if (!map[clean]) map[clean] = { name:a.client_name, phone:clean, notes:a.notes || '' };
         else { if (a.client_name) map[clean].name = a.client_name; if (a.notes) map[clean].notes = a.notes; }
       });
@@ -1239,13 +2187,16 @@
       const box = document.getElementById('client-suggestions-box');
       const q = String(query || '').trim().toLowerCase();
       if (q.length < 2 || q === '+7') { box.classList.add('hidden'); return; }
-      const matches = getUniqueClientsDatabase().filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q)).slice(0, 5);
+      const matches = getUniqueClientsDatabase().filter(c => String(c.name || '').toLowerCase().includes(q) || c.phone.includes(q)).slice(0, 5);
       if (matches.length === 0) { box.classList.add('hidden'); return; }
       box.innerHTML = '';
       matches.forEach(c => {
         const item = document.createElement('div');
         item.className = 'client-sug-item';
-        item.innerHTML = `<span><b>${c.name}</b> ${c.notes ? `<span style="color:var(--amber); font-size:11px;">(${c.notes})</span>` : ''}</span><span style="color:var(--muted);">${c.phone}</span>`;
+        const safeName = escapeHtml(c.name);
+        const safeNotes = escapeHtml(c.notes);
+        const safePhone = escapeHtml(c.phone);
+        item.innerHTML = `<span><b>${safeName}</b> ${safeNotes ? `<span style="color:var(--amber); font-size:11px;">(${safeNotes})</span>` : ''}</span><span style="color:var(--muted);">${safePhone}</span>`;
         item.onclick = () => {
           document.getElementById('edit-name').value = c.name;
           const phEl = document.getElementById('edit-phone'); phEl.value = c.phone; formatPhoneInput(phEl);
@@ -1263,6 +2214,9 @@
       document.getElementById('mode-break-btn').className = 'mode-btn' + (isBreak ? ' active-break' : '');
       document.getElementById('client-fields-wrap').classList.toggle('hidden', isBreak);
       document.getElementById('break-fields-wrap').classList.toggle('hidden', !isBreak);
+      if (!isBreak && !isCustomPriceEdited) {
+        document.getElementById('edit-price').value = getTotalPrice(adminSelectedServices);
+      }
       autoCalcEndTime();
     }
 
@@ -1279,7 +2233,7 @@
           renderAdminServicesCheckboxes(); autoCalcEndTime();
           if (!isCustomPriceEdited) document.getElementById('edit-price').value = getTotalPrice(adminSelectedServices);
         };
-        div.innerHTML = `<span>${active ? '✓ ' : ''}${s.name}</span><span style="color:var(--muted); font-size:12px;">${s.duration} мин · ${s.price} ₽</span>`;
+        div.innerHTML = `<span>${active ? '✓ ' : ''}${escapeHtml(s.name)}</span><span style="color:var(--muted); font-size:12px;">${s.duration} мин · ${s.price} ₽</span>`;
         wrap.appendChild(div);
       });
     }
@@ -1294,22 +2248,24 @@
     function openEditModal(app, defaultDate = null, defaultTime = null, defaultBreak = false) {
       const isNew = !app;
       const breakMode = isNew ? defaultBreak : isBreakEntry(app);
-      isCustomPriceEdited = !isNew;
+      isCustomPriceEdited = !isNew && !breakMode;
       document.getElementById('client-suggestions-box').classList.add('hidden');
-      document.getElementById('edit-modal-title').innerText = isNew ? 'Добавить в график' : 'Редактировать';
+      document.getElementById('edit-modal-title').innerText = isNew ? 'Новая запись' : 'Редактировать';
       document.getElementById('edit-id').value = isNew ? '' : app.id;
       
       if (breakMode) {
         document.getElementById('edit-break-note').value = isNew ? '' : String(app.client_name || '').replace(/^☕\s*Перерыв\s*:?\s*/i, '').trim();
         document.getElementById('edit-name').value = '';
         document.getElementById('edit-phone').value = '+7 ';
-        document.getElementById('edit-price').value = 0;
+        document.getElementById('edit-price').value = services[0].price;
         document.getElementById('edit-notes').value = '';
         adminSelectedServices = [services[0]];
       } else {
         document.getElementById('edit-break-note').value = '';
         document.getElementById('edit-name').value = isNew ? '' : app.client_name;
-        document.getElementById('edit-phone').value = isNew ? '+7 ' : (app.client_phone || '+7 ');
+        const phEl = document.getElementById('edit-phone');
+        phEl.value = isNew ? '+7 ' : (app.client_phone || '+7 ');
+        formatPhoneInput(phEl);
         document.getElementById('edit-notes').value = isNew ? '' : (app.notes || '');
         if (isNew) {
           adminSelectedServices = [services[0]];
@@ -1338,36 +2294,70 @@
       const appointment_date = document.getElementById('edit-date').value;
       const appointment_time = document.getElementById('edit-time').value;
       const end_time = document.getElementById('edit-end-time').value;
+
+      if (!appointment_date || !appointment_time || !end_time) {
+        alert('Укажите дату, время начала и окончания!');
+        return;
+      }
+
+      const startMin = timeToMinutes(appointment_time);
+      const endMin = timeToMinutes(end_time);
+      if (endMin <= startMin) {
+        alert('Время окончания должно быть позже времени начала!');
+        return;
+      }
+
+      // Проверка пересечения с другими записями в этот день
+      const overlapping = allAppointments.filter(a => a.id && String(a.id) !== String(id) && a.appointment_date === appointment_date).find(b => {
+        const bS = timeToMinutes(b.appointment_time);
+        const bE = b.end_time ? timeToMinutes(b.end_time) : (bS + calcDurationByNames(b.service_name));
+        return startMin < bE && endMin > bS;
+      });
+      if (overlapping) {
+        const confirmOverlap = confirm(`Внимание: это время пересекается с записью «${overlapping.client_name}» (${overlapping.appointment_time} – ${overlapping.end_time}). Всё равно сохранить?`);
+        if (!confirmOverlap) return;
+      }
+
       let client_name = '', client_phone = '', service_name = '', price = 0, notes = '';
 
       if (isModalBreakMode) {
         const note = document.getElementById('edit-break-note').value.trim();
         client_name = note ? `☕ Перерыв: ${note}` : '☕ Перерыв';
         service_name = 'Перерыв';
+        price = 0;
       } else {
         if (adminSelectedServices.length === 0) { alert('Выберите хотя бы одну услугу!'); return; }
         client_name = document.getElementById('edit-name').value.trim() || 'Клиент';
         client_phone = getCleanPhone(document.getElementById('edit-phone').value);
         service_name = getCombinedNames(adminSelectedServices);
-        price = Number(document.getElementById('edit-price').value) || getTotalPrice(adminSelectedServices);
+        const rawPriceInput = document.getElementById('edit-price').value.trim();
+        price = (rawPriceInput !== '' && !isNaN(Number(rawPriceInput))) ? Number(rawPriceInput) : getTotalPrice(adminSelectedServices);
         notes = document.getElementById('edit-notes').value.trim();
       }
 
       const btn = document.getElementById('save-edit-btn');
+      btn.disabled = true;
       btn.innerText = 'Сохранение...';
-      await fetch(API_URL, {
-        method:'POST',
-        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-        body:JSON.stringify({
-          action:id ? 'update' : 'create', from_admin:true,
-          admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId,
-          id, client_name, client_phone, service_name, appointment_date, appointment_time, end_time, price, notes
-        })
-      });
-      btn.innerText = 'Сохранить';
-      closeEditModal();
-      adminSelectedDate = appointment_date;
-      loadAppointments(true);
+      try {
+        const res = await fetch(API_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body:JSON.stringify({
+            action:id ? 'update' : 'create', from_admin:true,
+            admin_key:getSavedAdminKey(), admin_tg_id:currentTgChatId,
+            id, client_name, client_phone, service_name, appointment_date, appointment_time, end_time, price, notes
+          })
+        });
+        if (!res.ok) throw new Error('Network error');
+        closeEditModal();
+        adminSelectedDate = appointment_date;
+        await loadAppointments(true);
+      } catch (e) {
+        alert('Ошибка при сохранении записи. Попробуйте еще раз.');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Сохранить';
+      }
     }
 
     init();
