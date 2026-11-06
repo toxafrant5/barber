@@ -7,29 +7,38 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #08080a;
-      --card: rgba(18, 19, 23, 0.68);
+      --card: rgba(18, 19, 23, 0.70);
       --card-solid: #121317;
       --border: rgba(255, 255, 255, 0.08);
-      --border-hover: rgba(255, 255, 255, 0.22);
-      --text: #f5f6f8;
+      --border-hover: rgba(228, 255, 26, 0.40);
+      --text: #fafafa;
       --muted: #9ba0aa;
-      /* Премиальный платиново-титановый акцент */
-      --accent: #e5e7eb;
-      --accent-text: #0b0c10;
-      --accent-hover: #ffffff;
-      --accent-glow: rgba(229, 231, 235, 0.25);
+
+      /* Full Volt (Кислотно-лаймовый акцент на титановом стекле) */
+      --accent: #e4ff1a;
+      --accent-text: #09090b;
+      --accent-hover: #eeff55;
+      --accent-glow: rgba(228, 255, 26, 0.25);
+      --accent-soft: rgba(228, 255, 26, 0.10);
+      --accent-border: rgba(228, 255, 26, 0.40);
+
       --tg: #38bdf8;
-      --green: #4ade80;
+      --green: #e4ff1a;
       --amber: #fbbf24;
       --danger: #f87171;
       --input-bg: rgba(255, 255, 255, 0.035);
-      --radius-lg: 24px;
-      --radius-md: 14px;
-      --radius-sm: 10px;
+
+      /* Геометрия Liquid Titanium */
+      --radius-lg: 26px;
+      --radius-md: 15px;
+      --radius-sm: 11px;
+
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -37,7 +46,7 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-sans);
       padding-bottom: 60px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
@@ -45,16 +54,16 @@
       min-height: 100vh;
     }
 
-    /* Фоновое фото с деликатным затемнением и блюром */
+    /* Фоновое фото с деликатным затемнением, блюром и легким лаймовым бликом */
     .bg-backdrop {
       position: fixed;
       inset: 0;
       z-index: -1;
       background:
-        linear-gradient(180deg, rgba(8, 8, 10, 0.82) 0%, rgba(8, 8, 10, 0.94) 60%, #08080a 100%),
-        radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.04) 0%, transparent 60%),
+        radial-gradient(circle at 80% 10%, rgba(228, 255, 26, 0.07) 0%, transparent 45%),
+        linear-gradient(180deg, rgba(8, 8, 10, 0.82) 0%, rgba(8, 8, 10, 0.95) 60%, #08080a 100%),
         url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1600&q=80') center center / cover no-repeat;
-      filter: blur(14px) brightness(0.65);
+      filter: blur(15px) brightness(0.62);
       transform: scale(1.08);
       pointer-events: none;
     }
@@ -64,8 +73,8 @@
       top: 0;
       z-index: 30;
       background: rgba(8, 8, 10, 0.75);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
       border-bottom: 1px solid var(--border);
       padding: 14px 18px;
       margin-bottom: 24px;
@@ -90,10 +99,10 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.65), 0 0 14px rgba(228, 255, 26, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.25);
       overflow: hidden;
-      background: linear-gradient(145deg, #1f2128, #111215);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: linear-gradient(145deg, #22242c, #101115);
+      border: 1px solid var(--accent-border);
       cursor: pointer;
       user-select: none;
       transition: transform 0.15s ease, border-color 0.2s;
@@ -128,13 +137,13 @@
 
     .card {
       background: var(--card);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 24px;
       margin-bottom: 20px;
-      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
       transition: border-color 0.2s;
     }
 
@@ -153,11 +162,12 @@
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: var(--text);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      font-family: var(--font-mono);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -173,17 +183,19 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
       user-select: none;
     }
 
     .service-item:last-child { margin-bottom: 0; }
     .service-item:hover { border-color: var(--border-hover); background: rgba(255, 255, 255, 0.05); }
     
+    /* FULL VOLT: плотная заливка выбранной услуги кислотным лаймом */
     .service-item.selected {
-      border-color: rgba(255, 255, 255, 0.45);
-      background: rgba(255, 255, 255, 0.07);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-text);
+      box-shadow: 0 8px 25px var(--accent-glow);
     }
 
     .service-left { display: flex; align-items: center; gap: 14px; }
@@ -200,26 +212,35 @@
       color: transparent;
       transition: 0.2s;
       flex-shrink: 0;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.25);
     }
 
     .service-item.selected .check-circle {
-      background: #ffffff;
-      border-color: #ffffff;
-      color: #0b0c10;
-      font-weight: 800;
+      background: #09090b;
+      border-color: #09090b;
+      color: var(--accent);
+      font-weight: 900;
     }
 
-    .service-title { font-weight: 600; font-size: 14.5px; color: #fff; }
-    .service-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .service-price { font-weight: 700; font-size: 15px; color: #ffffff; letter-spacing: 0.2px; }
+    .service-title { font-weight: 700; font-size: 14.5px; color: #fff; }
+    .service-meta { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+    .service-price { font-family: var(--font-mono); font-weight: 700; font-size: 15px; color: #ffffff; letter-spacing: 0.2px; }
+
+    .service-item.selected .service-title,
+    .service-item.selected .service-meta,
+    .service-item.selected .service-price {
+      color: var(--accent-text);
+    }
+    .service-item.selected .service-meta {
+      opacity: 0.75;
+    }
 
     .upsell-banner {
       margin-top: 14px;
       padding: 13px 16px;
       border-radius: var(--radius-md);
-      background: rgba(251, 191, 36, 0.06);
-      border: 1px dashed rgba(251, 191, 36, 0.35);
+      background: rgba(228, 255, 26, 0.05);
+      border: 1px dashed var(--accent-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -227,13 +248,13 @@
       cursor: pointer;
       transition: 0.2s;
     }
-    .upsell-banner:hover { background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.6); }
+    .upsell-banner:hover { background: rgba(228, 255, 26, 0.1); border-color: var(--accent); }
 
     .summary-bar {
       margin-top: 14px;
       padding: 13px 18px;
       border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(0, 0, 0, 0.38);
       border: 1px solid rgba(255, 255, 255, 0.12);
       display: flex;
       justify-content: space-between;
@@ -242,7 +263,7 @@
     }
 
     .cal-wrap {
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.38);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       padding: 16px;
@@ -271,6 +292,7 @@
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       text-align: center;
+      font-family: var(--font-mono);
       font-size: 11px;
       color: var(--muted);
       font-weight: 600;
@@ -287,7 +309,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 13.5px;
+      font-family: var(--font-mono);
+      font-size: 13px;
       font-weight: 600;
       user-select: none;
       position: relative;
@@ -305,25 +328,25 @@
 
     .cal-day.admin-clickable { cursor: pointer; }
     .cal-day.work {
-      background: #17181d;
+      background: #15161b;
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.12);
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
-    .cal-day.work:hover { border-color: rgba(255, 255, 255, 0.35); transform: translateY(-1px); }
+    .cal-day.work:hover { border-color: var(--accent-border); transform: translateY(-1px); }
 
     .cal-dots { display: flex; gap: 3px; position: absolute; bottom: 5px; }
     .cal-dot { width: 4px; height: 4px; border-radius: 50%; }
 
     .cal-day.selected {
-      background: #ffffff !important;
-      color: #0b0c10 !important;
-      border-color: #ffffff !important;
-      box-shadow: 0 4px 18px rgba(255, 255, 255, 0.25) !important;
+      background: var(--accent) !important;
+      color: var(--accent-text) !important;
+      border-color: var(--accent) !important;
+      box-shadow: 0 4px 18px var(--accent-glow) !important;
       font-weight: 800;
     }
-    .cal-day.selected .cal-dot { background: #0b0c10 !important; }
+    .cal-day.selected .cal-dot { background: var(--accent-text) !important; }
 
     .cal-legend {
       display: flex;
@@ -354,18 +377,19 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       overflow: hidden;
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.28);
     }
 
     .slot-row { display: flex; align-items: stretch; border-bottom: 1px solid rgba(255, 255, 255, 0.04); min-height: 40px; }
     .slot-row:last-child { border-bottom: none; }
     .slot-row.free-row { cursor: pointer; transition: background 0.15s; }
-    .slot-row.free-row:hover { background: rgba(255, 255, 255, 0.04); }
+    .slot-row.free-row:hover { background: rgba(228, 255, 26, 0.05); }
 
     .slot-time {
-      width: 60px;
+      width: 62px;
       flex-shrink: 0;
-      font-size: 12px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
       font-weight: 600;
       color: var(--muted);
       display: flex;
@@ -374,14 +398,14 @@
       border-right: 1px solid rgba(255, 255, 255, 0.05);
       user-select: none;
     }
-    .slot-time.half-hour { font-size: 11px; font-weight: 400; opacity: 0.5; }
+    .slot-time.half-hour { font-size: 10.5px; font-weight: 400; opacity: 0.5; }
     .slot-body { flex: 1; padding: 4px 8px; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
 
     .tl-card-busy {
       width: 100%;
       background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-left: 3px solid #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-left: 3px solid var(--accent);
       border-radius: var(--radius-sm);
       padding: 10px 14px;
       display: flex;
@@ -409,9 +433,10 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      background: rgba(74, 222, 128, 0.12);
-      color: var(--green);
-      border: 1px solid rgba(74, 222, 128, 0.3);
+      font-family: var(--font-mono);
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
       padding: 2px 8px;
       border-radius: 6px;
       font-size: 12px;
@@ -421,8 +446,8 @@
 
     .confirmed-badge {
       display: inline-block;
-      background: rgba(74, 222, 128, 0.16);
-      color: var(--green);
+      background: var(--accent-soft);
+      color: var(--accent);
       font-size: 10.5px;
       font-weight: 700;
       padding: 2px 7px;
@@ -442,7 +467,7 @@
 
     .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
     .stat-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; }
-    .stat-val { font-size: 20px; font-weight: 800; margin-top: 4px; color: #fff; }
+    .stat-val { font-family: var(--font-mono); font-size: 20px; font-weight: 800; margin-top: 4px; color: #fff; }
 
     .client-suggestions {
       background: #18191f;
@@ -459,8 +484,8 @@
 
     .mode-switch { display: flex; background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 3px; margin-bottom: 14px; }
     .mode-btn { flex: 1; padding: 8px; text-align: center; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; color: var(--muted); user-select: none; transition: 0.15s; }
-    .mode-btn.active-client { background: #ffffff; color: #0b0c10; font-weight: 700; }
-    .mode-btn.active-break { background: var(--amber); color: #000; font-weight: 700; }
+    .mode-btn.active-client { background: var(--accent); color: var(--accent-text); font-weight: 800; }
+    .mode-btn.active-break { background: var(--amber); color: #000; font-weight: 800; }
 
     label { font-size: 12px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
     
@@ -475,12 +500,13 @@
       font-family: inherit;
       margin-bottom: 12px;
       appearance: none;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
     }
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: rgba(255, 255, 255, 0.4);
-      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 0 3px rgba(228, 255, 26, 0.10);
     }
 
     .btn {
@@ -490,13 +516,13 @@
       border-radius: var(--radius-md);
       padding: 15px 20px;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       width: 100%;
       text-decoration: none;
       display: inline-block;
       text-align: center;
-      box-shadow: 0 4px 20px var(--accent-glow);
+      box-shadow: 0 6px 22px var(--accent-glow);
       transition: all 0.2s ease;
       letter-spacing: 0.2px;
     }
@@ -535,7 +561,7 @@
       cursor: pointer;
       transition: 0.15s;
     }
-    .btn-pill:hover { background: rgba(255, 255, 255, 0.12); }
+    .btn-pill:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
 
     .btn-outline {
       background: var(--input-bg);
@@ -552,7 +578,7 @@
       transition: 0.15s;
     }
     .btn-outline:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); }
-    .btn-outline.active-tab { background: #ffffff; border-color: #ffffff; color: #0b0c10; font-weight: 700; }
+    .btn-outline.active-tab { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 800; }
 
     .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
     .slot-btn {
@@ -562,25 +588,25 @@
       background: var(--input-bg);
       color: var(--text);
       cursor: pointer;
+      font-family: var(--font-mono);
       font-weight: 600;
       font-size: 13px;
-      font-family: inherit;
       transition: 0.15s;
     }
     .slot-btn:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.08); }
     .slot-btn.selected {
-      background: #ffffff;
-      color: #0b0c10;
-      border-color: #ffffff;
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: var(--accent);
       font-weight: 800;
-      box-shadow: 0 4px 16px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 16px var(--accent-glow);
     }
 
     .location-footer { max-width: 560px; margin: 8px auto 0; padding: 0 16px; }
     .location-card {
       background: var(--card);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 18px 22px;
@@ -595,8 +621,8 @@
       width: 38px;
       height: 38px;
       border-radius: 11px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -609,9 +635,9 @@
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -621,12 +647,12 @@
     }
     .modal-box {
       background: var(--card-solid);
-      border: 1px solid var(--border-hover);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: var(--radius-lg);
       padding: 24px;
       width: 100%;
       max-width: 420px;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.85);
       max-height: 92vh;
       overflow-y: auto;
     }
@@ -644,8 +670,8 @@
       user-select: none;
       transition: 0.15s;
     }
-    .day-chip.active { background: #ffffff; color: #0b0c10; border-color: #ffffff; }
-    .tag { display: inline-flex; align-items: center; gap: 6px; background: var(--input-bg); border: 1px solid var(--border); padding: 5px 11px; border-radius: 999px; font-size: 11.5px; font-weight: 600; margin: 3px; }
+    .day-chip.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 800; }
+    .tag { display: inline-flex; align-items: center; gap: 6px; background: var(--input-bg); border: 1px solid var(--border); padding: 5px 11px; border-radius: 999px; font-size: 11.5px; font-weight: 600; margin: 3px; font-family: var(--font-mono); }
     .admin-srv-check {
       display: flex;
       align-items: center;
@@ -657,24 +683,19 @@
       cursor: pointer;
       font-size: 13px;
       background: var(--input-bg);
+      transition: 0.15s;
     }
-    .admin-srv-check.active { border-color: rgba(255,255,255,0.4); background: rgba(255, 255, 255, 0.08); }
-
-    .toast-hint {
-      margin-top: 10px;
-      padding: 9px 12px;
-      border-radius: var(--radius-sm);
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      color: var(--tg);
-      font-size: 12px;
-      text-align: center;
+    .admin-srv-check.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-text);
+      font-weight: 700;
     }
 
     @media (max-width: 400px) {
       .slots-grid { grid-template-columns: repeat(3, 1fr); }
       .card { padding: 20px; }
-      .cal-day { font-size: 13px; }
+      .cal-day { font-size: 12.5px; }
     }
   </style>
 </head>
@@ -686,29 +707,24 @@
   <header>
     <div class="header-inner">
       <div class="logo-wrap">
-        <!-- Матовый титановый логотип AF -->
+        <!-- Логотип AF -->
         <div class="logo-circle" onclick="handleSecretLogoTap()" title="Anton Frantsuzov">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <radialGradient id="afBg" cx="30%" cy="25%" r="75%">
-                <stop offset="0%" stop-color="#2a2c35"/>
+                <stop offset="0%" stop-color="#262830"/>
                 <stop offset="60%" stop-color="#14151a"/>
                 <stop offset="100%" stop-color="#0a0a0d"/>
               </radialGradient>
-              <linearGradient id="afMark" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="60%" stop-color="#cfd4dc"/>
-                <stop offset="100%" stop-color="#808794"/>
-              </linearGradient>
               <filter id="afShadow" x="-20%" y="-20%" width="140%" height="140%">
                 <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#000" flood-opacity="0.8"/>
               </filter>
             </defs>
-            <circle cx="50" cy="50" r="48.5" fill="url(#afBg)" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
-            <g filter="url(#afShadow)" fill="none" stroke="url(#afMark)" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M 22 72 L 38 28 C 40 23 44 23 46 28 L 57 60" stroke-width="8"/>
-              <path d="M 27 56 C 40 56 48 52 57 52 L 77 52" stroke-width="7.5"/>
-              <path d="M 57 72 L 57 35 C 57 29 61 26 67 26 L 80 26" stroke-width="8"/>
+            <circle cx="50" cy="50" r="48.5" fill="url(#afBg)" stroke="rgba(228,255,26,0.25)" stroke-width="1.5"/>
+            <g filter="url(#afShadow)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M 22 72 L 38 28 C 40 23 44 23 46 28 L 57 60" stroke="#e4ff1a" stroke-width="8"/>
+              <path d="M 27 56 C 40 56 48 52 57 52 L 77 52" stroke="#ffffff" stroke-width="7.5"/>
+              <path d="M 57 72 L 57 35 C 57 29 61 26 67 26 L 80 26" stroke="#ffffff" stroke-width="8"/>
             </g>
           </svg>
         </div>
@@ -728,13 +744,12 @@
       <div class="card">
         <h2><span class="step-badge">1</span> Услуги</h2>
         <div id="services-list"></div>
-        <div id="service-auto-hint" class="toast-hint hidden"></div>
         <div id="upsell-box" class="upsell-banner hidden" onclick="applyWaxUpsell()">
           <div>
-            <div style="font-weight:700; font-size:13px; color:var(--amber);">💡 Депиляция воском</div>
+            <div style="font-weight:700; font-size:13px; color:var(--accent);">💡 Депиляция воском</div>
             <div style="font-size:11px; color:var(--muted); margin-top:2px;">Дополнительно +5 минут · 200 ₽</div>
           </div>
-          <span class="btn-outline" style="background:rgba(251,191,36,0.15); border-color:rgba(251,191,36,0.4); color:#fff; font-weight:700;">+ Добавить</span>
+          <span class="btn-outline" style="background:var(--accent-soft); border-color:var(--accent-border); color:var(--accent); font-weight:700;">+ Добавить</span>
         </div>
         <div id="services-summary" class="summary-bar hidden"></div>
       </div>
@@ -751,7 +766,7 @@
           <div class="cal-weekdays"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div></div>
           <div class="cal-grid" id="cal-days-grid"></div>
           <div class="cal-legend">
-            <div class="legend-item"><span class="legend-dot" style="background:var(--green);"></span> Рабочий день</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--accent);"></span> Рабочий день</div>
             <div class="legend-item"><span class="legend-dot" style="background:rgba(255,255,255,0.2);"></span> Выходной</div>
           </div>
         </div>
@@ -762,9 +777,9 @@
 
       <div class="card">
         <h2><span class="step-badge">3</span> Контакты</h2>
-        <label for="client-name">Имя *</label>
+        <label for="client-name">Имя</label>
         <input type="text" id="client-name" placeholder="Александр" maxlength="60" autocomplete="given-name">
-        <label for="client-phone">Телефон (обязательно для записи) *</label>
+        <label for="client-phone">Телефон</label>
         <input
           type="tel"
           id="client-phone"
@@ -801,7 +816,7 @@
           <label>Исключения для дат:</label>
           <div class="row" style="margin-top:6px;">
             <input type="date" id="override-date" style="flex:1; margin:0;">
-            <button onclick="addDateOverride('open')" class="btn-outline" style="color:var(--green); border-color:rgba(74,222,128,0.3); background:rgba(74,222,128,0.1);">+ Рабочий</button>
+            <button onclick="addDateOverride('open')" class="btn-outline" style="color:var(--accent); border-color:var(--accent-border); background:var(--accent-soft);">+ Рабочий</button>
             <button onclick="addDateOverride('closed')" class="btn-outline" style="color:var(--muted); border-color:var(--border);">+ Выходной</button>
           </div>
           <div id="overrides-list" style="margin-top:10px;"></div>
@@ -818,7 +833,7 @@
           </div>
           <div class="row">
             <button onclick="openEditModal(null, adminSelectedDate, '13:00', true)" class="btn-outline" style="background:rgba(251,191,36,0.12); color:var(--amber); border-color:rgba(251,191,36,0.3);">☕ Перерыв</button>
-            <button onclick="openEditModal(null, adminSelectedDate, '12:00', false)" class="btn-outline" style="background:#ffffff; color:#0b0c10; font-weight:700;">+ Запись</button>
+            <button onclick="openEditModal(null, adminSelectedDate, '12:00', false)" class="btn-outline" style="background:var(--accent); color:var(--accent-text); border-color:var(--accent); font-weight:800;">+ Запись</button>
           </div>
         </div>
 
@@ -831,7 +846,7 @@
           <div class="cal-weekdays"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div></div>
           <div class="cal-grid" id="admin-cal-grid"></div>
           <div class="cal-legend">
-            <div class="legend-item"><span class="legend-dot" style="background:var(--green);"></span> Рабочий</div>
+            <div class="legend-item"><span class="legend-dot" style="background:var(--accent);"></span> Рабочий</div>
             <div class="legend-item"><span class="legend-dot" style="background:var(--tg);"></span> Есть записи</div>
           </div>
         </div>
@@ -942,7 +957,6 @@
       }
     }
 
-    // Закрытие модальных окон по клавише Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         document.getElementById('password-modal').classList.add('hidden');
@@ -950,7 +964,6 @@
       }
     });
 
-    // Защита от XSS при выводе пользовательских строк в HTML
     function escapeHtml(str) {
       return String(str ?? '')
         .replace(/&/g, '&amp;')
@@ -960,7 +973,7 @@
         .replace(/'/g, '&#39;');
     }
 
-    // Получение текущей даты и времени строго по часовому поясу Санкт-Петербурга (Europe/Moscow)
+    // Текущая дата и время строго по часовому поясу Санкт-Петербурга (Europe/Moscow)
     function getSpbNowParts() {
       try {
         const fmt = new Intl.DateTimeFormat('en-CA', {
@@ -1109,25 +1122,20 @@
       let d = String(raw || '').replace(/\D/g, '');
       if (!d) return '';
 
-      // Если вставили в поле, где уже было "+7 ", в начале образуется "789..." или "779..." (12 цифр)
       while (d.length > 10 && (d.startsWith('7') || d.startsWith('8'))) {
         d = d.substring(1);
       }
 
-      // Если ровно 11 цифр и начинается с 7 или 8 — убираем код страны
       if (d.length === 11 && (d.startsWith('7') || d.startsWith('8'))) {
         d = d.substring(1);
       }
 
-      // Если в строке есть '9' и после нее минимум 9 цифр (вставка полного номера с мусором)
       const nineIdx = d.indexOf('9');
       if (d.length > 10 && nineIdx !== -1 && d.length - nineIdx >= 10) {
         d = d.substring(nineIdx, nineIdx + 10);
       } else if (d.length === 10 && (d.startsWith('7') || d.startsWith('8')) && d[1] === '9') {
-        // Пользователь начал печатать +7 (7999...) или вставил без последней цифры, но с 7/8 в начале
         d = d.substring(1);
       } else if (d.length <= 10 && (d.startsWith('7') || d.startsWith('8'))) {
-        // Обычный посимвольный ввод в поле "+7 "
         d = d.substring(1);
       }
 
@@ -1148,7 +1156,6 @@
       if (!pasted) return;
       e.preventDefault();
       let digits = pasted.replace(/\D/g, '');
-      // При чистой вставке из буфера: если 11 цифр и начинается с 7 или 8 — отрезаем 1 цифру, либо ищем с 9
       const nineIdx = digits.indexOf('9');
       if (digits.length >= 10 && nineIdx !== -1 && digits.length - nineIdx >= 10) {
         digits = digits.substring(nineIdx, nineIdx + 10);
@@ -1252,7 +1259,6 @@
     }
 
     function countActiveBookingsForClient(cleanPhone) {
-      // 1. Считаем будущие записи по этому номеру телефона в загруженном расписании
       const serverMatches = allAppointments.filter(a => {
         if (isBreakEntry(a) || !a.appointment_date || !a.appointment_time) return false;
         if (!isFutureSlotSpb(a.appointment_date, a.appointment_time)) return false;
@@ -1260,10 +1266,8 @@
         return false;
       });
 
-      // 2. Считаем записи, созданные с этого браузера/устройства (на случай если сервер скрывает телефоны в публичном GET)
       const localMatches = getClientLocalBookings().filter(item => {
         if (!isFutureSlotSpb(item.date, item.time)) return false;
-        // Проверяем, что эта запись все еще существует в общем списке занятых слотов
         const stillExistsInSchedule = allAppointments.some(a =>
           a.appointment_date === item.date && a.appointment_time === item.time
         );
@@ -1303,7 +1307,7 @@
         const isWork = (dateStr >= todayStr) && isWorkingDate(dateStr);
         if (isWork) {
           cell.className = 'cal-day work' + (dateStr === selectedDateStr ? ' selected' : '');
-          cell.innerHTML += `<div class="cal-dots"><span class="cal-dot" style="background:var(--green);"></span></div>`;
+          cell.innerHTML += `<div class="cal-dots"><span class="cal-dot" style="background:var(--accent);"></span></div>`;
           cell.onclick = () => selectCalendarDate(dateStr);
         } else {
           cell.className = 'cal-day off';
@@ -1412,28 +1416,21 @@
       }
     }
 
-    // Взаимоисключение конфликтующих услуг и авто-объединение Стрижка + Борода -> Комплекс
     function toggleClientServiceSelection(clickedService) {
-      const hintEl = document.getElementById('service-auto-hint');
-      hintEl.classList.add('hidden');
-
       const isAlreadySelected = selectedServices.some(item => item.id === clickedService.id);
       if (isAlreadySelected) {
         selectedServices = selectedServices.filter(item => item.id !== clickedService.id);
         return;
       }
 
-      // Если выбран Комплекс (3), убираем отдельные Стрижку (1) и Бороду (2)
       if (clickedService.id === 3) {
         selectedServices = selectedServices.filter(item => item.id !== 1 && item.id !== 2);
       }
 
-      // Если выбрана Стрижка (1) или Борода (2), когда уже выбран Комплекс (3) — заменяем Комплекс
       if ((clickedService.id === 1 || clickedService.id === 2) && selectedServices.some(item => item.id === 3)) {
         selectedServices = selectedServices.filter(item => item.id !== 3);
       }
 
-      // Взаимоисключение двух видов биозавивки (4 и 5)
       if (clickedService.id === 4) {
         selectedServices = selectedServices.filter(item => item.id !== 5);
       } else if (clickedService.id === 5) {
@@ -1442,15 +1439,12 @@
 
       selectedServices.push(clickedService);
 
-      // Если одновременно выбраны Стрижка (1) и Борода (2) — автоматически объединяем в Комплекс (3) с выгодой 500 ₽
       const hasHaircut = selectedServices.some(item => item.id === 1);
       const hasBeard = selectedServices.some(item => item.id === 2);
       if (hasHaircut && hasBeard) {
         const combo = services.find(s => s.id === 3);
         selectedServices = selectedServices.filter(item => item.id !== 1 && item.id !== 2);
         if (combo) selectedServices.unshift(combo);
-        hintEl.innerText = '✨ «Стрижка» + «Борода» автоматически объединены в выгодный «Комплекс» (2500 ₽ вместо 3000 ₽)';
-        hintEl.classList.remove('hidden');
       }
     }
 
@@ -1489,7 +1483,7 @@
 
       if (selectedServices.length > 0) {
         summaryEl.classList.remove('hidden');
-        summaryEl.innerHTML = `<span>Выбрано: <b>${selectedServices.length}</b> (${getTotalDuration(selectedServices)} мин)</span><span style="font-weight:700; font-size:15px; color:#fff;">Итого: ${getTotalPrice(selectedServices)} ₽</span>`;
+        summaryEl.innerHTML = `<span>Выбрано: <b>${selectedServices.length}</b> (${getTotalDuration(selectedServices)} мин)</span><span style="font-family:var(--font-mono); font-weight:800; font-size:15px; color:var(--accent);">Итого: ${getTotalPrice(selectedServices)} ₽</span>`;
       } else {
         summaryEl.classList.add('hidden');
       }
@@ -1541,7 +1535,7 @@
         return;
       }
 
-      container.innerHTML = `<div style="font-size:12px; color:var(--muted); margin-bottom:6px;">Доступное время на <b>${escapeHtml(activeDateVal)}</b> (время СПб):</div><div class="slots-grid" id="slots-grid"></div>`;
+      container.innerHTML = `<div style="font-size:12px; color:var(--muted); margin-bottom:6px;">Доступное время на <b>${escapeHtml(activeDateVal)}</b>:</div><div class="slots-grid" id="slots-grid"></div>`;
       const grid = document.getElementById('slots-grid');
       slots.forEach(time => {
         const btn = document.createElement('button');
@@ -1594,19 +1588,13 @@
 
       if (selectedServices.length === 0 || !dateVal || !selectedTime) {
         msg.className = ''; msg.style.color = 'var(--danger)';
-        msg.innerText = 'Пожалуйста, выберите услугу, дату и свободное время.';
+        msg.innerText = 'Выберите услугу, время, а также укажите имя и телефон.';
         return;
       }
 
-      if (!name) {
+      if (!name || !isValidRussianPhone(cleanPhone)) {
         msg.className = ''; msg.style.color = 'var(--danger)';
-        msg.innerText = 'Пожалуйста, укажите ваше имя.';
-        return;
-      }
-
-      if (!isValidRussianPhone(cleanPhone)) {
-        msg.className = ''; msg.style.color = 'var(--danger)';
-        msg.innerText = 'Для записи обязательно укажите корректный номер телефона в формате +7 (9XX) XXX-XX-XX.';
+        msg.innerText = 'Укажите ваше имя и корректный номер телефона в формате +7 (9XX) XXX-XX-XX.';
         return;
       }
 
@@ -1629,11 +1617,10 @@
       try {
         await fetchAllData();
 
-        // Проверка лимита активных записей (максимум 2 будущие записи на один номер/устройство)
         const activeCount = countActiveBookingsForClient(cleanPhone);
         if (activeCount >= MAX_ACTIVE_BOOKINGS_PER_CLIENT) {
           msg.className = ''; msg.style.color = 'var(--danger)';
-          msg.innerText = `У вас уже есть ${activeCount} активные записи. Чтобы избежать спама, одновременно можно иметь не более ${MAX_ACTIVE_BOOKINGS_PER_CLIENT} записей. Для переноса напишите мастеру.`;
+          msg.innerText = `У вас уже есть ${activeCount} активные записи. Одновременно можно иметь не более ${MAX_ACTIVE_BOOKINGS_PER_CLIENT} записей.`;
           btn.disabled = false; btn.innerText = 'Записаться';
           return;
         }
@@ -1646,7 +1633,7 @@
 
         if (hasConflict) {
           msg.className = ''; msg.style.color = 'var(--danger)';
-          msg.innerText = 'К сожалению, это время только что заняли. Выберите другое окно.';
+          msg.innerText = 'К сожалению, это время уже занято. Выберите другое окно.';
           btn.disabled = false; btn.innerText = 'Записаться';
           await renderTimeSlots(true);
           return;
@@ -1687,7 +1674,6 @@
         const safeStart = escapeHtml(bookedTime);
         const safeEnd = escapeHtml(endTime);
         const safeLoc = escapeHtml(LOCATION_FULL);
-        const safePhone = escapeHtml(cleanPhone);
 
         msg.className = '';
         msg.style.color = 'var(--text)';
@@ -1700,31 +1686,32 @@
 
         if (currentTgChatId || (resData && resData.tg_notified)) {
           msg.innerHTML = `
-            <div style="color:var(--green); font-weight:700; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${safeName}!</div>
-            <div style="font-size:13px; color:var(--text); margin-bottom:12px;">${safeService} (${totalPrice} ₽)<br><b>${safeDate} (${safeStart} – ${safeEnd})</b><br><span style="color:var(--muted); font-size:12px;">📞 Номер: ${safePhone}</span><br><span style="color:var(--muted); font-size:12px;">📍 ${safeLoc}</span></div>
-            <div style="padding:10px; border-radius:10px; background:rgba(74,222,128,0.1); color:var(--green); font-size:13px; margin-bottom:10px;">📩 Подтверждение и схема проезда отправлены вам в Telegram!</div>
+            <div style="color:var(--accent); font-weight:700; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${safeName}!</div>
+            <div style="font-size:13px; color:var(--text); margin-bottom:12px;">${safeService} (${totalPrice} ₽)<br><b>${safeDate} (${safeStart} – ${safeEnd})</b><br><span style="color:var(--muted); font-size:12px;">📍 ${safeLoc}</span></div>
+            <div style="padding:10px; border-radius:10px; background:var(--accent-soft); color:var(--accent); font-size:13px; margin-bottom:10px;">📩 Подтверждение и схема проезда отправлены вам в чат бота!</div>
             ${calendarBtnHtml}
             ${currentTgChatId ? `<button type="button" onclick="window.Telegram.WebApp.close()" class="btn-tg" style="width:100%; margin-bottom:8px;">Вернуться в чат</button>` : ''}
             <div style="font-size:12px; color:var(--muted); margin-top:6px;">Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color:var(--tg); text-decoration:none;">Написать мастеру (@${MASTER_TG_USERNAME})</a></div>
           `;
         } else {
           msg.innerHTML = `
-            <div style="color:var(--green); font-weight:700; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${safeName}!</div>
-            <div style="font-size:13px; color:var(--text); margin-bottom:14px;">${safeService} (${totalPrice} ₽)<br><b>${safeDate} (${safeStart} – ${safeEnd})</b><br><span style="color:var(--muted); font-size:12px;">📞 Запись привязана к номеру: ${safePhone}</span><br><span style="color:var(--muted); font-size:12px;">📍 ${safeLoc}</span></div>
+            <div style="color:var(--accent); font-weight:700; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${safeName}!</div>
+            <div style="font-size:13px; color:var(--text); margin-bottom:14px;">${safeService} (${totalPrice} ₽)<br><b>${safeDate} (${safeStart} – ${safeEnd})</b><br><span style="color:var(--muted); font-size:12px;">📍 ${safeLoc}</span></div>
+            <a href="${tgBotLink}" target="_blank" rel="noopener noreferrer" class="btn-tg" style="width:100%; margin-bottom:8px;">🔔 Получить подтверждение и схему проезда в Telegram</a>
+            <div style="font-size:11px; color:var(--muted); margin-bottom:10px;">После перехода в бота нажмите <b>«Старт»</b> внизу чата.</div>
             ${calendarBtnHtml}
-            <a href="${tgBotLink}" target="_blank" rel="noopener noreferrer" class="btn-tg" style="width:100%; margin-bottom:6px;">🔔 Напоминание в Telegram (по желанию)</a>
-            <div style="font-size:11px; color:var(--muted); margin-bottom:10px;">Запись уже подтверждена по номеру телефона. Если хотите получить схему проезда в Telegram — нажмите кнопку выше.</div>
             <div style="font-size:12px; color:var(--muted);">Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color:var(--tg); text-decoration:none;">Написать мастеру (@${MASTER_TG_USERNAME})</a></div>
           `;
         }
 
         selectedServices = [];
-        document.getElementById('service-auto-hint').classList.add('hidden');
         renderServices();
         await renderTimeSlots(true);
       } catch (err) {
         msg.className = ''; msg.style.color = 'var(--danger)';
-        msg.innerText = 'Ошибка при сохранении записи. Проверьте интернет и попробуйте еще раз.';
+        msg.innerText = (err.message && err.message !== 'Server error' && err.message !== 'Booking error')
+          ? err.message
+          : 'Ошибка при сохранении. Попробуйте еще раз.';
       }
       btn.disabled = false;
       btn.innerText = 'Записаться';
@@ -1814,7 +1801,7 @@
         const dayAppsCount = allAppointments.filter(a => a.id && a.appointment_date === dateStr && !isBreakEntry(a)).length;
         cell.className = 'cal-day admin-clickable ' + (isWork ? 'work' : 'off') + (dateStr === adminSelectedDate ? ' selected' : '');
         let dots = '<div class="cal-dots">';
-        if (isWork) dots += `<span class="cal-dot" style="background:var(--green);"></span>`;
+        if (isWork) dots += `<span class="cal-dot" style="background:var(--accent);"></span>`;
         if (dayAppsCount > 0) dots += `<span class="cal-dot" style="background:var(--tg);"></span>`;
         dots += '</div>';
         cell.innerHTML = `<span>${day}</span>${dots}`;
@@ -1843,7 +1830,7 @@
       ovList.innerHTML = '';
       (scheduleConfig.extraWorkDates || []).forEach(dt => {
         const safeDt = escapeHtml(dt);
-        ovList.innerHTML += `<span class="tag" style="color:var(--green); background:rgba(74,222,128,0.1);">Рабочий: ${safeDt} <b style="cursor:pointer;" onclick="removeOverride('${safeDt}')">×</b></span>`;
+        ovList.innerHTML += `<span class="tag" style="color:var(--accent); background:var(--accent-soft);">Рабочий: ${safeDt} <b style="cursor:pointer;" onclick="removeOverride('${safeDt}')">×</b></span>`;
       });
       (scheduleConfig.closedDates || []).forEach(dt => {
         const safeDt = escapeHtml(dt);
@@ -1949,7 +1936,6 @@
       }
     }
 
-    // Безопасное открытие модалки по ID записи (без вставки сырого JSON в HTML-атрибуты)
     function openEditModalById(appId) {
       const app = allAppointments.find(a => String(a.id) === String(appId));
       if (app) openEditModal(app);
@@ -1981,7 +1967,7 @@
             const safeDate = escapeHtml(e.date);
             const safeComment = escapeHtml(e.comment);
             const safeId = escapeHtml(e.id);
-            expListHtml += `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid var(--border); font-size:13px;"><div><b>${safeCat}</b> <span style="color:var(--muted); font-size:11px;">(${safeDate})</span>${safeComment ? `<div style="font-size:11px; color:var(--muted);">${safeComment}</div>` : ''}</div><div class="row"><span style="color:#f87171; font-weight:700;">-${Number(e.amount) || 0} ₽</span><button onclick="deleteExpenseItem('${safeId}')" class="btn-outline" style="padding:3px 7px;">×</button></div></div>`;
+            expListHtml += `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid var(--border); font-size:13px;"><div><b>${safeCat}</b> <span style="color:var(--muted); font-size:11px; font-family:var(--font-mono);">(${safeDate})</span>${safeComment ? `<div style="font-size:11px; color:var(--muted);">${safeComment}</div>` : ''}</div><div class="row"><span style="color:#f87171; font-weight:700; font-family:var(--font-mono);">-${Number(e.amount) || 0} ₽</span><button onclick="deleteExpenseItem('${safeId}')" class="btn-outline" style="padding:3px 7px;">×</button></div></div>`;
           });
         }
 
@@ -1989,7 +1975,7 @@
           <h2 style="margin-bottom:12px;">📊 Отчёт: ${MONTH_NAMES[adminCalMonth]} ${adminCalYear}</h2>
           <div class="stats-grid">
             <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Касса за ${escapeHtml(adminSelectedDate)}</div><div class="stat-val" style="color:var(--tg);">${dayRevenue.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Клиентов: ${dayApps.length}</div></div>
-            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Выручка (План/Факт)</div><div class="stat-val" style="color:var(--green);">${monthTotalRevenue.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Уже в кассе: ${monthFactRevenue.toLocaleString('ru-RU')} ₽</div></div>
+            <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Выручка (План/Факт)</div><div class="stat-val" style="color:var(--accent);">${monthTotalRevenue.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Уже в кассе: ${monthFactRevenue.toLocaleString('ru-RU')} ₽</div></div>
             <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Расходы за месяц</div><div class="stat-val" style="color:#f87171;">-${monthExpensesSum.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Записей: ${monthExpenses.length}</div></div>
             <div class="stat-card"><div style="font-size:11px; color:var(--muted);">Чистая прибыль</div><div class="stat-val" style="color:#fff;">${netProfit.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px; color:var(--muted); margin-top:2px;">Ср. чек: ${avgCheck} ₽ (${monthApps.length} кл.)</div></div>
           </div>
@@ -2034,8 +2020,8 @@
       list.innerHTML = `
         <div class="timeline-header">
           <div>
-            <div style="font-weight:700; font-size:16px;">${escapeHtml(adminSelectedDate)}</div>
-            <div style="font-size:12px; color:${isWork ? 'var(--green)' : 'var(--muted)'};">${isWork ? '● Рабочий день' : '● Выходной день'} · Касса: <b style="color:#fff;">${daySum} ₽</b></div>
+            <div style="font-weight:700; font-size:16px; font-family:var(--font-mono);">${escapeHtml(adminSelectedDate)}</div>
+            <div style="font-size:12px; color:${isWork ? 'var(--accent)' : 'var(--muted)'};">${isWork ? '● Рабочий день' : '● Выходной день'} · Касса: <b style="color:#fff; font-family:var(--font-mono);">${daySum} ₽</b></div>
           </div>
           <div style="font-size:11px; color:var(--muted);">Нажмите на сумму чека, чтобы изменить</div>
         </div>
@@ -2045,7 +2031,6 @@
       const gridWrap = document.getElementById('schedule-grid-wrap');
       const renderedIds = new Set();
 
-      // Динамическое расширение сетки, если есть записи раньше 10:00 или позже 21:00
       let minTimelineMin = START_HOUR * 60;
       let maxTimelineMin = END_HOUR * 60;
       dayApps.forEach(a => {
@@ -2081,7 +2066,7 @@
           timeCol.className = 'slot-time';
           timeCol.style.flexDirection = 'column';
           timeCol.style.gap = '2px';
-          timeCol.innerHTML = `<span style="color:${isBreakEntry(firstApp) ? 'var(--amber)' : '#ffffff'};">${startLabel}</span><span style="font-size:10px; opacity:0.6;">${endLabel}</span>`;
+          timeCol.innerHTML = `<span style="color:${isBreakEntry(firstApp) ? 'var(--amber)' : 'var(--accent)'};">${startLabel}</span><span style="font-size:10px; opacity:0.6;">${endLabel}</span>`;
 
           const bodyCol = document.createElement('div');
           bodyCol.className = 'slot-body';
@@ -2125,7 +2110,7 @@
         div.innerHTML = `
           <div>
             <div style="font-weight:700; font-size:14px; color:var(--amber);">${safeName}</div>
-            <div style="font-size:12px; color:var(--muted);">${showDate ? safeDate + ' · ' : ''}${safeStart} – ${safeEnd} (${formatDurationHuman(Math.max(0, eMin - sMin))})</div>
+            <div style="font-size:12px; color:var(--muted); font-family:var(--font-mono);">${showDate ? safeDate + ' · ' : ''}${safeStart} – ${safeEnd} (${formatDurationHuman(Math.max(0, eMin - sMin))})</div>
           </div>
           <div class="row">
             <button type="button" onclick="openEditModalById('${safeId}')" class="btn-outline">Изм.</button>
@@ -2141,8 +2126,8 @@
 
       div.innerHTML = `
         <div>
-          ${showDate ? `<div style="font-size:12px; color:var(--tg); font-weight:600; margin-bottom:2px;">${safeDate} · ${safeStart} – ${safeEnd}</div>` : ''}
-          <div style="font-weight:700; font-size:15px;">${safeName} ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''} <a href="tel:${safePhone}" style="font-weight:500; font-size:12px; color:var(--tg); text-decoration:none;">${safePhone}</a></div>
+          ${showDate ? `<div style="font-size:12px; color:var(--accent); font-family:var(--font-mono); font-weight:600; margin-bottom:2px;">${safeDate} · ${safeStart} – ${safeEnd}</div>` : ''}
+          <div style="font-weight:700; font-size:15px;">${safeName} ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''} <a href="tel:${safePhone}" style="font-weight:500; font-size:12px; color:var(--tg); font-family:var(--font-mono); text-decoration:none;">${safePhone}</a></div>
           <div style="font-size:13px; color:#d4d4d4; margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
             <span>✂️ ${safeService}</span>
             <span class="price-pill" onclick="quickEditPrice('${safeId}', ${actualPrice})">${actualPrice} ₽ ✎</span>
@@ -2196,7 +2181,7 @@
         const safeName = escapeHtml(c.name);
         const safeNotes = escapeHtml(c.notes);
         const safePhone = escapeHtml(c.phone);
-        item.innerHTML = `<span><b>${safeName}</b> ${safeNotes ? `<span style="color:var(--amber); font-size:11px;">(${safeNotes})</span>` : ''}</span><span style="color:var(--muted);">${safePhone}</span>`;
+        item.innerHTML = `<span><b>${safeName}</b> ${safeNotes ? `<span style="color:var(--amber); font-size:11px;">(${safeNotes})</span>` : ''}</span><span style="color:var(--muted); font-family:var(--font-mono);">${safePhone}</span>`;
         item.onclick = () => {
           document.getElementById('edit-name').value = c.name;
           const phEl = document.getElementById('edit-phone'); phEl.value = c.phone; formatPhoneInput(phEl);
@@ -2233,7 +2218,7 @@
           renderAdminServicesCheckboxes(); autoCalcEndTime();
           if (!isCustomPriceEdited) document.getElementById('edit-price').value = getTotalPrice(adminSelectedServices);
         };
-        div.innerHTML = `<span>${active ? '✓ ' : ''}${escapeHtml(s.name)}</span><span style="color:var(--muted); font-size:12px;">${s.duration} мин · ${s.price} ₽</span>`;
+        div.innerHTML = `<span>${active ? '✓ ' : ''}${escapeHtml(s.name)}</span><span style="font-family:var(--font-mono); font-size:12px; opacity:0.85;">${s.duration} мин · ${s.price} ₽</span>`;
         wrap.appendChild(div);
       });
     }
@@ -2307,7 +2292,6 @@
         return;
       }
 
-      // Проверка пересечения с другими записями в этот день
       const overlapping = allAppointments.filter(a => a.id && String(a.id) !== String(id) && a.appointment_date === appointment_date).find(b => {
         const bS = timeToMinutes(b.appointment_time);
         const bE = b.end_time ? timeToMinutes(b.end_time) : (bS + calcDurationByNames(b.service_name));
