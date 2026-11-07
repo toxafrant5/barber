@@ -11,10 +11,10 @@
   <style>
     :root {
       --bg: #08080a;
-      --card: rgba(18, 19, 23, 0.70);
+      --card: rgba(16, 17, 21, 0.72);
       --card-solid: #121317;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-hover: rgba(228, 255, 26, 0.40);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-hover: rgba(228, 255, 26, 0.45);
       --text: #fafafa;
       --muted: #9ba0aa;
 
@@ -30,7 +30,7 @@
       --green: #e4ff1a;
       --amber: #fbbf24;
       --danger: #f87171;
-      --input-bg: rgba(255, 255, 255, 0.035);
+      --input-bg: rgba(255, 255, 255, 0.04);
 
       /* Геометрия Liquid Titanium */
       --radius-lg: 26px;
@@ -52,19 +52,33 @@
       -webkit-font-smoothing: antialiased;
       position: relative;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    /* Фоновое фото с деликатным затемнением, блюром и легким лаймовым бликом */
+    /* Фоновый слой: поддерживает твою картинку + стильная карбоновая сетка, если картинки нет */
     .bg-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background-color: #08080a;
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      filter: blur(8px) brightness(0.55) contrast(1.08);
+      transform: scale(1.05);
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    /* Деликатная виньетка и лаймовое свечение поверх фона (не перекрывает картинку наглухо) */
+    .bg-overlay {
       position: fixed;
       inset: 0;
       z-index: -1;
       background:
-        radial-gradient(circle at 80% 10%, rgba(228, 255, 26, 0.07) 0%, transparent 45%),
-        linear-gradient(180deg, rgba(8, 8, 10, 0.82) 0%, rgba(8, 8, 10, 0.95) 60%, #08080a 100%),
-        url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1600&q=80') center center / cover no-repeat;
-      filter: blur(15px) brightness(0.62);
-      transform: scale(1.08);
+        radial-gradient(circle at 85% 8%, rgba(228, 255, 26, 0.11) 0%, transparent 42%),
+        radial-gradient(circle at 15% 80%, rgba(56, 189, 248, 0.05) 0%, transparent 45%),
+        linear-gradient(180deg, rgba(8, 8, 10, 0.45) 0%, rgba(8, 8, 10, 0.72) 65%, rgba(8, 8, 10, 0.92) 100%);
       pointer-events: none;
     }
 
@@ -89,26 +103,31 @@
       gap: 12px;
     }
 
-    .logo-wrap { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .logo-wrap { display: flex; align-items: center; gap: 13px; min-width: 0; }
     
+    /* Обновленный геометричный медальон логотипа */
     .logo-circle {
       width: 44px;
       height: 44px;
-      border-radius: 50%;
+      border-radius: 13px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.65), 0 0 14px rgba(228, 255, 26, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.75), 0 0 16px rgba(228, 255, 26, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.22);
       overflow: hidden;
-      background: linear-gradient(145deg, #22242c, #101115);
-      border: 1px solid var(--accent-border);
+      background: linear-gradient(145deg, #1b1d24, #0c0d10);
+      border: 1px solid rgba(228, 255, 26, 0.42);
       cursor: pointer;
       user-select: none;
-      transition: transform 0.15s ease, border-color 0.2s;
+      transition: transform 0.15s ease, border-color 0.2s, box-shadow 0.2s;
     }
 
-    .logo-circle:active { transform: scale(0.93); }
+    .logo-circle:hover {
+      border-color: var(--accent);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.8), 0 0 20px rgba(228, 255, 26, 0.25);
+    }
+    .logo-circle:active { transform: scale(0.92); }
     .logo-circle svg { width: 100%; height: 100%; display: block; pointer-events: none; }
 
     .brand-title {
@@ -137,8 +156,8 @@
 
     .card {
       background: var(--card);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 24px;
@@ -721,30 +740,39 @@
 </head>
 <body>
 
-  <!-- Задний фактурный фон -->
-  <div class="bg-backdrop"></div>
+  <!-- Задний фактурный фон + оверлей -->
+  <div id="bg-backdrop" class="bg-backdrop"></div>
+  <div class="bg-overlay"></div>
 
   <header>
     <div class="header-inner">
       <div class="logo-wrap">
-        <!-- Логотип AF -->
+        <!-- Новая острая архитектурная монограмма AF в стиле Full Volt -->
         <div class="logo-circle" onclick="handleSecretLogoTap()" title="Anton Frantsuzov">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <radialGradient id="afBg" cx="30%" cy="25%" r="75%">
-                <stop offset="0%" stop-color="#262830"/>
-                <stop offset="60%" stop-color="#14151a"/>
-                <stop offset="100%" stop-color="#0a0a0d"/>
-              </radialGradient>
-              <filter id="afShadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#000" flood-opacity="0.8"/>
+              <linearGradient id="afVoltBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1e2028"/>
+                <stop offset="100%" stop-color="#090a0d"/>
+              </linearGradient>
+              <filter id="afVoltGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.85"/>
               </filter>
             </defs>
-            <circle cx="50" cy="50" r="48.5" fill="url(#afBg)" stroke="rgba(228,255,26,0.25)" stroke-width="1.5"/>
-            <g filter="url(#afShadow)" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M 22 72 L 38 28 C 40 23 44 23 46 28 L 57 60" stroke="#e4ff1a" stroke-width="8"/>
-              <path d="M 27 56 C 40 56 48 52 57 52 L 77 52" stroke="#ffffff" stroke-width="7.5"/>
-              <path d="M 57 72 L 57 35 C 57 29 61 26 67 26 L 80 26" stroke="#ffffff" stroke-width="8"/>
+            <!-- Фоновый щит с технической сеткой -->
+            <rect width="100" height="100" rx="22" fill="url(#afVoltBg)"/>
+            <path d="M 0 50 H 100 M 50 0 V 100" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+            <!-- Геометричная монограмма AF с острыми срезами -->
+            <g filter="url(#afVoltGlow)">
+              <!-- Буква A (кислотный лайм #e4ff1a) -->
+              <path d="M 15 78 L 35 22 H 47 L 41 38 L 27 78 Z" fill="#e4ff1a"/>
+              <path d="M 39 22 L 56 78 H 44 L 33 40 Z" fill="#e4ff1a"/>
+              <!-- Общая динамическая перекладина -->
+              <polygon points="24,58 30,47 78,47 73,58" fill="#e4ff1a"/>
+              <!-- Буква F (чистый титановый белый) -->
+              <path d="M 54 22 H 86 L 81 33 H 65 V 78 H 54 Z" fill="#ffffff"/>
+              <!-- Акцентная точка в углу -->
+              <rect x="73" y="66" width="11" height="12" fill="#e4ff1a"/>
             </g>
           </svg>
         </div>
@@ -946,9 +974,14 @@
 
   <script>
     /* =========================================================================
-       ЕДИНАЯ НАСТРОЙКА АДРЕСА (Меняется только здесь — обновляется везде)
+       ЕДИНАЯ НАСТРОЙКА АДРЕСА И ФОНОВОГО ФОТО (Меняется только здесь!)
        ========================================================================= */
     const BARBERSHOP_ADDRESS = 'Санкт-Петербург, Итальянская, 12Ж (Барбершоп «Шум»)';
+
+    // Ссылка на твое фоновое фото:
+    // Положи свой файл с именем bg.jpg в папку рядом с index.html на GitHub (или вставь прямую ссылку https://...)
+    const CUSTOM_BG_IMAGE = 'bg.jpg';
+    const FALLBACK_BG_IMAGE = 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1400&q=80';
 
     // Автоматический разбор для футера, карт и уведомлений
     const LOCATION_FULL = BARBERSHOP_ADDRESS;
@@ -966,6 +999,16 @@
     const CLIENT_SAVED_NAME_KEY = 'af_client_saved_name';
     const CLIENT_SAVED_PHONE_KEY = 'af_client_saved_phone';
     const CLIENT_ACTIVE_HISTORY_KEY = 'af_client_booked_slots_v1';
+
+    // Умная загрузка фоновой картинки (сначала проверяет твой bg.jpg, если его еще нет — ставит запасную)
+    function initBackgroundPhoto() {
+      const bgEl = document.getElementById('bg-backdrop');
+      if (!bgEl) return;
+      const testImg = new Image();
+      testImg.onload = () => { bgEl.style.backgroundImage = `url('${CUSTOM_BG_IMAGE}')`; };
+      testImg.onerror = () => { bgEl.style.backgroundImage = `url('${FALLBACK_BG_IMAGE}')`; };
+      testImg.src = CUSTOM_BG_IMAGE;
+    }
 
     const tgApp = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     let currentTgChatId = null;
@@ -1353,6 +1396,7 @@
     }
 
     async function init() {
+      initBackgroundPhoto();
       document.getElementById('header-tg-link').href = `https://t.me/${MASTER_TG_USERNAME}`;
       document.getElementById('footer-address-text').innerText = LOCATION_ADDRESS;
       document.getElementById('footer-place-text').innerText = LOCATION_PLACE;
@@ -1514,13 +1558,12 @@
     }
 
     /* =========================================================================
-       УМНАЯ УПАКОВКА РАСПИСАНИЯ (Вариант №1 «Анти-разрыв» + Вариант №3 «Стыковые окна»)
+       УМНАЯ УПАКОВКА РАСПИСАНИЯ (Без утренних разрывов при вечерних записях)
        ========================================================================= */
     function computeSmartSlots(rawCandidateMinutes, busyIntervals, totalDuration, dayStartMin, dayEndMin) {
       const HAIRCUT_MIN_WINDOW = 55; // Минимальное полезное окно под стрижку (55 мин)
       const sortedBusy = [...busyIntervals].sort((a, b) => a.start - b.start);
 
-      // Находим границы свободного коридора [gapStart, gapEnd], внутри которого лежит слот t
       function getGapBounds(t) {
         let gapStart = dayStartMin;
         let gapEnd = dayEndMin;
@@ -1534,10 +1577,9 @@
         return { gapStart, gapEnd };
       }
 
-      // 1. АЛГОРИТМ №1 («АНТИ-РАЗРЫВ»):
-      // Если между записями есть окно (например, 11:00–13:00), где крайние слоты (11:00 или 12:00)
-      // сохраняют место ещё для одной стрижки (>= 55 мин), а промежуточный слот (11:30)
-      // дробит окно на два бесполезных огрызка (< 55 мин с обеих сторон) — убираем 11:30.
+      // 1. АЛГОРИТМ №1 («АНТИ-РАЗРЫВ» внутри коридоров между двумя записями):
+      // Если между двумя записями (например, 11:00–13:00) слот 11:30 дробит окно на два бесполезных огрызка,
+      // а слоты 11:00 и 12:00 сохраняют место под еще одну стрижку — скрываем 11:30.
       const antiGapSlots = rawCandidateMinutes.filter(t => {
         const { gapStart, gapEnd } = getGapBounds(t);
         const beforeFree = t - gapStart;
@@ -1546,9 +1588,7 @@
         const wastesBefore = beforeFree > 0 && beforeFree < HAIRCUT_MIN_WINDOW;
         const wastesAfter = afterFree > 0 && afterFree < HAIRCUT_MIN_WINDOW;
 
-        // Если слот дробит окно и слева, и справа на куски меньше 55 минут
         if (wastesBefore && wastesAfter) {
-          // Проверяем, есть ли в этом же коридоре нормальный крайний слот, который НЕ убивает второе место
           const hasBetterEdgeSlotInSameGap = rawCandidateMinutes.some(other => {
             if (other === t) return false;
             if (other < gapStart || other + totalDuration > gapEnd) return false;
@@ -1564,34 +1604,67 @@
 
       const baseSlots = antiGapSlots.length > 0 ? antiGapSlots : rawCandidateMinutes;
 
-      // 2. АЛГОРИТМ №3 (ПРИОРИТЕТ СТЫКОВЫХ ОКОН + «ПОКАЗАТЬ ВСЕ»):
-      // Стыковой слот — тот, который встает вплотную после существующей записи (зазор <= 35 мин)
-      // или вплотную перед следующей записью (зазор <= 35 мин).
-      const ADJACENT_TOLERANCE = 35;
-      let priorityMinutes = [];
-
+      // 2. АЛГОРИТМ №3 (КОМПАКТНАЯ ГРУППИРОВКА ВОКРУГ ЗАПИСЕЙ БЕЗ УТРЕННЕГО РАЗРЫВА):
       if (sortedBusy.length > 0) {
-        priorityMinutes = baseSlots.filter(t => {
-          const slotEnd = t + totalDuration;
-          const touchesPrevEnd = sortedBusy.some(b => t >= b.end && (t - b.end) <= ADJACENT_TOLERANCE);
-          const touchesNextStart = sortedBusy.some(b => b.start >= slotEnd && (b.start - slotEnd) <= ADJACENT_TOLERANCE);
-          const isStartOfDay = (t === dayStartMin);
-          return touchesPrevEnd || touchesNextStart || isStartOfDay;
+        const prioritySet = new Set();
+        const firstBusyStart = sortedBusy[0].start;
+        const lastBusyEnd = sortedBusy[sortedBusy.length - 1].end;
+
+        // Для каждой существующей записи находим:
+        // а) ОДИН самый плотный слот ПЕРЕД ней (например, 17:00 перед 18:00, без лишнего 16:30)
+        // б) ОДИН самый плотный слот СРАЗУ ПОСЛЕ неё (например, 19:00 после 18:00–19:00)
+        sortedBusy.forEach(b => {
+          const beforeCandidates = baseSlots.filter(t => (t + totalDuration) <= b.start && (b.start - (t + totalDuration)) <= 30);
+          if (beforeCandidates.length > 0) {
+            prioritySet.add(beforeCandidates[beforeCandidates.length - 1]); // Самый близкий к началу записи
+          }
+
+          const afterCandidates = baseSlots.filter(t => t >= b.end && (t - b.end) <= 30);
+          if (afterCandidates.length > 0) {
+            prioritySet.add(afterCandidates[0]); // Самый близкий к концу записи
+          }
         });
 
-        // Если все записи далеко или в конце дня, берем первые 4 доступных слота по порядку
+        // Если первая запись стоит поздно (например, в 18:00), НЕ предлагаем 10:00 утра!
+        // Вместо этого предлагаем удобные дневные слоты в радиусе 3–4 часов до первой записи (например, с 14:00 / 15:00),
+        // чтобы рабочий день собирался компактно во второй половине дня.
+        const COMFORT_RADIUS_MIN = 240; // 4 часа до первой записи
+        const clusterStartMin = Math.max(dayStartMin, firstBusyStart - COMFORT_RADIUS_MIN);
+        const clusterEndMin = Math.min(dayEndMin, lastBusyEnd + COMFORT_RADIUS_MIN);
+
+        baseSlots.forEach(t => {
+          const slotEnd = t + totalDuration;
+          // Добавляем ровные часовые слоты внутри комфортного радиуса вокруг существующих записей
+          if (t >= clusterStartMin && slotEnd <= clusterEndMin && (t % 60 === 0)) {
+            // Проверяем, чтобы этот часовой слот не оставлял крошечную дырку (меньше 55 мин) перед записью
+            const leavesAwkwardGapBeforeBusy = sortedBusy.some(b => {
+              const diff = b.start - slotEnd;
+              return diff > 5 && diff < HAIRCUT_MIN_WINDOW;
+            });
+            if (!leavesAwkwardGapBeforeBusy) {
+              prioritySet.add(t);
+            }
+          }
+        });
+
+        let priorityMinutes = baseSlots.filter(t => prioritySet.has(t));
         if (priorityMinutes.length === 0) {
           priorityMinutes = baseSlots.slice(0, 4);
         }
-      } else {
-        // Если на этот день записей еще вообще нет — предлагаем ровные часы через 2 часа (10:00, 12:00, 14:00, 16:00, 18:00, 20:00)
-        priorityMinutes = baseSlots.filter(t => ((t - dayStartMin) % 120 === 0));
-        if (priorityMinutes.length === 0) priorityMinutes = baseSlots;
+
+        return {
+          allSlots: baseSlots.map(minutesToTime),
+          prioritySlots: priorityMinutes.map(minutesToTime)
+        };
       }
+
+      // Если на этот день записей еще вообще нет — предлагаем ровные часы через 2 часа (10:00, 12:00, 14:00, 16:00, 18:00, 20:00)
+      let emptyDayPriority = baseSlots.filter(t => ((t - dayStartMin) % 120 === 0));
+      if (emptyDayPriority.length === 0) emptyDayPriority = baseSlots;
 
       return {
         allSlots: baseSlots.map(minutesToTime),
-        prioritySlots: priorityMinutes.map(minutesToTime)
+        prioritySlots: emptyDayPriority.map(minutesToTime)
       };
     }
 
@@ -2488,4 +2561,3 @@
   </script>
 </body>
 </html>
-
