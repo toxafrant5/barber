@@ -602,6 +602,26 @@
       box-shadow: 0 4px 16px var(--accent-glow);
     }
 
+    .show-more-slots-btn {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.025);
+      color: var(--muted);
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .show-more-slots-btn:hover {
+      border-color: var(--accent-border);
+      color: var(--text);
+      background: rgba(228, 255, 26, 0.05);
+    }
+
     .location-footer { max-width: 560px; margin: 8px auto 0; padding: 0 16px; }
     .location-card {
       background: var(--card);
@@ -1069,6 +1089,7 @@
     let selectedTime = null, allAppointments = [], allExpenses = [], lastBookingDetails = null;
     let scheduleConfig = { workDays:[1,2,5,6], extraWorkDates:[], closedDates:[] };
     let isDataLoaded = false, fetchPromise = null, userManuallyPickedDate = false;
+    let showAllTimeSlots = false;
 
     const spbInit = getSpbNowParts();
     let currentCalYear = spbInit.year, currentCalMonth = spbInit.monthIndex;
@@ -1325,6 +1346,7 @@
 
     function selectCalendarDate(dateStr) {
       userManuallyPickedDate = true;
+      showAllTimeSlots = false;
       document.getElementById('booking-date').value = dateStr;
       renderCalendar();
       renderTimeSlots(isDataLoaded);
@@ -1411,6 +1433,7 @@
       if (waxSrv && !selectedServices.some(s => s.id === 6)) {
         selectedServices.push(waxSrv);
         selectedTime = null;
+        showAllTimeSlots = false;
         renderServices();
         renderTimeSlots(isDataLoaded);
       }
@@ -1461,6 +1484,7 @@
         div.onclick = () => {
           toggleClientServiceSelection(s);
           selectedTime = null;
+          showAllTimeSlots = false;
           renderServices();
           renderTimeSlots(isDataLoaded);
         };
@@ -1489,12 +1513,94 @@
       }
     }
 
+    /* =========================================================================
+       УМНАЯ УПАКОВКА РАСПИСАНИЯ (Вариант №1 «Анти-разрыв» + Вариант №3 «Стыковые окна»)
+       ========================================================================= */
+    function computeSmartSlots(rawCandidateMinutes, busyIntervals, totalDuration, dayStartMin, dayEndMin) {
+      const HAIRCUT_MIN_WINDOW = 55; // Минимальное полезное окно под стрижку (55 мин)
+      const sortedBusy = [...busyIntervals].sort((a, b) => a.start - b.start);
+
+      // Находим границы свободного коридора [gapStart, gapEnd], внутри которого лежит слот t
+      function getGapBounds(t) {
+        let gapStart = dayStartMin;
+        let gapEnd = dayEndMin;
+        for (const b of sortedBusy) {
+          if (b.end <= t && b.end > gapStart) gapStart = b.end;
+          if (b.start >= t + totalDuration && b.start < gapEnd) {
+            gapEnd = b.start;
+            break;
+          }
+        }
+        return { gapStart, gapEnd };
+      }
+
+      // 1. АЛГОРИТМ №1 («АНТИ-РАЗРЫВ»):
+      // Если между записями есть окно (например, 11:00–13:00), где крайние слоты (11:00 или 12:00)
+      // сохраняют место ещё для одной стрижки (>= 55 мин), а промежуточный слот (11:30)
+      // дробит окно на два бесполезных огрызка (< 55 мин с обеих сторон) — убираем 11:30.
+      const antiGapSlots = rawCandidateMinutes.filter(t => {
+        const { gapStart, gapEnd } = getGapBounds(t);
+        const beforeFree = t - gapStart;
+        const afterFree = gapEnd - (t + totalDuration);
+
+        const wastesBefore = beforeFree > 0 && beforeFree < HAIRCUT_MIN_WINDOW;
+        const wastesAfter = afterFree > 0 && afterFree < HAIRCUT_MIN_WINDOW;
+
+        // Если слот дробит окно и слева, и справа на куски меньше 55 минут
+        if (wastesBefore && wastesAfter) {
+          // Проверяем, есть ли в этом же коридоре нормальный крайний слот, который НЕ убивает второе место
+          const hasBetterEdgeSlotInSameGap = rawCandidateMinutes.some(other => {
+            if (other === t) return false;
+            if (other < gapStart || other + totalDuration > gapEnd) return false;
+            const oBefore = other - gapStart;
+            const oAfter = gapEnd - (other + totalDuration);
+            return (oBefore === 0 || oBefore >= HAIRCUT_MIN_WINDOW) &&
+                   (oAfter === 0 || oAfter >= HAIRCUT_MIN_WINDOW);
+          });
+          if (hasBetterEdgeSlotInSameGap) return false;
+        }
+        return true;
+      });
+
+      const baseSlots = antiGapSlots.length > 0 ? antiGapSlots : rawCandidateMinutes;
+
+      // 2. АЛГОРИТМ №3 (ПРИОРИТЕТ СТЫКОВЫХ ОКОН + «ПОКАЗАТЬ ВСЕ»):
+      // Стыковой слот — тот, который встает вплотную после существующей записи (зазор <= 35 мин)
+      // или вплотную перед следующей записью (зазор <= 35 мин).
+      const ADJACENT_TOLERANCE = 35;
+      let priorityMinutes = [];
+
+      if (sortedBusy.length > 0) {
+        priorityMinutes = baseSlots.filter(t => {
+          const slotEnd = t + totalDuration;
+          const touchesPrevEnd = sortedBusy.some(b => t >= b.end && (t - b.end) <= ADJACENT_TOLERANCE);
+          const touchesNextStart = sortedBusy.some(b => b.start >= slotEnd && (b.start - slotEnd) <= ADJACENT_TOLERANCE);
+          const isStartOfDay = (t === dayStartMin);
+          return touchesPrevEnd || touchesNextStart || isStartOfDay;
+        });
+
+        // Если все записи далеко или в конце дня, берем первые 4 доступных слота по порядку
+        if (priorityMinutes.length === 0) {
+          priorityMinutes = baseSlots.slice(0, 4);
+        }
+      } else {
+        // Если на этот день записей еще вообще нет — предлагаем ровные часы через 2 часа (10:00, 12:00, 14:00, 16:00, 18:00, 20:00)
+        priorityMinutes = baseSlots.filter(t => ((t - dayStartMin) % 120 === 0));
+        if (priorityMinutes.length === 0) priorityMinutes = baseSlots;
+      }
+
+      return {
+        allSlots: baseSlots.map(minutesToTime),
+        prioritySlots: priorityMinutes.map(minutesToTime)
+      };
+    }
+
     async function renderTimeSlots(skipFetch = false) {
       const container = document.getElementById('time-slots-container');
       const dateVal = document.getElementById('booking-date').value;
-      selectedTime = null;
 
       if (selectedServices.length === 0 || !dateVal) {
+        selectedTime = null;
         container.innerHTML = '<p style="font-size:13px; color:var(--muted); text-align:center;">Выберите услугу выше, чтобы увидеть свободное время</p>';
         return;
       }
@@ -1506,6 +1612,7 @@
 
       const activeDateVal = document.getElementById('booking-date').value;
       if (!isWorkingDate(activeDateVal)) {
+        selectedTime = null;
         container.innerHTML = '<div style="padding:12px; border-radius:10px; background:var(--input-bg); color:var(--muted); font-size:13px; text-align:center;">В этот день мастер не принимает. Выберите рабочий день в календаре.</div>';
         return;
       }
@@ -1518,7 +1625,7 @@
         return { start, end };
       });
 
-      const slots = [];
+      const rawCandidateMinutes = [];
       const startMin = START_HOUR * 60, endMin = END_HOUR * 60;
       const spbNow = getSpbNowParts();
       const isToday = (activeDateVal === spbNow.dateStr);
@@ -1527,20 +1634,39 @@
       for (let t = startMin; t + totalDuration <= endMin; t += 30) {
         if (isToday && t <= currentMinutes) continue;
         const slotEnd = t + totalDuration;
-        if (!busyIntervals.some(b => t < b.end && slotEnd > b.start)) slots.push(minutesToTime(t));
+        if (!busyIntervals.some(b => t < b.end && slotEnd > b.start)) {
+          rawCandidateMinutes.push(t);
+        }
       }
 
-      if (slots.length === 0) {
+      if (rawCandidateMinutes.length === 0) {
+        selectedTime = null;
         container.innerHTML = '<p style="font-size:13px; color:var(--muted); text-align:center;">На выбранную дату нет свободных окон для такой длительности.</p>';
         return;
       }
 
+      const { allSlots, prioritySlots } = computeSmartSlots(
+        rawCandidateMinutes,
+        busyIntervals,
+        totalDuration,
+        startMin,
+        endMin
+      );
+
+      const hiddenCount = allSlots.length - prioritySlots.length;
+      const visibleSlots = (showAllTimeSlots || hiddenCount <= 0) ? allSlots : prioritySlots;
+
+      if (selectedTime && !allSlots.includes(selectedTime)) {
+        selectedTime = null;
+      }
+
       container.innerHTML = `<div style="font-size:12px; color:var(--muted); margin-bottom:6px;">Доступное время на <b>${escapeHtml(activeDateVal)}</b>:</div><div class="slots-grid" id="slots-grid"></div>`;
       const grid = document.getElementById('slots-grid');
-      slots.forEach(time => {
+
+      visibleSlots.forEach(time => {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'slot-btn';
+        btn.className = 'slot-btn' + (selectedTime === time ? ' selected' : '');
         btn.innerText = time;
         btn.onclick = () => {
           selectedTime = time;
@@ -1549,6 +1675,18 @@
         };
         grid.appendChild(btn);
       });
+
+      if (!showAllTimeSlots && hiddenCount > 0) {
+        const moreBtn = document.createElement('button');
+        moreBtn.type = 'button';
+        moreBtn.className = 'show-more-slots-btn';
+        moreBtn.innerText = `Показать все свободное время (+${hiddenCount}) ▾`;
+        moreBtn.onclick = () => {
+          showAllTimeSlots = true;
+          renderTimeSlots(true);
+        };
+        container.appendChild(moreBtn);
+      }
     }
 
     function downloadClientCalendarIcs() {
@@ -1705,6 +1843,8 @@
         }
 
         selectedServices = [];
+        selectedTime = null;
+        showAllTimeSlots = false;
         renderServices();
         await renderTimeSlots(true);
       } catch (err) {
