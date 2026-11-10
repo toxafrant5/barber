@@ -70,7 +70,7 @@
       transition: opacity 0.4s ease;
     }
 
-    /* Деликатная виньетка и лаймовое свечение поверх фона (не перекрывает картинку наглухо) */
+    /* Деликатная виньетка и лаймовое свечение поверх фона */
     .bg-overlay {
       position: fixed;
       inset: 0;
@@ -747,7 +747,7 @@
   <header>
     <div class="header-inner">
       <div class="logo-wrap">
-        <!-- Новая острая архитектурная монограмма AF в стиле Full Volt -->
+        <!-- Архитектурная монограмма AF в стиле Full Volt -->
         <div class="logo-circle" onclick="handleSecretLogoTap()" title="Anton Frantsuzov">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -759,19 +759,13 @@
                 <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.85"/>
               </filter>
             </defs>
-            <!-- Фоновый щит с технической сеткой -->
             <rect width="100" height="100" rx="22" fill="url(#afVoltBg)"/>
             <path d="M 0 50 H 100 M 50 0 V 100" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
-            <!-- Геометричная монограмма AF с острыми срезами -->
             <g filter="url(#afVoltGlow)">
-              <!-- Буква A (кислотный лайм #e4ff1a) -->
               <path d="M 15 78 L 35 22 H 47 L 41 38 L 27 78 Z" fill="#e4ff1a"/>
               <path d="M 39 22 L 56 78 H 44 L 33 40 Z" fill="#e4ff1a"/>
-              <!-- Общая динамическая перекладина -->
               <polygon points="24,58 30,47 78,47 73,58" fill="#e4ff1a"/>
-              <!-- Буква F (чистый титановый белый) -->
               <path d="M 54 22 H 86 L 81 33 H 65 V 78 H 54 Z" fill="#ffffff"/>
-              <!-- Акцентная точка в углу -->
               <rect x="73" y="66" width="11" height="12" fill="#e4ff1a"/>
             </g>
           </svg>
@@ -1000,7 +994,6 @@
     const CLIENT_SAVED_PHONE_KEY = 'af_client_saved_phone';
     const CLIENT_ACTIVE_HISTORY_KEY = 'af_client_booked_slots_v1';
 
-    // Умная загрузка фоновой картинки (сначала проверяет твой bg.jpg, если его еще нет — ставит запасную)
     function initBackgroundPhoto() {
       const bgEl = document.getElementById('bg-backdrop');
       if (!bgEl) return;
@@ -1012,11 +1005,17 @@
 
     const tgApp = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     let currentTgChatId = null;
+    let currentTgUsername = '';
     if (tgApp) {
       tgApp.ready();
       tgApp.expand();
-      if (tgApp.initDataUnsafe && tgApp.initDataUnsafe.user && tgApp.initDataUnsafe.user.id) {
-        currentTgChatId = String(tgApp.initDataUnsafe.user.id);
+      if (tgApp.initDataUnsafe && tgApp.initDataUnsafe.user) {
+        if (tgApp.initDataUnsafe.user.id) {
+          currentTgChatId = String(tgApp.initDataUnsafe.user.id);
+        }
+        if (tgApp.initDataUnsafe.user.username) {
+          currentTgUsername = String(tgApp.initDataUnsafe.user.username).replace(/^@+/, '');
+        }
       }
     }
 
@@ -1081,6 +1080,23 @@
     function openMasterTelegram(e) {
       const url = `https://t.me/${MASTER_TG_USERNAME}`;
       if (tgApp && tgApp.openTelegramLink) { e.preventDefault(); tgApp.openTelegramLink(url); }
+    }
+
+    // Открытие личного чата с клиентом в 1 клик из админки
+    function openClientDirectTelegram(e, tgUsername, phoneStr) {
+      const cleanUser = String(tgUsername || '').trim().replace(/^@+/, '');
+      const cleanDigits = String(phoneStr || '').replace(/\D/g, '');
+      let url = '';
+      if (cleanUser) {
+        url = `https://t.me/${cleanUser}`;
+      } else if (cleanDigits) {
+        url = `https://t.me/+${cleanDigits}`;
+      }
+      if (!url) return;
+      if (tgApp && tgApp.openTelegramLink) {
+        e.preventDefault();
+        tgApp.openTelegramLink(url);
+      }
     }
 
     function getSavedAdminKey() {
@@ -1561,7 +1577,7 @@
        УМНАЯ УПАКОВКА РАСПИСАНИЯ (Без утренних разрывов при вечерних записях)
        ========================================================================= */
     function computeSmartSlots(rawCandidateMinutes, busyIntervals, totalDuration, dayStartMin, dayEndMin) {
-      const HAIRCUT_MIN_WINDOW = 55; // Минимальное полезное окно под стрижку (55 мин)
+      const HAIRCUT_MIN_WINDOW = 55;
       const sortedBusy = [...busyIntervals].sort((a, b) => a.start - b.start);
 
       function getGapBounds(t) {
@@ -1577,9 +1593,7 @@
         return { gapStart, gapEnd };
       }
 
-      // 1. АЛГОРИТМ №1 («АНТИ-РАЗРЫВ» внутри коридоров между двумя записями):
-      // Если между двумя записями (например, 11:00–13:00) слот 11:30 дробит окно на два бесполезных огрызка,
-      // а слоты 11:00 и 12:00 сохраняют место под еще одну стрижку — скрываем 11:30.
+      // 1. АЛГОРИТМ №1 («АНТИ-РАЗРЫВ» внутри коридоров между двумя записями)
       const antiGapSlots = rawCandidateMinutes.filter(t => {
         const { gapStart, gapEnd } = getGapBounds(t);
         const beforeFree = t - gapStart;
@@ -1604,39 +1618,31 @@
 
       const baseSlots = antiGapSlots.length > 0 ? antiGapSlots : rawCandidateMinutes;
 
-      // 2. АЛГОРИТМ №3 (КОМПАКТНАЯ ГРУППИРОВКА ВОКРУГ ЗАПИСЕЙ БЕЗ УТРЕННЕГО РАЗРЫВА):
+      // 2. АЛГОРИТМ №3 (КОМПАКТНАЯ ГРУППИРОВКА ВОКРУГ ЗАПИСЕЙ БЕЗ УТРЕННЕГО РАЗРЫВА)
       if (sortedBusy.length > 0) {
         const prioritySet = new Set();
         const firstBusyStart = sortedBusy[0].start;
         const lastBusyEnd = sortedBusy[sortedBusy.length - 1].end;
 
-        // Для каждой существующей записи находим:
-        // а) ОДИН самый плотный слот ПЕРЕД ней (например, 17:00 перед 18:00, без лишнего 16:30)
-        // б) ОДИН самый плотный слот СРАЗУ ПОСЛЕ неё (например, 19:00 после 18:00–19:00)
         sortedBusy.forEach(b => {
           const beforeCandidates = baseSlots.filter(t => (t + totalDuration) <= b.start && (b.start - (t + totalDuration)) <= 30);
           if (beforeCandidates.length > 0) {
-            prioritySet.add(beforeCandidates[beforeCandidates.length - 1]); // Самый близкий к началу записи
+            prioritySet.add(beforeCandidates[beforeCandidates.length - 1]);
           }
 
           const afterCandidates = baseSlots.filter(t => t >= b.end && (t - b.end) <= 30);
           if (afterCandidates.length > 0) {
-            prioritySet.add(afterCandidates[0]); // Самый близкий к концу записи
+            prioritySet.add(afterCandidates[0]);
           }
         });
 
-        // Если первая запись стоит поздно (например, в 18:00), НЕ предлагаем 10:00 утра!
-        // Вместо этого предлагаем удобные дневные слоты в радиусе 3–4 часов до первой записи (например, с 14:00 / 15:00),
-        // чтобы рабочий день собирался компактно во второй половине дня.
-        const COMFORT_RADIUS_MIN = 240; // 4 часа до первой записи
+        const COMFORT_RADIUS_MIN = 240; // 4 часа вокруг существующих записей
         const clusterStartMin = Math.max(dayStartMin, firstBusyStart - COMFORT_RADIUS_MIN);
         const clusterEndMin = Math.min(dayEndMin, lastBusyEnd + COMFORT_RADIUS_MIN);
 
         baseSlots.forEach(t => {
           const slotEnd = t + totalDuration;
-          // Добавляем ровные часовые слоты внутри комфортного радиуса вокруг существующих записей
           if (t >= clusterStartMin && slotEnd <= clusterEndMin && (t % 60 === 0)) {
-            // Проверяем, чтобы этот часовой слот не оставлял крошечную дырку (меньше 55 мин) перед записью
             const leavesAwkwardGapBeforeBusy = sortedBusy.some(b => {
               const diff = b.start - slotEnd;
               return diff > 5 && diff < HAIRCUT_MIN_WINDOW;
@@ -1658,7 +1664,6 @@
         };
       }
 
-      // Если на этот день записей еще вообще нет — предлагаем ровные часы через 2 часа (10:00, 12:00, 14:00, 16:00, 18:00, 20:00)
       let emptyDayPriority = baseSlots.filter(t => ((t - dayStartMin) % 120 === 0));
       if (emptyDayPriority.length === 0) emptyDayPriority = baseSlots;
 
@@ -1856,7 +1861,8 @@
           body:JSON.stringify({
             action:'create', client_name:name, client_phone:cleanPhone,
             service_name:combinedServiceName, appointment_date:dateVal,
-            appointment_time:bookedTime, end_time:endTime, price:totalPrice, tg_chat_id:currentTgChatId
+            appointment_time:bookedTime, end_time:endTime, price:totalPrice,
+            tg_chat_id:currentTgChatId, tg_username:currentTgUsername
           })
         });
 
@@ -1872,7 +1878,8 @@
         allAppointments.push({
           id:createdId, client_name:name, client_phone:cleanPhone,
           service_name:combinedServiceName, appointment_date:dateVal,
-          appointment_time:bookedTime, end_time:endTime, price:totalPrice
+          appointment_time:bookedTime, end_time:endTime, price:totalPrice,
+          tg_chat_id:currentTgChatId, tg_username:currentTgUsername
         });
         saveClientLocalBooking(cleanPhone, dateVal, bookedTime);
 
@@ -2335,12 +2342,25 @@
       const actualPrice = getAppActualPrice(app);
       const isConfirmed = String(app.reminded || '').includes('confirmed');
       const cleanDigits = String(app.client_phone || '').replace(/\D/g, '');
+      const cleanUser = String(app.tg_username || '').trim().replace(/^@+/, '');
+      const safeUser = escapeHtml(cleanUser);
+
+      // Формируем прямую ссылку для личного чата в Telegram (по @username или по +7...)
+      const directTgHref = cleanUser
+        ? `https://t.me/${encodeURIComponent(cleanUser)}`
+        : (cleanDigits ? `https://t.me/+${cleanDigits}` : '');
+
       const inviteText = encodeURIComponent(`Привет, ${app.client_name}! Записал тебя на ${app.appointment_date} в ${app.appointment_time} (${app.service_name}). Адрес: ${LOCATION_FULL}. Напоминания в боте: https://t.me/${BOT_USERNAME}?start=${cleanDigits}`);
 
       div.innerHTML = `
         <div>
           ${showDate ? `<div style="font-size:12px; color:var(--accent); font-family:var(--font-mono); font-weight:600; margin-bottom:2px;">${safeDate} · ${safeStart} – ${safeEnd}</div>` : ''}
-          <div style="font-weight:700; font-size:15px;">${safeName} ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''} <a href="tel:${safePhone}" style="font-weight:500; font-size:12px; color:var(--tg); font-family:var(--font-mono); text-decoration:none;">${safePhone}</a></div>
+          <div style="font-weight:700; font-size:15px;">
+            ${safeName}
+            ${isConfirmed ? `<span class="confirmed-badge">✅ Подтвердил</span>` : ''}
+            <a href="tel:${safePhone}" style="font-weight:500; font-size:12px; color:var(--tg); font-family:var(--font-mono); text-decoration:none;">${safePhone}</a>
+            ${safeUser ? `<span style="font-size:11.5px; color:var(--muted); font-family:var(--font-mono);">@${safeUser}</span>` : ''}
+          </div>
           <div style="font-size:13px; color:#d4d4d4; margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
             <span>✂️ ${safeService}</span>
             <span class="price-pill" onclick="quickEditPrice('${safeId}', ${actualPrice})">${actualPrice} ₽ ✎</span>
@@ -2348,7 +2368,8 @@
           ${safeNotes ? `<div class="note-box">📝 ${safeNotes}</div>` : ''}
         </div>
         <div class="row">
-          <a href="sms:${safePhone}?body=${inviteText}" class="btn-outline" style="background:rgba(56,189,248,0.1); color:var(--tg); border:none;">СМС</a>
+          ${directTgHref ? `<a href="${directTgHref}" target="_blank" rel="noopener noreferrer" onclick="openClientDirectTelegram(event, '${safeUser}', '${cleanDigits}')" class="btn-outline" style="background:rgba(56,189,248,0.16); color:var(--tg); border-color:rgba(56,189,248,0.35); font-weight:700;">TG</a>` : ''}
+          <a href="sms:${safePhone}?body=${inviteText}" class="btn-outline" style="background:rgba(255,255,255,0.06); color:var(--muted); border:none;">СМС</a>
           <button type="button" onclick="openEditModalById('${safeId}')" class="btn-outline">Изм.</button>
           <button type="button" onclick="deleteAppointment('${safeId}')" class="btn-outline" style="color:var(--muted);">×</button>
         </div>`;
@@ -2561,3 +2582,4 @@
   </script>
 </body>
 </html>
+
