@@ -55,7 +55,7 @@
       overflow-x: hidden;
     }
 
-    /* Фоновый слой: поддерживает твою картинку + стильная карбоновая сетка, если картинки нет */
+    /* Фоновый слой */
     .bg-backdrop {
       position: fixed;
       inset: 0;
@@ -90,7 +90,7 @@
       backdrop-filter: blur(26px);
       -webkit-backdrop-filter: blur(26px);
       border-bottom: 1px solid var(--border);
-      padding: 14px 18px;
+      padding: 14px 16px;
       margin-bottom: 24px;
     }
 
@@ -100,12 +100,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .logo-wrap { display: flex; align-items: center; gap: 13px; min-width: 0; }
+    .logo-wrap { display: flex; align-items: center; gap: 12px; min-width: 0; }
     
-    /* Обновленный геометричный медальон логотипа */
     .logo-circle {
       width: 44px;
       height: 44px;
@@ -132,8 +131,8 @@
 
     .brand-title {
       font-weight: 800;
-      font-size: 14px;
-      letter-spacing: 0.8px;
+      font-size: 13.5px;
+      letter-spacing: 0.7px;
       color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
@@ -142,16 +141,16 @@
     }
 
     .brand-sub {
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--muted);
       white-space: nowrap;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       font-weight: 500;
       text-transform: uppercase;
       opacity: 0.85;
     }
 
-    .header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .container { max-width: 560px; margin: 0 auto; padding: 0 16px; }
 
     .card {
@@ -164,6 +163,20 @@
       margin-bottom: 20px;
       box-shadow: 0 20px 45px -12px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
       transition: border-color 0.2s;
+    }
+
+    /* Плашка активного режима переноса записи */
+    .reschedule-banner {
+      background: rgba(228, 255, 26, 0.10);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(228, 255, 26, 0.12);
     }
 
     h2 {
@@ -488,6 +501,25 @@
     .stat-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; }
     .stat-val { font-family: var(--font-mono); font-size: 20px; font-weight: 800; margin-top: 4px; color: #fff; }
 
+    /* Карточка досье клиента в поиске */
+    .client-profile-card {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .history-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 12.5px;
+      gap: 8px;
+    }
+    .history-item-row:last-child { border-bottom: none; }
+
     .client-suggestions {
       background: #18191f;
       border: 1px solid var(--border-hover);
@@ -570,9 +602,9 @@
     .btn-pill {
       background: rgba(255, 255, 255, 0.06);
       color: #ffffff;
-      padding: 7px 14px;
+      padding: 7px 12px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 600;
       text-decoration: none;
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -586,7 +618,7 @@
       background: var(--input-bg);
       color: var(--text);
       border: 1px solid var(--border);
-      padding: 8px 14px;
+      padding: 8px 13px;
       border-radius: var(--radius-sm);
       font-size: 12.5px;
       font-weight: 600;
@@ -690,7 +722,7 @@
       border-radius: var(--radius-lg);
       padding: 24px;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.85);
       max-height: 92vh;
       overflow-y: auto;
@@ -776,6 +808,7 @@
         </div>
       </div>
       <div class="header-actions">
+        <button type="button" onclick="openClientCabinetModal()" class="btn-pill" style="border-color:var(--accent-border); color:var(--accent);">📋 Мои записи</button>
         <a id="header-tg-link" href="https://t.me/afrant5" onclick="openMasterTelegram(event)" class="btn-pill">Telegram</a>
       </div>
     </div>
@@ -783,6 +816,15 @@
 
   <main class="container">
     <div id="client-view">
+      <!-- Баннер безопасного переноса (показывается, когда клиент переносит запись без предварительной отмены) -->
+      <div id="reschedule-banner" class="reschedule-banner hidden">
+        <div>
+          <div style="font-weight:800; font-size:13.5px; color:var(--accent);">🔄 Перенос существующей записи</div>
+          <div id="reschedule-banner-sub" style="font-size:12px; color:var(--text); margin-top:2px;">Ваша старая запись сохранена и отменится только после выбора нового времени.</div>
+        </div>
+        <button type="button" onclick="cancelRescheduleMode()" class="btn-outline" style="padding:6px 10px; font-size:11.5px;">Отмена</button>
+      </div>
+
       <div class="card">
         <h2><span class="step-badge">1</span> Услуги</h2>
         <div id="services-list"></div>
@@ -870,7 +912,8 @@
         <div class="row" style="justify-content:space-between; margin-bottom:12px;">
           <div class="row">
             <button id="tab-day-btn" onclick="setAdminMode('day')" class="btn-outline active-tab">📅 По дням</button>
-            <button id="tab-all-btn" onclick="setAdminMode('all')" class="btn-outline">📋 Все будущие</button>
+            <button id="tab-all-btn" onclick="setAdminMode('all')" class="btn-outline">📋 Будущие</button>
+            <button id="tab-clients-btn" onclick="setAdminMode('clients')" class="btn-outline">👥 Клиенты</button>
             <button id="tab-stats-btn" onclick="setAdminMode('stats')" class="btn-outline">📊 Касса</button>
           </div>
           <div class="row">
@@ -910,6 +953,34 @@
       <a id="footer-map-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-outline">На карте ↗</a>
     </div>
   </footer>
+
+  <!-- МОДАЛЬНОЕ ОКНО КЛИЕНТА: «МОИ ЗАПИСИ И ИСТОРИЯ ПОСЕЩЕНИЙ» -->
+  <div id="client-cabinet-modal" class="modal hidden" onclick="if(event.target===this) closeClientCabinetModal()">
+    <div class="modal-box">
+      <div class="row" style="justify-content:space-between; margin-bottom:14px;">
+        <h2 style="margin:0;">📋 Мои записи и история</h2>
+        <button type="button" onclick="closeClientCabinetModal()" class="btn-outline" style="padding:4px 10px;">×</button>
+      </div>
+      <label for="lookup-phone-input">Ваш номер телефона</label>
+      <div class="row" style="margin-bottom:14px;">
+        <input
+          type="tel"
+          id="lookup-phone-input"
+          value="+7 "
+          inputmode="tel"
+          style="flex:1; margin-bottom:0;"
+          oninput="formatPhoneInput(this)"
+          onpaste="handlePhonePaste(event, this)"
+          onkeydown="if(event.key==='Enter') lookupClientBookings()"
+          placeholder="+7 (999) 000-00-00"
+        >
+        <button type="button" id="lookup-submit-btn" onclick="lookupClientBookings()" class="btn" style="width:auto; padding:13px 18px;">Найти</button>
+      </div>
+      <div id="client-cabinet-results" style="font-size:13px; color:var(--muted); text-align:center;">
+        Укажите номер телефона, на который оформлялась запись
+      </div>
+    </div>
+  </div>
 
   <div id="password-modal" class="modal hidden" onclick="if(event.target===this) toggleAdminModal()">
     <div class="modal-box">
@@ -970,7 +1041,7 @@
     /* =========================================================================
        ЕДИНАЯ НАСТРОЙКА АДРЕСА И ФОНОВОГО ФОТО (Меняется только здесь!)
        ========================================================================= */
-    const BARBERSHOP_ADDRESS = 'Санкт-Петербург, Серпуховская, 18;
+    const BARBERSHOP_ADDRESS = 'Санкт-Петербург, Серпуховская, 18';
 
     // Ссылка на твое фоновое фото:
     // Положи свой файл с именем bg.jpg в папку рядом с index.html на GitHub (или вставь прямую ссылку https://...)
@@ -980,7 +1051,7 @@
     // Автоматический разбор для футера, карт и уведомлений
     const LOCATION_FULL = BARBERSHOP_ADDRESS;
     const LOCATION_ADDRESS = BARBERSHOP_ADDRESS.replace(/\s*\(.*?\)\s*$/, '').trim();
-    const LOCATION_PLACE = (BARBERSHOP_ADDRESS.match(/\((.*?)\)/) || [null, ''])[1];
+    const LOCATION_PLACE = (BARBERSHOP_ADDRESS.match(/\((.*?)\)/) || [null, 'Barber & Bio-Curling'])[1];
     const LOCATION_MAP_URL = `https://yandex.ru/maps/?text=${encodeURIComponent(LOCATION_ADDRESS)}`;
 
     const SPB_TIMEZONE = 'Europe/Moscow';
@@ -1023,6 +1094,7 @@
       if (e.key === 'Escape') {
         document.getElementById('password-modal').classList.add('hidden');
         document.getElementById('edit-modal').classList.add('hidden');
+        document.getElementById('client-cabinet-modal').classList.add('hidden');
       }
     });
 
@@ -1082,7 +1154,6 @@
       if (tgApp && tgApp.openTelegramLink) { e.preventDefault(); tgApp.openTelegramLink(url); }
     }
 
-    // Открытие личного чата с клиентом в 1 клик из админки
     function openClientDirectTelegram(e, tgUsername, phoneStr) {
       const cleanUser = String(tgUsername || '').trim().replace(/^@+/, '');
       const cleanDigits = String(phoneStr || '').replace(/\D/g, '');
@@ -1149,6 +1220,10 @@
     let scheduleConfig = { workDays:[1,2,5,6], extraWorkDates:[], closedDates:[] };
     let isDataLoaded = false, fetchPromise = null, userManuallyPickedDate = false;
     let showAllTimeSlots = false;
+
+    // ID записи, которую клиент сейчас переносит (старая запись НЕ удаляется до сохранения новой!)
+    let activeRescheduleId = null;
+    let adminClientSearchQuery = '';
 
     const spbInit = getSpbNowParts();
     let currentCalYear = spbInit.year, currentCalMonth = spbInit.monthIndex;
@@ -1311,6 +1386,190 @@
     }
 
     /* =========================================================================
+       БЕЗОПАСНЫЙ РЕЖИМ ПЕРЕНОСА ЗАПИСИ (Без предварительного удаления!)
+       ========================================================================= */
+    function activateRescheduleMode(appId) {
+      activeRescheduleId = String(appId).trim();
+      const banner = document.getElementById('reschedule-banner');
+      const sub = document.getElementById('reschedule-banner-sub');
+      const submitBtn = document.getElementById('submit-btn');
+
+      const targetApp = allAppointments.find(a => String(a.id) === activeRescheduleId);
+      if (targetApp) {
+        sub.innerText = `Текущая запись (${targetApp.appointment_date} в ${targetApp.appointment_time}) сохранена за вами. Выберите новое время ниже — замена произойдет автоматически.`;
+        // Автоматически выбираем те услуги, которые были в переносимой записи
+        if (targetApp.service_name) {
+          const names = String(targetApp.service_name).split(' + ').map(s => s.trim());
+          const matched = services.filter(s => names.includes(s.name));
+          if (matched.length > 0) {
+            selectedServices = matched;
+            renderServices();
+          }
+        }
+        if (targetApp.client_name && !document.getElementById('client-name').value) {
+          document.getElementById('client-name').value = targetApp.client_name;
+        }
+      } else {
+        sub.innerText = 'Ваша текущая запись сохранена и изменится только после выбора нового времени.';
+      }
+
+      banner.classList.remove('hidden');
+      submitBtn.innerText = 'Подтвердить перенос записи';
+      if (selectedServices.length > 0) renderTimeSlots(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelRescheduleMode() {
+      activeRescheduleId = null;
+      document.getElementById('reschedule-banner').classList.add('hidden');
+      document.getElementById('submit-btn').innerText = 'Записаться';
+      if (window.location.search.includes('reschedule')) {
+        history.replaceState(null, null, window.location.pathname);
+      }
+      if (selectedServices.length > 0) renderTimeSlots(true);
+    }
+
+    /* =========================================================================
+       ЛИЧНЫЙ КАБИНЕТ КЛИЕНТА («МОИ ЗАПИСИ И ИСТОРИЯ»)
+       ========================================================================= */
+    function openClientCabinetModal() {
+      const modal = document.getElementById('client-cabinet-modal');
+      modal.classList.remove('hidden');
+      const mainPhone = document.getElementById('client-phone').value;
+      const lookupInput = document.getElementById('lookup-phone-input');
+      if (mainPhone && mainPhone.length > 4) {
+        lookupInput.value = mainPhone;
+        formatPhoneInput(lookupInput);
+        lookupClientBookings();
+      }
+    }
+
+    function closeClientCabinetModal() {
+      document.getElementById('client-cabinet-modal').classList.add('hidden');
+    }
+
+    async function lookupClientBookings() {
+      const input = document.getElementById('lookup-phone-input');
+      const cleanPhone = getCleanPhone(input.value);
+      const resBox = document.getElementById('client-cabinet-results');
+      const btn = document.getElementById('lookup-submit-btn');
+
+      if (!isValidRussianPhone(cleanPhone)) {
+        resBox.innerHTML = `<div style="color:var(--danger);">Введите полный номер телефона (+7 9XX XXX-XX-XX)</div>`;
+        return;
+      }
+
+      try { localStorage.setItem(CLIENT_SAVED_PHONE_KEY, cleanPhone); } catch (e) {}
+      const mainPhoneInput = document.getElementById('client-phone');
+      if (mainPhoneInput) { mainPhoneInput.value = cleanPhone; formatPhoneInput(mainPhoneInput); }
+
+      btn.disabled = true;
+      btn.innerText = '...';
+      resBox.innerHTML = `<div style="padding:14px; color:var(--muted);">⏳ Поиск ваших записей...</div>`;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'client_lookup', client_phone: cleanPhone })
+        });
+        const data = await res.json();
+        if (!data || data.status !== 'ok' || !data.profile) {
+          resBox.innerHTML = `<div style="color:var(--danger);">${escapeHtml(data?.message || 'Не удалось загрузить данные')}</div>`;
+          return;
+        }
+
+        const p = data.profile;
+        if (p.name && p.name !== 'Клиент' && !document.getElementById('client-name').value) {
+          document.getElementById('client-name').value = p.name;
+        }
+
+        let html = `<div style="text-align:left;">`;
+        html += `<div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <div style="font-weight:700; color:#fff; font-size:14.5px;">${escapeHtml(p.name)}</div>
+            <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted);">${escapeHtml(p.phone)}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px; color:var(--text);">Посещений: <b style="color:var(--accent); font-family:var(--font-mono);">${p.total_visits}</b></div>
+            ${p.avg_interval_days ? `<div style="font-size:11px; color:var(--muted);">В среднем раз в ${p.avg_interval_days} дн.</div>` : ''}
+          </div>
+        </div>`;
+
+        // Предстоящие записи
+        html += `<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--accent); margin-bottom:8px; letter-spacing:0.4px;">📅 Предстоящие записи (${p.upcoming.length})</div>`;
+        if (p.upcoming.length === 0) {
+          html += `<div style="padding:12px; border-radius:10px; background:var(--input-bg); color:var(--muted); font-size:12.5px; margin-bottom:14px;">Активных будущих записей сейчас нет.</div>`;
+        } else {
+          p.upcoming.forEach(u => {
+            const safeId = escapeHtml(u.id);
+            html += `
+              <div style="background:rgba(228,255,26,0.06); border:1px solid var(--accent-border); border-radius:12px; padding:12px 14px; margin-bottom:10px;">
+                <div style="font-family:var(--font-mono); font-weight:700; color:var(--accent); font-size:13.5px;">${escapeHtml(u.appointment_date)} · ${escapeHtml(u.appointment_time)}</div>
+                <div style="color:#fff; font-weight:600; font-size:13.5px; margin:3px 0;">✂️ ${escapeHtml(u.service_name)} (${Number(u.price)||0} ₽)</div>
+                <div style="font-size:11.5px; color:var(--muted); margin-bottom:10px;">📍 ${escapeHtml(LOCATION_FULL)}</div>
+                <div class="row">
+                  <button type="button" onclick="startClientRescheduleFromModal('${safeId}')" class="btn" style="flex:1; padding:9px 12px; font-size:12px;">🔄 Перенести время</button>
+                  <button type="button" onclick="cancelClientBookingFromModal('${safeId}', '${escapeHtml(cleanPhone)}')" class="btn-outline" style="color:var(--danger); border-color:rgba(248,113,113,0.3); padding:9px 12px; font-size:12px;">❌ Отменить</button>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        // Прошедшие визиты
+        if (p.past && p.past.length > 0) {
+          html += `<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--muted); margin:14px 0 6px; letter-spacing:0.4px;">🕓 История посещений</div>`;
+          html += `<div style="background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:12px; padding:6px 12px; max-height:190px; overflow-y:auto;">`;
+          p.past.forEach(item => {
+            html += `<div class="history-item-row">
+              <div>
+                <div style="color:#fff; font-weight:600;">${escapeHtml(item.service_name)}</div>
+                <div style="font-family:var(--font-mono); font-size:11px; color:var(--muted);">${escapeHtml(item.appointment_date)} в ${escapeHtml(item.appointment_time)}</div>
+              </div>
+              <div style="font-family:var(--font-mono); color:var(--muted); font-weight:600;">${Number(item.price)||0} ₽</div>
+            </div>`;
+          });
+          html += `</div>`;
+        }
+
+        html += `</div>`;
+        resBox.innerHTML = html;
+      } catch (e) {
+        resBox.innerHTML = `<div style="color:var(--danger);">Ошибка соединения. Попробуйте еще раз.</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Найти';
+      }
+    }
+
+    function startClientRescheduleFromModal(appId) {
+      closeClientCabinetModal();
+      activateRescheduleMode(appId);
+    }
+
+    async function cancelClientBookingFromModal(appId, cleanPhone) {
+      if (!confirm('Вы уверены, что хотите отменить эту запись? (Если вы хотите просто поменять время, нажмите «Перенести время» — тогда запись не пропадет до выбора нового окна).')) return;
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'client_cancel', id: appId, client_phone: cleanPhone })
+        });
+        const data = await res.json();
+        if (data && data.status === 'ok') {
+          await fetchAllData();
+          await lookupClientBookings();
+          if (selectedServices.length > 0) renderTimeSlots(true);
+        } else {
+          alert(data?.message || 'Не удалось отменить запись.');
+        }
+      } catch (e) {
+        alert('Ошибка при отмене записи.');
+      }
+    }
+
+    /* =========================================================================
        КОНТРОЛЬ ЛИМИТА ЗАПИСЕЙ (Максимум 2 активные записи на один номер/аккаунт)
        ========================================================================= */
     function isFutureSlotSpb(dateStr, timeStr) {
@@ -1340,6 +1599,7 @@
 
     function countActiveBookingsForClient(cleanPhone) {
       const serverMatches = allAppointments.filter(a => {
+        if (activeRescheduleId && String(a.id) === String(activeRescheduleId)) return false;
         if (isBreakEntry(a) || !a.appointment_date || !a.appointment_time) return false;
         if (!isFutureSlotSpb(a.appointment_date, a.appointment_time)) return false;
         if (a.client_phone && getCleanPhone(a.client_phone) === cleanPhone) return true;
@@ -1349,6 +1609,7 @@
       const localMatches = getClientLocalBookings().filter(item => {
         if (!isFutureSlotSpb(item.date, item.time)) return false;
         const stillExistsInSchedule = allAppointments.some(a =>
+          (!activeRescheduleId || String(a.id) !== String(activeRescheduleId)) &&
           a.appointment_date === item.date && a.appointment_time === item.time
         );
         return stillExistsInSchedule;
@@ -1450,6 +1711,13 @@
         const [ny, nm] = nearest.split('-').map(Number);
         currentCalYear = ny; currentCalMonth = nm - 1;
         adminCalYear = ny; adminCalMonth = nm - 1;
+      }
+
+      // Проверяем, открыта ли ссылка для безопасного переноса (?reschedule=ID)
+      const urlParams = new URLSearchParams(window.location.search);
+      const rescheduleParam = urlParams.get('reschedule');
+      if (rescheduleParam) {
+        activateRescheduleMode(rescheduleParam);
       }
 
       renderCalendar();
@@ -1593,7 +1861,6 @@
         return { gapStart, gapEnd };
       }
 
-      // 1. АЛГОРИТМ №1 («АНТИ-РАЗРЫВ» внутри коридоров между двумя записями)
       const antiGapSlots = rawCandidateMinutes.filter(t => {
         const { gapStart, gapEnd } = getGapBounds(t);
         const beforeFree = t - gapStart;
@@ -1618,7 +1885,6 @@
 
       const baseSlots = antiGapSlots.length > 0 ? antiGapSlots : rawCandidateMinutes;
 
-      // 2. АЛГОРИТМ №3 (КОМПАКТНАЯ ГРУППИРОВКА ВОКРУГ ЗАПИСЕЙ БЕЗ УТРЕННЕГО РАЗРЫВА)
       if (sortedBusy.length > 0) {
         const prioritySet = new Set();
         const firstBusyStart = sortedBusy[0].start;
@@ -1636,7 +1902,7 @@
           }
         });
 
-        const COMFORT_RADIUS_MIN = 240; // 4 часа вокруг существующих записей
+        const COMFORT_RADIUS_MIN = 240;
         const clusterStartMin = Math.max(dayStartMin, firstBusyStart - COMFORT_RADIUS_MIN);
         const clusterEndMin = Math.min(dayEndMin, lastBusyEnd + COMFORT_RADIUS_MIN);
 
@@ -1696,7 +1962,11 @@
       }
 
       const totalDuration = getTotalDuration(selectedServices);
-      const booked = allAppointments.filter(a => a.appointment_date === activeDateVal);
+      // При переносе записи не считаем саму переносимую запись занятой, чтобы показать все реально доступные слоты
+      const booked = allAppointments.filter(a =>
+        a.appointment_date === activeDateVal &&
+        (!activeRescheduleId || String(a.id) !== String(activeRescheduleId))
+      );
       const busyIntervals = booked.map(b => {
         const start = timeToMinutes(b.appointment_time);
         const end = b.end_time ? timeToMinutes(b.end_time) : (start + calcDurationByNames(b.service_name));
@@ -1837,11 +2107,15 @@
         if (activeCount >= MAX_ACTIVE_BOOKINGS_PER_CLIENT) {
           msg.className = ''; msg.style.color = 'var(--danger)';
           msg.innerText = `У вас уже есть ${activeCount} активные записи. Одновременно можно иметь не более ${MAX_ACTIVE_BOOKINGS_PER_CLIENT} записей.`;
-          btn.disabled = false; btn.innerText = 'Записаться';
+          btn.disabled = false;
+          btn.innerText = activeRescheduleId ? 'Подтвердить перенос записи' : 'Записаться';
           return;
         }
 
-        const hasConflict = allAppointments.filter(a => a.appointment_date === dateVal).some(b => {
+        const hasConflict = allAppointments.filter(a =>
+          a.appointment_date === dateVal &&
+          (!activeRescheduleId || String(a.id) !== String(activeRescheduleId))
+        ).some(b => {
           const bS = timeToMinutes(b.appointment_time);
           const bE = b.end_time ? timeToMinutes(b.end_time) : (bS + calcDurationByNames(b.service_name));
           return startMin < bE && endMin > bS;
@@ -1850,7 +2124,8 @@
         if (hasConflict) {
           msg.className = ''; msg.style.color = 'var(--danger)';
           msg.innerText = 'К сожалению, это время уже занято. Выберите другое окно.';
-          btn.disabled = false; btn.innerText = 'Записаться';
+          btn.disabled = false;
+          btn.innerText = activeRescheduleId ? 'Подтвердить перенос записи' : 'Записаться';
           await renderTimeSlots(true);
           return;
         }
@@ -1859,7 +2134,9 @@
           method:'POST',
           headers:{ 'Content-Type':'text/plain;charset=utf-8' },
           body:JSON.stringify({
-            action:'create', client_name:name, client_phone:cleanPhone,
+            action:'create',
+            reschedule_id: activeRescheduleId || undefined,
+            client_name:name, client_phone:cleanPhone,
             service_name:combinedServiceName, appointment_date:dateVal,
             appointment_time:bookedTime, end_time:endTime, price:totalPrice,
             tg_chat_id:currentTgChatId, tg_username:currentTgUsername
@@ -1870,6 +2147,12 @@
         const resData = await res.json();
         if (resData && resData.status === 'error') {
           throw new Error(resData.message || 'Booking error');
+        }
+
+        const wasRescheduled = Boolean(activeRescheduleId);
+        if (activeRescheduleId) {
+          allAppointments = allAppointments.filter(a => String(a.id) !== String(activeRescheduleId));
+          cancelRescheduleMode();
         }
 
         lastBookingDetails = { service:combinedServiceName, date:dateVal, start:bookedTime, end:endTime };
@@ -1892,6 +2175,9 @@
         const safeStart = escapeHtml(bookedTime);
         const safeEnd = escapeHtml(endTime);
         const safeLoc = escapeHtml(LOCATION_FULL);
+        const titleMsg = wasRescheduled
+          ? `🔄 Запись успешно перенесена, ${safeName}!`
+          : `✅ Вы успешно записаны, ${safeName}!`;
 
         msg.className = '';
         msg.style.color = 'var(--text)';
@@ -1904,18 +2190,18 @@
 
         if (currentTgChatId || (resData && resData.tg_notified)) {
           msg.innerHTML = `
-            <div style="color:var(--accent); font-weight:700; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${safeName}!</div>
+            <div style="color:var(--accent); font-weight:700; font-size:15px; margin-bottom:6px;">${titleMsg}</div>
             <div style="font-size:13px; color:var(--text); margin-bottom:12px;">${safeService} (${totalPrice} ₽)<br><b>${safeDate} (${safeStart} – ${safeEnd})</b><br><span style="color:var(--muted); font-size:12px;">📍 ${safeLoc}</span></div>
-            <div style="padding:10px; border-radius:10px; background:var(--accent-soft); color:var(--accent); font-size:13px; margin-bottom:10px;">📩 Подтверждение и схема проезда отправлены вам в чат бота!</div>
+            <div style="padding:10px; border-radius:10px; background:var(--accent-soft); color:var(--accent); font-size:13px; margin-bottom:10px;">📩 Подтверждение и схема прохода отправлены вам в чат бота!</div>
             ${calendarBtnHtml}
             ${currentTgChatId ? `<button type="button" onclick="window.Telegram.WebApp.close()" class="btn-tg" style="width:100%; margin-bottom:8px;">Вернуться в чат</button>` : ''}
             <div style="font-size:12px; color:var(--muted); margin-top:6px;">Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color:var(--tg); text-decoration:none;">Написать мастеру (@${MASTER_TG_USERNAME})</a></div>
           `;
         } else {
           msg.innerHTML = `
-            <div style="color:var(--accent); font-weight:700; font-size:15px; margin-bottom:6px;">✅ Вы успешно записаны, ${safeName}!</div>
+            <div style="color:var(--accent); font-weight:700; font-size:15px; margin-bottom:6px;">${titleMsg}</div>
             <div style="font-size:13px; color:var(--text); margin-bottom:14px;">${safeService} (${totalPrice} ₽)<br><b>${safeDate} (${safeStart} – ${safeEnd})</b><br><span style="color:var(--muted); font-size:12px;">📍 ${safeLoc}</span></div>
-            <a href="${tgBotLink}" target="_blank" rel="noopener noreferrer" class="btn-tg" style="width:100%; margin-bottom:8px;">🔔 Получить подтверждение и схему проезда в Telegram</a>
+            <a href="${tgBotLink}" target="_blank" rel="noopener noreferrer" class="btn-tg" style="width:100%; margin-bottom:8px;">🔔 Получить фото и видео как пройти в Telegram</a>
             <div style="font-size:11px; color:var(--muted); margin-bottom:10px;">После перехода в бота нажмите <b>«Старт»</b> внизу чата.</div>
             ${calendarBtnHtml}
             <div style="font-size:12px; color:var(--muted);">Вопросы? <a href="${masterLink}" onclick="openMasterTelegram(event)" style="color:var(--tg); text-decoration:none;">Написать мастеру (@${MASTER_TG_USERNAME})</a></div>
@@ -1934,7 +2220,7 @@
           : 'Ошибка при сохранении. Попробуйте еще раз.';
       }
       btn.disabled = false;
-      btn.innerText = 'Записаться';
+      btn.innerText = activeRescheduleId ? 'Подтвердить перенос записи' : 'Записаться';
     }
 
     function toggleAdminModal() {
@@ -1984,8 +2270,9 @@
       adminViewMode = mode;
       document.getElementById('tab-day-btn').classList.toggle('active-tab', mode === 'day');
       document.getElementById('tab-all-btn').classList.toggle('active-tab', mode === 'all');
+      document.getElementById('tab-clients-btn').classList.toggle('active-tab', mode === 'clients');
       document.getElementById('tab-stats-btn').classList.toggle('active-tab', mode === 'stats');
-      document.getElementById('admin-cal-container').classList.toggle('hidden', mode === 'all');
+      document.getElementById('admin-cal-container').classList.toggle('hidden', mode === 'all' || mode === 'clients');
       renderAdminList();
     }
 
@@ -2161,8 +2448,166 @@
       if (app) openEditModal(app);
     }
 
+    /* =========================================================================
+       БАЗА КЛИЕНТОВ И ПОИСК ПО ИСТОРИИ В АДМИНКЕ МАСТЕРА
+       ========================================================================= */
+    function buildAllClientsProfilesForAdmin() {
+      const grouped = {};
+      const todayStr = getLocalTodayStr();
+      const spbNow = getSpbNowParts();
+
+      allAppointments.forEach(a => {
+        if (!a.client_phone || isBreakEntry(a)) return;
+        const clean = getCleanPhone(a.client_phone);
+        if (clean.length < 12) return;
+
+        if (!grouped[clean]) {
+          grouped[clean] = {
+            name: a.client_name || 'Клиент',
+            phone: clean,
+            tg_username: a.tg_username || '',
+            notes: '',
+            total_spent: 0,
+            upcoming: [],
+            past: []
+          };
+        }
+        if (a.client_name) grouped[clean].name = a.client_name;
+        if (a.tg_username) grouped[clean].tg_username = a.tg_username;
+        if (a.notes) grouped[clean].notes = a.notes;
+
+        const isFuture = (a.appointment_date > todayStr) ||
+          (a.appointment_date === todayStr && timeToMinutes(a.appointment_time) > spbNow.minutesOfDay);
+
+        if (isFuture) {
+          grouped[clean].upcoming.push(a);
+        } else {
+          grouped[clean].past.push(a);
+          grouped[clean].total_spent += getAppActualPrice(a);
+        }
+      });
+
+      return Object.values(grouped).map(c => {
+        c.upcoming.sort((x, y) => (x.appointment_date + x.appointment_time).localeCompare(y.appointment_date + y.appointment_time));
+        c.past.sort((x, y) => (y.appointment_date + y.appointment_time).localeCompare(x.appointment_date + x.appointment_time));
+        let avgDays = null;
+        if (c.past.length >= 2) {
+          const newest = new Date(c.past[0].appointment_date).getTime();
+          const oldest = new Date(c.past[c.past.length - 1].appointment_date).getTime();
+          const diffDays = Math.round((newest - oldest) / (1000 * 60 * 60 * 24));
+          if (diffDays > 0) avgDays = Math.round(diffDays / (c.past.length - 1));
+        }
+        c.avg_interval_days = avgDays;
+        return c;
+      }).sort((a, b) => (b.past.length + b.upcoming.length) - (a.past.length + a.upcoming.length));
+    }
+
+    function renderAdminClientsResults() {
+      const box = document.getElementById('admin-clients-results-box');
+      if (!box) return;
+      const q = String(adminClientSearchQuery || '').trim().toLowerCase();
+      const qDigits = q.replace(/\D/g, '');
+
+      const allProfiles = buildAllClientsProfilesForAdmin();
+      const filtered = allProfiles.filter(c => {
+        if (!q) return true;
+        const nameMatch = String(c.name || '').toLowerCase().includes(q);
+        const phoneMatch = qDigits && c.phone.replace(/\D/g, '').includes(qDigits);
+        const userMatch = String(c.tg_username || '').toLowerCase().includes(q);
+        return nameMatch || phoneMatch || userMatch;
+      });
+
+      if (filtered.length === 0) {
+        box.innerHTML = `<div style="text-align:center; color:var(--muted); padding:16px; font-size:13.5px;">Клиенты по запросу не найдены</div>`;
+        return;
+      }
+
+      box.innerHTML = '';
+      filtered.slice(0, 30).forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'client-profile-card';
+        const cleanDigits = c.phone.replace(/\D/g, '');
+        const cleanUser = String(c.tg_username || '').trim().replace(/^@+/, '');
+        const safeUser = escapeHtml(cleanUser);
+        const directTgHref = cleanUser ? `https://t.me/${encodeURIComponent(cleanUser)}` : `https://t.me/+${cleanDigits}`;
+
+        let upHtml = '';
+        if (c.upcoming.length > 0) {
+          upHtml += `<div style="font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase; margin-top:10px; margin-bottom:4px;">Предстоящие записи (${c.upcoming.length}):</div>`;
+          c.upcoming.forEach(u => {
+            upHtml += `<div class="history-item-row" style="color:var(--accent);">
+              <span>📅 <b>${escapeHtml(u.appointment_date)} в ${escapeHtml(u.appointment_time)}</b> — ${escapeHtml(u.service_name)}</span>
+              <button type="button" onclick="openEditModalById('${escapeHtml(u.id)}')" class="btn-outline" style="padding:3px 8px; font-size:11px;">Изм.</button>
+            </div>`;
+          });
+        }
+
+        let pastHtml = '';
+        if (c.past.length > 0) {
+          pastHtml += `<div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-top:10px; margin-bottom:4px;">История визитов (${c.past.length}):</div>`;
+          c.past.slice(0, 8).forEach(p => {
+            pastHtml += `<div class="history-item-row">
+              <span>${escapeHtml(p.appointment_date)} (${escapeHtml(p.appointment_time)}) — ${escapeHtml(p.service_name)}</span>
+              <span style="font-family:var(--font-mono); color:var(--muted);">${getAppActualPrice(p)} ₽</span>
+            </div>`;
+          });
+        }
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+            <div>
+              <div style="font-weight:800; font-size:15.5px; color:#fff;">
+                ${escapeHtml(c.name)}
+                ${safeUser ? `<span style="font-size:12px; color:var(--tg); font-family:var(--font-mono); font-weight:500;">@${safeUser}</span>` : ''}
+              </div>
+              <a href="tel:${escapeHtml(c.phone)}" style="font-family:var(--font-mono); font-size:13px; color:var(--tg); text-decoration:none;">${escapeHtml(c.phone)}</a>
+              ${c.notes ? `<div class="note-box" style="display:block; width:fit-content; margin-top:6px;">📝 ${escapeHtml(c.notes)}</div>` : ''}
+            </div>
+            <div class="row">
+              <a href="${directTgHref}" target="_blank" rel="noopener noreferrer" onclick="openClientDirectTelegram(event, '${safeUser}', '${cleanDigits}')" class="btn-outline" style="background:rgba(56,189,248,0.16); color:var(--tg); border-color:rgba(56,189,248,0.35); font-weight:700;">TG</a>
+              <button type="button" onclick="quickBookForExistingClient('${escapeHtml(c.name)}', '${escapeHtml(c.phone)}', '${escapeHtml(c.notes)}')" class="btn-outline" style="color:var(--accent); border-color:var(--accent-border);">+ Записать</button>
+            </div>
+          </div>
+          <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; padding-top:10px; border-top:1px solid var(--border); font-size:12px; color:var(--muted);">
+            <span>Визитов: <b style="color:#fff; font-family:var(--font-mono);">${c.past.length}</b></span>
+            <span>Сумма чеков: <b style="color:var(--accent); font-family:var(--font-mono);">${c.total_spent.toLocaleString('ru-RU')} ₽</b></span>
+            ${c.avg_interval_days ? `<span>Частота: <b style="color:#fff;">раз в ${c.avg_interval_days} дн.</b></span>` : ''}
+          </div>
+          ${upHtml}
+          ${pastHtml}
+        `;
+        box.appendChild(card);
+      });
+    }
+
+    function quickBookForExistingClient(name, phone, notes) {
+      openEditModal(null, adminSelectedDate || getLocalTodayStr(), '12:00', false);
+      document.getElementById('edit-name').value = name;
+      const phEl = document.getElementById('edit-phone');
+      phEl.value = phone;
+      formatPhoneInput(phEl);
+      document.getElementById('edit-notes').value = notes || '';
+    }
+
     function renderAdminList() {
       const list = document.getElementById('admin-appointments-list');
+
+      if (adminViewMode === 'clients') {
+        const allCount = buildAllClientsProfilesForAdmin().length;
+        list.innerHTML = `
+          <h2 style="margin-bottom:12px;">👥 База клиентов и история (${allCount})</h2>
+          <input
+            type="text"
+            id="admin-client-filter-input"
+            placeholder="🔍 Введите номер телефона, имя или @username..."
+            value="${escapeHtml(adminClientSearchQuery)}"
+            oninput="adminClientSearchQuery = this.value; renderAdminClientsResults();"
+          >
+          <div id="admin-clients-results-box"></div>
+        `;
+        renderAdminClientsResults();
+        return;
+      }
 
       if (adminViewMode === 'stats') {
         const monthPrefix = `${adminCalYear}-${String(adminCalMonth + 1).padStart(2, '0')}`;
@@ -2345,7 +2790,6 @@
       const cleanUser = String(app.tg_username || '').trim().replace(/^@+/, '');
       const safeUser = escapeHtml(cleanUser);
 
-      // Формируем прямую ссылку для личного чата в Telegram (по @username или по +7...)
       const directTgHref = cleanUser
         ? `https://t.me/${encodeURIComponent(cleanUser)}`
         : (cleanDigits ? `https://t.me/+${cleanDigits}` : '');
