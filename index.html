@@ -980,7 +980,7 @@
     // Автоматический разбор для футера, карт и уведомлений
     const LOCATION_FULL = BARBERSHOP_ADDRESS;
     const LOCATION_ADDRESS = BARBERSHOP_ADDRESS.replace(/\s*\(.*?\)\s*$/, '').trim();
-    const LOCATION_PLACE = (BARBERSHOP_ADDRESS.match(/\((.*?)\)/) || [null, 'Барбершоп «Шум»'])[1];
+    const LOCATION_PLACE = (BARBERSHOP_ADDRESS.match(/\((.*?)\)/) || [null, ''])[1];
     const LOCATION_MAP_URL = `https://yandex.ru/maps/?text=${encodeURIComponent(LOCATION_ADDRESS)}`;
 
     const SPB_TIMEZONE = 'Europe/Moscow';
