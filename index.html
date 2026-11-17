@@ -807,10 +807,6 @@
           <div class="brand-sub">Barber & Bio-Curling</div>
         </div>
       </div>
-      <div class="header-actions">
-        <button type="button" onclick="openClientCabinetModal()" class="btn-pill" style="border-color:var(--accent-border); color:var(--accent);">📋 Мои записи</button>
-        <a id="header-tg-link" href="https://t.me/afrant5" onclick="openMasterTelegram(event)" class="btn-pill">Telegram</a>
-      </div>
     </div>
   </header>
 
@@ -954,34 +950,6 @@
     </div>
   </footer>
 
-  <!-- МОДАЛЬНОЕ ОКНО КЛИЕНТА: «МОИ ЗАПИСИ И ИСТОРИЯ ПОСЕЩЕНИЙ» -->
-  <div id="client-cabinet-modal" class="modal hidden" onclick="if(event.target===this) closeClientCabinetModal()">
-    <div class="modal-box">
-      <div class="row" style="justify-content:space-between; margin-bottom:14px;">
-        <h2 style="margin:0;">📋 Мои записи и история</h2>
-        <button type="button" onclick="closeClientCabinetModal()" class="btn-outline" style="padding:4px 10px;">×</button>
-      </div>
-      <label for="lookup-phone-input">Ваш номер телефона</label>
-      <div class="row" style="margin-bottom:14px;">
-        <input
-          type="tel"
-          id="lookup-phone-input"
-          value="+7 "
-          inputmode="tel"
-          style="flex:1; margin-bottom:0;"
-          oninput="formatPhoneInput(this)"
-          onpaste="handlePhonePaste(event, this)"
-          onkeydown="if(event.key==='Enter') lookupClientBookings()"
-          placeholder="+7 (999) 000-00-00"
-        >
-        <button type="button" id="lookup-submit-btn" onclick="lookupClientBookings()" class="btn" style="width:auto; padding:13px 18px;">Найти</button>
-      </div>
-      <div id="client-cabinet-results" style="font-size:13px; color:var(--muted); text-align:center;">
-        Укажите номер телефона, на который оформлялась запись
-      </div>
-    </div>
-  </div>
-
   <div id="password-modal" class="modal hidden" onclick="if(event.target===this) toggleAdminModal()">
     <div class="modal-box">
       <h2 style="margin-bottom:12px;">Вход для мастера</h2>
@@ -1094,7 +1062,6 @@
       if (e.key === 'Escape') {
         document.getElementById('password-modal').classList.add('hidden');
         document.getElementById('edit-modal').classList.add('hidden');
-        document.getElementById('client-cabinet-modal').classList.add('hidden');
       }
     });
 
@@ -1432,143 +1399,7 @@
     /* =========================================================================
        ЛИЧНЫЙ КАБИНЕТ КЛИЕНТА («МОИ ЗАПИСИ И ИСТОРИЯ»)
        ========================================================================= */
-    function openClientCabinetModal() {
-      const modal = document.getElementById('client-cabinet-modal');
-      modal.classList.remove('hidden');
-      const mainPhone = document.getElementById('client-phone').value;
-      const lookupInput = document.getElementById('lookup-phone-input');
-      if (mainPhone && mainPhone.length > 4) {
-        lookupInput.value = mainPhone;
-        formatPhoneInput(lookupInput);
-        lookupClientBookings();
-      }
-    }
-
-    function closeClientCabinetModal() {
-      document.getElementById('client-cabinet-modal').classList.add('hidden');
-    }
-
-    async function lookupClientBookings() {
-      const input = document.getElementById('lookup-phone-input');
-      const cleanPhone = getCleanPhone(input.value);
-      const resBox = document.getElementById('client-cabinet-results');
-      const btn = document.getElementById('lookup-submit-btn');
-
-      if (!isValidRussianPhone(cleanPhone)) {
-        resBox.innerHTML = `<div style="color:var(--danger);">Введите полный номер телефона (+7 9XX XXX-XX-XX)</div>`;
-        return;
-      }
-
-      try { localStorage.setItem(CLIENT_SAVED_PHONE_KEY, cleanPhone); } catch (e) {}
-      const mainPhoneInput = document.getElementById('client-phone');
-      if (mainPhoneInput) { mainPhoneInput.value = cleanPhone; formatPhoneInput(mainPhoneInput); }
-
-      btn.disabled = true;
-      btn.innerText = '...';
-      resBox.innerHTML = `<div style="padding:14px; color:var(--muted);">⏳ Поиск ваших записей...</div>`;
-
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'client_lookup', client_phone: cleanPhone })
-        });
-        const data = await res.json();
-        if (!data || data.status !== 'ok' || !data.profile) {
-          resBox.innerHTML = `<div style="color:var(--danger);">${escapeHtml(data?.message || 'Не удалось загрузить данные')}</div>`;
-          return;
-        }
-
-        const p = data.profile;
-        if (p.name && p.name !== 'Клиент' && !document.getElementById('client-name').value) {
-          document.getElementById('client-name').value = p.name;
-        }
-
-        let html = `<div style="text-align:left;">`;
-        html += `<div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-          <div>
-            <div style="font-weight:700; color:#fff; font-size:14.5px;">${escapeHtml(p.name)}</div>
-            <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted);">${escapeHtml(p.phone)}</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:12px; color:var(--text);">Посещений: <b style="color:var(--accent); font-family:var(--font-mono);">${p.total_visits}</b></div>
-            ${p.avg_interval_days ? `<div style="font-size:11px; color:var(--muted);">В среднем раз в ${p.avg_interval_days} дн.</div>` : ''}
-          </div>
-        </div>`;
-
-        // Предстоящие записи
-        html += `<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--accent); margin-bottom:8px; letter-spacing:0.4px;">📅 Предстоящие записи (${p.upcoming.length})</div>`;
-        if (p.upcoming.length === 0) {
-          html += `<div style="padding:12px; border-radius:10px; background:var(--input-bg); color:var(--muted); font-size:12.5px; margin-bottom:14px;">Активных будущих записей сейчас нет.</div>`;
-        } else {
-          p.upcoming.forEach(u => {
-            const safeId = escapeHtml(u.id);
-            html += `
-              <div style="background:rgba(228,255,26,0.06); border:1px solid var(--accent-border); border-radius:12px; padding:12px 14px; margin-bottom:10px;">
-                <div style="font-family:var(--font-mono); font-weight:700; color:var(--accent); font-size:13.5px;">${escapeHtml(u.appointment_date)} · ${escapeHtml(u.appointment_time)}</div>
-                <div style="color:#fff; font-weight:600; font-size:13.5px; margin:3px 0;">✂️ ${escapeHtml(u.service_name)} (${Number(u.price)||0} ₽)</div>
-                <div style="font-size:11.5px; color:var(--muted); margin-bottom:10px;">📍 ${escapeHtml(LOCATION_FULL)}</div>
-                <div class="row">
-                  <button type="button" onclick="startClientRescheduleFromModal('${safeId}')" class="btn" style="flex:1; padding:9px 12px; font-size:12px;">🔄 Перенести время</button>
-                  <button type="button" onclick="cancelClientBookingFromModal('${safeId}', '${escapeHtml(cleanPhone)}')" class="btn-outline" style="color:var(--danger); border-color:rgba(248,113,113,0.3); padding:9px 12px; font-size:12px;">❌ Отменить</button>
-                </div>
-              </div>
-            `;
-          });
-        }
-
-        // Прошедшие визиты
-        if (p.past && p.past.length > 0) {
-          html += `<div style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--muted); margin:14px 0 6px; letter-spacing:0.4px;">🕓 История посещений</div>`;
-          html += `<div style="background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:12px; padding:6px 12px; max-height:190px; overflow-y:auto;">`;
-          p.past.forEach(item => {
-            html += `<div class="history-item-row">
-              <div>
-                <div style="color:#fff; font-weight:600;">${escapeHtml(item.service_name)}</div>
-                <div style="font-family:var(--font-mono); font-size:11px; color:var(--muted);">${escapeHtml(item.appointment_date)} в ${escapeHtml(item.appointment_time)}</div>
-              </div>
-              <div style="font-family:var(--font-mono); color:var(--muted); font-weight:600;">${Number(item.price)||0} ₽</div>
-            </div>`;
-          });
-          html += `</div>`;
-        }
-
-        html += `</div>`;
-        resBox.innerHTML = html;
-      } catch (e) {
-        resBox.innerHTML = `<div style="color:var(--danger);">Ошибка соединения. Попробуйте еще раз.</div>`;
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Найти';
-      }
-    }
-
-    function startClientRescheduleFromModal(appId) {
-      closeClientCabinetModal();
-      activateRescheduleMode(appId);
-    }
-
-    async function cancelClientBookingFromModal(appId, cleanPhone) {
-      if (!confirm('Вы уверены, что хотите отменить эту запись? (Если вы хотите просто поменять время, нажмите «Перенести время» — тогда запись не пропадет до выбора нового окна).')) return;
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'client_cancel', id: appId, client_phone: cleanPhone })
-        });
-        const data = await res.json();
-        if (data && data.status === 'ok') {
-          await fetchAllData();
-          await lookupClientBookings();
-          if (selectedServices.length > 0) renderTimeSlots(true);
-        } else {
-          alert(data?.message || 'Не удалось отменить запись.');
-        }
-      } catch (e) {
-        alert('Ошибка при отмене записи.');
-      }
-    }
-
+   
     /* =========================================================================
        КОНТРОЛЬ ЛИМИТА ЗАПИСЕЙ (Максимум 2 активные записи на один номер/аккаунт)
        ========================================================================= */
